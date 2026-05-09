@@ -1,4 +1,54 @@
-# Rally News Filtering Criteria
+# ========================================
+# RALLY NEWS FILTERING CONFIGURATION
+# ========================================
+
+# NEGATIVE KEYWORDS
+# These words will REJECT an article if they appear in the HEADLINE (not the article body)
+# Add or remove words as needed - one per line or comma-separated
+
+[NEGATIVE_KEYWORDS]
+war, attack, attacks, attacked, attacking, violence, violent, conflict, fighting, battle, combat, invasion, invade, occupation, strike, strikes, airstrike, bombing, bombed, explosion, explode, shooting, shot, gunfire, artillery, missile, raid, assault, death, deaths, dead, die, died, dies, dying, kill, killed, killing, murder, murdered, assassination, assassinate, casualty, casualties, victim, victims, fatality, fatalities, massacre, genocide, execution, executed, slaughter, disaster, catastrophe, devastation, devastate, devastated, destruction, destroy, destroyed, collapse, collapsed, crash, crashed, wreck, emergency, evacuation, evacuate, flee, fleeing, ruins, damage, damaged, hit, suffer, suffering, crime, criminal, theft, stolen, robbery, robbed, burglary, fraud, fraudulent, scam, corruption, corrupt, bribe, bribery, scandal, arrested, arrest, charged, indicted, convicted, sentenced, prison, jail, illegal, violation, pandemic, epidemic, outbreak, infection, infected, disease, illness, sick, sickness, virus, contagion, contamination, recession, depression, inflation, deflation, unemployment, jobless, bankruptcy, bankrupt, debt, default, crisis, crises, downturn, slump, stagnation, layoff, layoffs, fired, losses, controversy, controversial, disputed, dispute, tension, tensions, clash, clashes, feud, rift, scandal, impeachment, impeach, resignation, resign, ousted, removed, protest, protests, riot, riots, unrest, turmoil, upheaval, instability, fail, failed, failure, defeat, defeated, loss, lose, lost, setback, reject, rejected, denial, denied, veto, vetoed, block, blocked, stall, stalled, deadlock, fear, fears, afraid, scary, threat, threaten, threatens, threatened, threatening, danger, dangerous, risk, risks, risky, worry, worried, worries, concern, concerned, concerns, anxiety, anxious, panic, terror, terrorize, terrified, alarm, alarming, worsen, worsens, worsening, worse, worst, deteriorate, deteriorating, decline, declining, declined, decrease, decreasing, drop, dropped, dropping, fall, fell, falling, plunge, plunged, plummeted, sink, sinking, tumble, tumbled, weaken, weakening, shortage, shortages, lack, lacking, deficit, gap, scarcity, scarce, depleted, depletion, problem, problems, issue, issues, trouble, difficulty, struggle, struggling, strain, election fraud, rigged, stolen election, contested, earthquake, tsunami, hurricane, tornado, flood, flooding, wildfire, fire, drought, famine, storm, accident, collision, derailment, capsized, discrimination, racist, racism, hate, hatred, abuse, abused, harassment, harassed, exploit, exploitation, military action, troops, soldiers killed, wounded, siege, blockade, sanctions, cancel, cancelled, suspended, ban, banned, prohibit, forbidden, restrict, restricted, cut, cuts, reduction, eliminate, eliminated
+
+# POSITIVE KEYWORDS
+# These words will ACCEPT an article if they appear in the headline OR summary
+
+[POSITIVE_KEYWORDS]
+breakthrough, success, achieve, progress, innovation, improve, advance, win, victory, solution, cure, recovery, growth, agreement, cooperation, peace, deal, opens, launch, approve, reform, protect, save, ceasefire, elect, union, reaches deal, ends strike, passes, signed, funding, investment, expansion
+
+# ========================================
+# CATEGORY DETECTION KEYWORDS
+# ========================================
+
+[CATEGORY:climate]
+climate, environment, carbon, emissions, renewable, solar, wind, green, pollution, conservation, sustainability, fossil fuel, global warming, greenhouse
+
+[CATEGORY:transportation]
+transit, transportation, subway, train, rail, railway, bus, metro, highway, road, bridge, tunnel, airport, flight, airline, shipping, port, infrastructure, traffic, commute
+
+[CATEGORY:ai]
+ai, artificial intelligence, machine learning, technology, tech, science, scientific, research, study, vaccine, medical, health, discovery, innovation, engineering, space, quantum, robot, biotech, genetics, physics, chemistry, biology
+
+[CATEGORY:business]
+stock, market, trading, investment, investor, finance, financial, bank, banking, economy, economic, fed, interest rate, crypto, bitcoin, business, company, startup, entrepreneur, ceo, merger, acquisition, corporate, industry, labor, union, worker, employee, job, employment, wage, salary
+
+[CATEGORY:politics]
+election, vote, voting, legislature, congress, senate, parliament, politician, policy, legislation, law, bill, regulation, government, mayor, governor, president, minister, political, democracy, reform, campaign
+
+[CATEGORY:entertainment]
+film, movie, cinema, actor, actress, director, netflix, streaming, tv, television, show, series, music, album, song, concert, festival, band, artist, entertainment, celebrity, oscars, emmy, grammy, award, game, gaming, video game
+
+[CATEGORY:world]
+war, conflict, peace, ceasefire, international, nation, country, countries, diplomatic, diplomacy, treaty, global, foreign, border, territory, alliance, nato, un, united nations
+
+[CATEGORY:religion]
+church, mosque, temple, synagogue, religion, religious, faith, christian, muslim, jewish, hindu, buddhist, pope, priest, imam, rabbi, spiritual, prayer, worship, god, divine, sacred
+
+[CATEGORY:arts]
+FALLBACK - All articles that don't match other categories
+
+# ========================================
+# AI FILTERING CRITERIA
+# ========================================
 
 ## What Makes a Positive News Story?
 
