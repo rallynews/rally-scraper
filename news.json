@@ -1,5 +1,55 @@
 [
   {
+    "title": "K-shaped economy is showing up at the gas pump: NY Fed",
+    "source": "The Hill",
+    "url": "https://thehill.com/business/5870589-k-shaped-economy-gasoline-consumption/",
+    "first_paragraph": "Low-income households are cutting back on gas as prices surge, while wealthier households remain largely unfazed.",
+    "rallying_cry": "K-shaped economy is showing up at the gas pump: NY Fed",
+    "image_url": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800",
+    "timestamp": "2026-05-09T09:58:38.585491Z",
+    "category": "ai"
+  },
+  {
+    "title": "Alabama Republicans approve plan for new primaries if courts allow GOP-friendly map",
+    "source": "The Hill",
+    "url": "https://thehill.com/homenews/state-watch/5870681-alabama-primary-election-legislation/",
+    "first_paragraph": "Alabama Republicans on Friday approved legislation directing the governor to schedule new primary elections for certain races under a GOP-friendly congressional map \u2014 if the courts agree to lift an earlier injunction keeping the current map in place until after the 2030 Census.  The legislation would have no effect unless the courts reverse a previous...",
+    "rallying_cry": "Alabama Republicans approve plan for new primaries if courts allow GOP-friendly map",
+    "image_url": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800",
+    "timestamp": "2026-05-09T09:58:41.033154Z",
+    "category": "ai"
+  },
+  {
+    "title": "Former Soviet scientific megastructures captured in striking photos",
+    "source": "New Scientist",
+    "url": "https://www.newscientist.com/article/2524565-former-soviet-scientific-megastructures-captured-in-striking-photos/?utm_campaign=RSS%7CNSNS&utm_source=NSNS&utm_medium=RSS&utm_content=technology",
+    "first_paragraph": "The 45-metre-high tower housing the AZT-20 telescope at the Assy-Turgen Observatory in KazakhstanSoviet Scientific Institutes, by Eric Lusito, FUEL Publishing, 2026",
+    "rallying_cry": "Former Soviet scientific megastructures captured in striking photos",
+    "image_url": "https://images.newscientist.com/wp-content/uploads/2026/04/28101817/sei294893991.jpg",
+    "timestamp": "2026-05-09T09:58:45.760397Z",
+    "category": "ai"
+  },
+  {
+    "title": "'Green' cryptocurrency uses 18 times more energy than makers claim",
+    "source": "New Scientist",
+    "url": "https://www.newscientist.com/article/2523912-green-cryptocurrency-uses-18-times-more-energy-than-makers-claim/?utm_campaign=RSS%7CNSNS&utm_source=NSNS&utm_medium=RSS&utm_content=technology",
+    "first_paragraph": "A cryptocurrency that aims to avoid the disastrous energy consumption of bitcoin is actually using 18 times more energy than its makers claim \u2013 but it promises improvements are on the way",
+    "rallying_cry": "'Green' cryptocurrency uses 18 times more energy than makers claim",
+    "image_url": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800",
+    "timestamp": "2026-05-09T09:58:48.029387Z",
+    "category": "climate"
+  },
+  {
+    "title": "Hong Kong dissident Nathan Law on China spies in UK: \u2018We\u2019re not surprised\u2019",
+    "source": "The Guardian",
+    "url": "https://www.theguardian.com/world/2026/may/08/hong-kong-dissident-nathan-law-china-spies-spying-uk",
+    "first_paragraph": "Law says conviction of two men for spying raises serious concerns about how they accessed sensitive information",
+    "rallying_cry": "Hong Kong dissident Nathan Law on China spies in UK: \u2018We\u2019re not surprised\u2019",
+    "image_url": "https://i.guim.co.uk/img/media/623ce535795acec692a6b0aa3ac3242f2d555679/407_0_4020_3216/master/4020.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&precrop=40:21,offset-x50,offset-y0&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&enable=upscale&s=9d00b3f63e178706e57a79d3258a89b1",
+    "timestamp": "2026-05-09T09:58:52.517985Z",
+    "category": "ai"
+  },
+  {
     "title": "Great Historical Fiction With Moms at the Heart",
     "source": "The New York Times",
     "url": "https://www.nytimes.com/2026/05/08/books/historical-fiction-books-moms.html",
@@ -120,10 +170,10 @@
     "category": "business"
   },
   {
-    "title": "€1 meals tested by students and staff on the Villetaneuse campus: 'A practice run ahead of the next academic year'",
+    "title": "\u20ac1 meals tested by students and staff on the Villetaneuse campus: 'A practice run ahead of the next academic year'",
     "source": "Le Monde",
     "url": "https://www.lemonde.fr/en/france/article/2026/05/08/1-meals-tested-by-students-and-staff-on-the-villetaneuse-campus-a-practice-run-ahead-of-the-next-academic-year_6753271_7.html",
-    "first_paragraph": "French universities are piloting €1 meals for students, making higher education more accessible by addressing food insecurity on campus.",
+    "first_paragraph": "French universities are piloting \u20ac1 meals for students, making higher education more accessible by addressing food insecurity on campus.",
     "rallying_cry": "France is making it cheaper for their students to get school lunch.",
     "image_url": "https://images.unsplash.com/photo-1567521463850-2b8e900891c0?w=800",
     "timestamp": "2026-05-08T08:00:00Z",
@@ -200,7 +250,7 @@
     "category": "democracy"
   },
   {
-    "title": "In the remote Amazon, locals are saving a giant fish—and helping their villages",
+    "title": "In the remote Amazon, locals are saving a giant fish\u2014and helping their villages",
     "source": "Science",
     "url": "https://www.science.org/content/article/remote-amazon-locals-are-saving-giant-fish-and-helping-their-villages",
     "first_paragraph": "Indigenous communities in the Amazon have developed sustainable fishing practices that protect endangered giant fish while improving local food security and economic stability.",
