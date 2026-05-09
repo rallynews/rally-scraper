@@ -1,0 +1,57 @@
+# Rally News Filtering Criteria
+
+## What Makes a Positive News Story?
+
+A positive news story focuses primarily on **improvements to society** in one or more areas:
+- Climate
+- Entertainment  
+- AI & Science & Technology
+- Arts & Culture
+- Business & Finance
+- Politics
+
+## Key Requirements
+
+The article **MUST** have a **clear idea for improvement**. It doesn't need to be purely positive, but must show:
+
+- Progress toward a solution
+- Cooperation or agreements
+- Breakthroughs or innovations
+- New openings or launches
+- Reforms or policy improvements
+- Aid, protection, or rescue efforts
+- Steps forward (even small ones)
+- Deals or compromises reached
+
+## Heavy Topics Can Be Positive
+
+Even articles about difficult subjects (war, strikes, protests) qualify if they show **forward movement**:
+
+✅ "Russia and Ukraine Agree to Three-Day Ceasefire" - Progress toward peace
+✅ "Writers Guild reaches deal, ending strike" - Resolution achieved  
+✅ "New govt in Hungary pledges democratic reforms" - Democratic progress
+✅ "ASEAN leaders adopt measures to ease economic pain" - Proactive solutions
+
+## What to REJECT
+
+❌ Pure crisis/disaster with no solutions
+❌ Negative events with no improvement angle
+❌ Escalating conflicts with no progress
+❌ Stories about fears, warnings, threats with no action taken
+
+## Examples of Positive Angles
+
+- "Rent freeze approved" → Housing affordability progress
+- "Subway opens in LA" → Infrastructure improvement  
+- "Scientists closer to HIV vaccine" → Medical advancement
+- "France sends ambassador back to Algeria" → Diplomatic thaw
+- "AI banned from Oscars" → Protection of human creativity
+- "€1 meals tested at French university" → Educational equity
+- "Palestine Marathon held despite conflict" → Resilience and normalcy
+
+## Guiding Principle
+
+Ask: **"Does this show society moving forward in some way?"**
+
+If YES → It's positive news for Rally.
+If NO → Reject it.
