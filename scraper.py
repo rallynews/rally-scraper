@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Rally News Scraper - Fast version with keyword pre-filtering
+Rally News Scraper - Lenient version with external sources file
 """
 import json
 import random
@@ -10,108 +10,86 @@ from datetime import datetime
 import requests
 import feedparser
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
 HF_API_KEY = os.environ.get('HUGGINGFACE_API_KEY')
 if not HF_API_KEY:
-    raise ValueError("HUGGINGFACE_API_KEY environment variable not set")
+    raise ValueError("HUGGINGFACE_API_KEY not set")
 
-HF_MODEL = "mistralai/Mistral-7B-Instruct-v0.3"
-HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL}"
+HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
 
-NEWS_SOURCES = {
-    "The New York Times": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-    "Washington Post": "https://feeds.washingtonpost.com/rss/world",
-    "Reuters": "https://www.reutersagency.com/feed/",
-    "NPR": "https://feeds.npr.org/1001/rss.xml",
-    "CNN": "http://rss.cnn.com/rss/cnn_topstories.rss",
-    "BBC News": "http://feeds.bbci.co.uk/news/rss.xml",
-    "The Guardian": "https://www.theguardian.com/world/rss",
-    "Al Jazeera English": "https://www.aljazeera.com/xml/rss/all.xml",
-    "Wired": "https://www.wired.com/feed/rss",
-    "Los Angeles Times": "https://www.latimes.com/rss2.0.xml",
-    "Le Monde": "https://www.lemonde.fr/en/rss/une.xml",
-    "DW (Deutsche Welle)": "https://rss.dw.com/rdf/rss-en-all",
-}
+# Load sources from external file
+with open('sources.json', 'r') as f:
+    NEWS_SOURCES = json.load(f)
 
-# Fast keyword filters
-POSITIVE_KEYWORDS = [
+POSITIVE_KW = [
     'breakthrough', 'success', 'achieve', 'progress', 'innovation', 'improve',
     'advance', 'win', 'victory', 'solution', 'cure', 'recovery', 'growth',
-    'agreement', 'cooperation', 'peace', 'deal', 'opens', 'launch', 'new',
-    'first', 'approve', 'pass', 'vote', 'elect', 'reform', 'protect', 'save'
+    'agreement', 'cooperation', 'peace', 'deal', 'opens', 'launch', 'approve',
+    'reform', 'protect', 'save', 'ceasefire', 'elect', 'union', 'strike ends'
 ]
 
-NEGATIVE_KEYWORDS = [
-    'kill', 'death', 'dead', 'die', 'murder', 'terror', 'attack', 'bomb',
-    'crash', 'disaster', 'devastate', 'destroy', 'collapse', 'plunge', 'crisis'
-]
+NEGATIVE_KW = ['kill', 'death', 'dead', 'murder', 'bomb', 'destroy', 'collapse']
 
 def quick_filter(title, summary):
-    """Fast keyword-based filter before AI"""
+    """Fast keyword filter"""
     text = (title + ' ' + summary).lower()
-    
-    # Reject if has negative keywords
-    if any(neg in text for neg in NEGATIVE_KEYWORDS):
+    if any(n in text for n in NEGATIVE_KW):
         return False
-    
-    # Accept if has positive keywords
-    if any(pos in text for pos in POSITIVE_KEYWORDS):
-        return True
-    
-    # Otherwise reject (be conservative)
-    return False
+    return any(p in text for p in POSITIVE_KW)
 
-def call_ai(prompt, timeout=8):
-    """Quick AI call with short timeout"""
+def call_ai(prompt):
+    """Call AI with fallback"""
     try:
-        response = requests.post(
+        r = requests.post(
             HF_API_URL,
             headers={"Authorization": f"Bearer {HF_API_KEY}"},
-            json={
-                "inputs": prompt,
-                "parameters": {"max_new_tokens": 150, "temperature": 0.7}
-            },
-            timeout=timeout
+            json={"inputs": prompt, "parameters": {"max_new_tokens": 100}},
+            timeout=6
         )
-        
-        if response.status_code == 200:
-            data = response.json()
+        if r.status_code == 200:
+            data = r.json()
             return data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
-        return None
     except:
-        return None
+        pass
+    return None
 
-def ai_check_positive(title, summary):
-    """AI check if shows improvement"""
-    prompt = f"""Does this show IMPROVEMENT/PROGRESS in: Climate, Entertainment, AI/Tech, Arts/Culture, Business/Finance, or Politics?
+def ai_check(title, summary):
+    """Lenient AI check - accepts if shows ANY progress"""
+    prompt = f"""Is this progress/improvement?
 
-Even heavy topics (war, strikes) are YES if they show progress (ceasefire, deal reached).
+Accept if it shows: solutions, cooperation, new tech, reforms, deals, aid, protection, innovation, wins, breakthroughs, agreements, openings, launches.
+
+Even if topic is heavy (war/strikes), accept if showing forward movement (ceasefire/deal/reform).
 
 Title: {title}
-Summary: {summary[:200]}
+Summary: {summary[:150]}
 
 Answer: YES or NO"""
 
     result = call_ai(prompt)
-    return result and "YES" in result.upper()[:15]
-
-def generate_cry(title, para):
-    """Generate rallying cry"""
-    prompt = f"""One sentence (under 15 words) explaining the positive impact:
-
-Title: {title}
-Text: {para[:200]}
-
-Rallying cry:"""
     
-    result = call_ai(prompt, timeout=10)
+    # Fallback: if AI fails/timeout, trust the keywords
+    if result is None:
+        print(f"       AI timeout, trusting keywords")
+        return True
+    
+    return "YES" in result.upper()[:20]
+
+def gen_cry(title, para):
+    """Generate cry with fallback"""
+    prompt = f"""One sentence (10 words) why this is positive:
+{title}
+{para[:150]}
+
+Impact:"""
+    
+    result = call_ai(prompt)
     if result:
         return result.split('\n')[0].strip().strip('"\'')[:150]
     return title[:100]
 
 def get_content(html):
-    """Extract paragraph and image"""
+    """Extract para + image"""
     try:
         soup = BeautifulSoup(html, 'html.parser')
         og = soup.find('meta', property='og:image')
@@ -128,8 +106,8 @@ def get_content(html):
     except:
         return "", "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800"
 
-def fetch_article(url):
-    """Get article content"""
+def fetch(url):
+    """Fetch article"""
     try:
         r = requests.get(url, timeout=5, headers={'User-Agent': 'Mozilla/5.0'})
         if r.status_code == 200:
@@ -138,16 +116,16 @@ def fetch_article(url):
         pass
     return "", "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800"
 
-def scrape_source(source_name, feed_url, target_remaining):
+def scrape_source(name, url, target):
     """Scrape one source"""
-    articles = []
-    print(f"\n📰 Scraping {source_name}...")
+    found = []
+    print(f"\n📰 {name}...")
     
     try:
-        feed = feedparser.parse(feed_url)
+        feed = feedparser.parse(url)
         
-        for entry in feed.entries[:20]:
-            if len(articles) >= min(3, target_remaining):  # Max 3 per source
+        for entry in feed.entries[:25]:
+            if len(found) >= min(2, target):
                 break
             
             title = entry.get('title', '').strip()
@@ -157,86 +135,81 @@ def scrape_source(source_name, feed_url, target_remaining):
             if not title or not link:
                 continue
             
-            # Step 1: Quick keyword filter
+            # Keywords
             if not quick_filter(title, summary):
                 continue
             
-            print(f"  📋 {title[:70]}")
-            print(f"     Keywords look good, checking with AI...")
+            print(f"  📋 {title[:65]}")
+            print(f"     Keywords ✓, checking AI...")
             
-            # Step 2: AI verification
-            if not ai_check_positive(title, summary):
-                print(f"     ❌ AI says no improvement")
+            # AI
+            if not ai_check(title, summary):
+                print(f"     ❌ No")
                 continue
             
-            print(f"     ✅ AI confirmed! Getting details...")
+            print(f"     ✅ Yes!")
             
-            # Step 3: Get full content
-            para, img = fetch_article(link)
+            para, img = fetch(link)
             if not para:
                 para = summary[:500]
             
-            # Step 4: Generate rallying cry
-            cry = generate_cry(title, para)
+            cry = gen_cry(title, para)
             
-            article = {
+            found.append({
                 "title": title,
-                "source": source_name,
+                "source": name,
                 "url": link,
                 "first_paragraph": para,
                 "rallying_cry": cry,
                 "image_url": img,
                 "timestamp": datetime.utcnow().isoformat() + "Z",
                 "category": "home"
-            }
+            })
             
-            articles.append(article)
-            print(f"     💚 Added: {cry}")
-            time.sleep(2)
+            print(f"     💚 {cry}")
+            time.sleep(1.5)
         
     except Exception as e:
-        print(f"  ⚠️  Error: {e}")
+        print(f"  ⚠️  {e}")
     
-    return articles
+    return found
 
 def main():
-    print("🌱 Rally News Scraper (Fast Mode)")
-    print(f"Target: 5 new articles\n")
+    print("🌱 Rally Scraper")
+    print(f"Target: 5 articles from {len(NEWS_SOURCES)} sources\n")
     
-    # Try 8 random sources
-    sources = random.sample(list(NEWS_SOURCES.items()), min(8, len(NEWS_SOURCES)))
-    print(f"Sources: {[n for n, _ in sources]}\n")
+    # Random 10 sources
+    sources = random.sample(list(NEWS_SOURCES.items()), min(10, len(NEWS_SOURCES)))
+    print(f"Trying: {[n for n, _ in sources]}\n")
     
-    all_articles = []
+    all_new = []
     
-    for source_name, feed_url in sources:
-        if len(all_articles) >= 5:
+    for name, url in sources:
+        if len(all_new) >= 5:
             break
-        
-        articles = scrape_source(source_name, feed_url, 5 - len(all_articles))
-        all_articles.extend(articles)
+        found = scrape_source(name, url, 5 - len(all_new))
+        all_new.extend(found)
         time.sleep(2)
     
-    # Load existing
+    # Load existing (includes your hardcoded examples!)
     try:
         with open('news.json', 'r') as f:
             existing = json.load(f)
     except:
         existing = []
     
-    # Merge
+    # Add new to existing (keep examples!)
     seen = {a['url'] for a in existing}
-    new = [a for a in all_articles if a['url'] not in seen]
+    unique = [a for a in all_new if a['url'] not in seen]
     
-    combined = new + existing
+    combined = unique + existing  # New articles first
     combined = combined[:200]
     
-    # Save
     with open('news.json', 'w') as f:
         json.dump(combined, f, indent=2)
     
-    print(f"\n✅ Complete!")
-    print(f"📊 New articles: {len(new)}")
+    print(f"\n✅ Done!")
+    print(f"📊 New: {len(unique)}")
     print(f"📚 Total: {len(combined)}")
 
 if __name__ == "__main__":
