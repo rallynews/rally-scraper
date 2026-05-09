@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-"""
-Rally News Scraper - Fetches positive news from curated sources
-"""
+
 import json
 import random
 import time
