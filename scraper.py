@@ -257,26 +257,34 @@ def generate_rallying_cry(title, summary):
     result = call_ai(prompt)
     
     if result:
-        # Clean up the response
+        # Clean up the response aggressively
         cry = result.strip()
         
-        # Remove common prefixes
-        for prefix in ['RALLYING CRY:', 'Impact:', 'Why it matters:', 'The impact:', 'This shows']:
+        # Remove common prefixes (case-insensitive)
+        prefixes = ['RALLYING CRY:', 'RALLYING CRY', 'Impact:', 'Why it matters:', 'The impact:', 'This shows', 'WHY IT MATTERS:', 'The']
+        for prefix in prefixes:
             if cry.upper().startswith(prefix.upper()):
                 cry = cry[len(prefix):].strip()
+                cry = cry.lstrip(':').strip()  # Remove trailing colons
         
         # Remove quotes
         cry = cry.strip('"\'')
         
-        # Take first sentence
-        cry = cry.split('\n')[0].split('.')[0].strip()
+        # Take ONLY the first sentence/line (before any newline, period, or common separators)
+        cry = cry.split('\n')[0]  # First line only
+        cry = cry.split('.')[0]   # Before first period
+        cry = cry.split('!')[0]   # Before first exclamation
+        cry = cry.split('?')[0]   # Before first question mark
+        cry = cry.split('TITLE:')[0]  # Remove any instructions that leaked through
+        cry = cry.strip()
         
         # If it's too similar to title or too short, use fallback
-        if len(cry) < 20 or cry.lower() == title.lower():
+        if len(cry) < 15 or cry.lower() == title.lower():
             # Fallback: extract key insight from summary
             cry = summary[:100].split('.')[0].strip()
         
-        return cry[:150]
+        # Final cleanup and length limit
+        return cry[:150].strip()
     
     # Ultimate fallback
     return title[:100]
