@@ -19,7 +19,7 @@ if not OPENROUTER_API_KEY:
     raise ValueError("OPENROUTER_API_KEY not set")
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "google/gemini-flash-1.5"  # Super cheap: $0.075 per 1M tokens
+OPENROUTER_MODEL = "google/gemma-4-26b-a4b-it:free"  # Free tier
 
 print("📂 Loading configuration files...")
 
