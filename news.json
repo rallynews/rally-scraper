@@ -1,5 +1,45 @@
 [
   {
+    "title": "They seek riches from the jungle \u2013 but this eco-system is our future",
+    "source": "The Telegraph",
+    "url": "https://www.telegraph.co.uk/global-health/climate-and-people/nouabale-ndoki-national-park-congo-basin-conservation/",
+    "first_paragraph": "As the sun sinks over the Sangha river in a far corner of the Congo Basin, the village chief contemplates the future of his homeland. \u201cThe resources will finish, but after that, then what?\u201d asks Gabriel Mobolambi. His village, Bomassa, is the gateway to Nouabal\u00e9-Ndoki National Park \u2013 a vast stretch of largely unspoilt jungle.",
+    "rallying_cry": "We need to produce for each title a rallying cry: why it matters and why it's positive, under 12 words",
+    "image_url": "https://www.telegraph.co.uk/content/dam/global-health/2026/07/HC100531.jpg",
+    "timestamp": "2026-05-09T15:46:28.682230Z",
+    "category": "climate"
+  },
+  {
+    "title": "Engineers at NASA's Jet Propulsion Lab make a breakthrough in rotor technology",
+    "source": "Ars Technica",
+    "url": "https://arstechnica.com/space/2026/05/engineers-at-nasas-jet-propulsion-lab-make-a-breakthrough-in-rotor-technology/",
+    "first_paragraph": "A little more than three years since NASA\u2019s Ingenuity\u00a0helicopter ended its pioneering mission at Mars, engineers at the Jet Propulsion Laboratory in California are designing next-generation Martian rotorcraft to carry heavier payloads longer distances through the planet\u2019s low-density atmosphere.",
+    "rallying_cry": "We need to output the rallying cry for the last title: \"Engineers at NASA's Jet Propulsion Lab make a breakthrough in rotor technology\"",
+    "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/skyfall1-1152x648-1778251181.jpg",
+    "timestamp": "2026-05-09T15:46:50.661288Z",
+    "category": "ai"
+  },
+  {
+    "title": "We welcome scrutiny, Reform UK says after major election gains",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/cz62d2482x1o?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "Reform UK has said it will \"welcome scrutiny\" of its elected representatives, after the party made major gains in polls across England, Scotland and Wales.",
+    "rallying_cry": "We need to produce for each title: a rallying cry that explains why it matters and why it's positive, under 12 words",
+    "image_url": "https://ichef.bbci.co.uk/news/1024/branded_news/8fd0/live/a876e0e0-4b86-11f1-b55d-0f258dce1735.jpg",
+    "timestamp": "2026-05-09T15:48:29.170094Z",
+    "category": "ai"
+  },
+  {
+    "title": "How controlled burns can help save taxpayers billions",
+    "source": "Grist",
+    "url": "https://grist.org/solutions/how-controlled-burns-can-help-save-taxpayers-billions/",
+    "first_paragraph": "For decades, the U.S. Forest Service has actively managed public lands to reduce wildfire risks by clearing underbrush and trees, or employing prescribed burns \u2014 something Indigenous nations have practiced for centuries. Scientists have generally lauded the ecological benefits of what is also known as \u201cfuel treatment.\u201d Now, they say there\u2019s another reason to support this approach: It saves money.",
+    "rallying_cry": "We need to produce a rallying cry (like the examples) under 12 words, that states WHY it matters AND WHY it's positive, based on the title: \"How contr",
+    "image_url": "https://grist.org/wp-content/uploads/2026/05/GettyImages-2215297966.jpg?quality=75&strip=all",
+    "timestamp": "2026-05-09T15:49:18.148707Z",
+    "category": "politics"
+  },
+  {
     "title": "Nvidia has already committed $40B to equity AI deals this year",
     "source": "TechCrunch",
     "url": "https://techcrunch.com/2026/05/09/nvidia-has-already-committed-40b-to-equity-ai-deals-this-year/",
