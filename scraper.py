@@ -19,7 +19,7 @@ if not OPENROUTER_API_KEY:
     raise ValueError("OPENROUTER_API_KEY not set")
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "mistralai/mistral-7b-instruct-v0.2"  # Full version number
+OPENROUTER_MODEL = "qwen/qwen3-next-80b-a3b-instruct:free"  # Free tier
 
 print("📂 Loading configuration files...")
 
