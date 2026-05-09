@@ -19,7 +19,7 @@ if not OPENROUTER_API_KEY:
     raise ValueError("OPENROUTER_API_KEY not set")
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "mistralai/mistral-7b-instruct"  # Fast and cheap
+OPENROUTER_MODEL = "mistralai/mistral-7b-instruct-v0.2"  # Full version number
 
 print("📂 Loading configuration files...")
 
@@ -103,7 +103,9 @@ def call_ai(prompt):
             OPENROUTER_API_URL,
             headers={
                 "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/rally-news",  # OpenRouter recommended
+                "X-Title": "Rally News Scraper"  # OpenRouter recommended
             },
             json={
                 "model": OPENROUTER_MODEL,
