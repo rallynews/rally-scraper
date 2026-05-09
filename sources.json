@@ -1,0 +1,73 @@
+{
+  "The New York Times": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+  "Washington Post": "https://feeds.washingtonpost.com/rss/world",
+  "Wall Street Journal": "https://feeds.a.dj.com/rss/RSSWorldNews.xml",
+  "Los Angeles Times": "https://www.latimes.com/rss2.0.xml",
+  "Reuters": "https://www.reutersagency.com/feed/",
+  "AP News": "https://rsshub.app/apnews/topics/apf-topnews",
+  "NPR": "https://feeds.npr.org/1001/rss.xml",
+  "PBS News": "https://www.pbs.org/newshour/feeds/rss/headlines",
+  "CNN": "http://rss.cnn.com/rss/cnn_topstories.rss",
+  "NBC News": "https://feeds.nbcnews.com/nbcnews/public/news",
+  "CBS News": "https://www.cbsnews.com/latest/rss/main",
+  "ABC News": "https://abcnews.go.com/abcnews/topstories",
+  "USA Today": "http://rssfeeds.usatoday.com/usatoday-NewsTopStories",
+  "The Atlantic": "https://www.theatlantic.com/feed/all/",
+  "Newsweek": "https://www.newsweek.com/rss",
+  "The Hill": "https://thehill.com/news/feed/",
+  "Politico": "https://www.politico.com/rss/politics08.xml",
+  "Bloomberg": "https://feeds.bloomberg.com/markets/news.rss",
+  "CNBC": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+  
+  "CBC News": "https://www.cbc.ca/cmlink/rss-topstories",
+  "The Globe and Mail": "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/canada/",
+  "CTV News": "https://www.ctvnews.ca/rss/ctvnews-ca-top-stories-public-rss-1.822009",
+  
+  "BBC News": "http://feeds.bbci.co.uk/news/rss.xml",
+  "The Guardian": "https://www.theguardian.com/world/rss",
+  "Financial Times": "https://www.ft.com/?format=rss",
+  "The Times": "https://www.thetimes.co.uk/rss",
+  "The Telegraph": "https://www.telegraph.co.uk/rss.xml",
+  "The Independent": "https://www.independent.co.uk/rss",
+  "The Economist": "https://www.economist.com/rss",
+  "Sky News": "https://feeds.skynews.com/feeds/rss/home.xml",
+  "The Irish Times": "https://www.irishtimes.com/cmlink/news-1.1319192",
+  
+  "DW (Deutsche Welle)": "https://rss.dw.com/rdf/rss-en-all",
+  "France 24": "https://www.france24.com/en/rss",
+  "Le Monde": "https://www.lemonde.fr/en/rss/une.xml",
+  
+  "The Hindu": "https://www.thehindu.com/news/feeder/default.rss",
+  "Times of India": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
+  "South China Morning Post": "https://www.scmp.com/rss/91/feed",
+  "The Japan Times": "https://www.japantimes.co.jp/feed/",
+  "The Straits Times": "https://www.straitstimes.com/news/singapore/rss.xml",
+  "Bangkok Post": "https://www.bangkokpost.com/rss/data/news.xml",
+  
+  "Mail & Guardian": "https://mg.co.za/feed/",
+  "News24": "https://feeds.news24.com/articles/news24/topstories/rss",
+  "Daily Nation": "https://www.nation.co.ke/kenya/rss",
+  
+  "ABC News (Australia)": "https://www.abc.net.au/news/feed/51120/rss.xml",
+  "The Sydney Morning Herald": "https://www.smh.com.au/rss/feed.xml",
+  "RNZ": "https://www.rnz.co.nz/rss/national.xml",
+  
+  "Al Jazeera English": "https://www.aljazeera.com/xml/rss/all.xml",
+  
+  "Wired": "https://www.wired.com/feed/rss",
+  "The Verge": "https://www.theverge.com/rss/index.xml",
+  "TechCrunch": "https://techcrunch.com/feed/",
+  "Ars Technica": "https://arstechnica.com/feed/",
+  "MIT Technology Review": "https://www.technologyreview.com/feed/",
+  
+  "New Scientist": "https://www.newscientist.com/subject/technology/feed/",
+  "Scientific American": "http://rss.sciam.com/ScientificAmerican-Global",
+  "Science News": "https://www.sciencenews.org/feed",
+  "Nature News": "http://feeds.nature.com/nature/rss/current",
+  "National Geographic": "https://www.nationalgeographic.com/pages/topic/latest-stories/_jcr_content.feed",
+  
+  "Canary Media": "https://www.canarymedia.com/feed",
+  "Inside Climate News": "https://insideclimatenews.org/feed/",
+  "Grist": "https://grist.org/feed/",
+  "Carbon Brief": "https://www.carbonbrief.org/feed/"
+}
