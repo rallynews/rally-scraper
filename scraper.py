@@ -19,7 +19,21 @@ if not OPENROUTER_API_KEY:
     raise ValueError("OPENROUTER_API_KEY not set")
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "google/gemma-4-26b-a4b-it:free"  # Free tier
+
+# Try free models first, then fallback to paid
+AVAILABLE_MODELS = [
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "poolside/laguna-m.1:free",
+    "openai/gpt-oss-120b:free",
+    "minimax/minimax-m2.5:free",
+    "inclusionai/ring-2.6-1t:free",
+    "openai/gpt-oss-20b:free",
+    "google/gemini-2.5-flash-lite-preview-09-2025"  # Paid fallback (last resort)
+]
+
+# Track which model we're currently using
+current_model_index = 0
+OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
 
 print("📂 Loading configuration files...")
 
@@ -97,49 +111,70 @@ def detect_category(title, summary):
     return 'arts'
 
 def call_ai(prompt):
-    """Call OpenRouter API with better error handling"""
-    try:
-        r = requests.post(
-            OPENROUTER_API_URL,
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/rally-news",  # OpenRouter recommended
-                "X-Title": "Rally News Scraper"  # OpenRouter recommended
-            },
-            json={
-                "model": OPENROUTER_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 150,
-                "temperature": 0.7
-            },
-            timeout=15
-        )
-        
-        # Log status
-        print(f"       API Status: {r.status_code}")
-        
-        if r.status_code != 200:
-            print(f"       Error: {r.text[:300]}")
-            return None
+    """Call OpenRouter API with automatic model fallback"""
+    global current_model_index, OPENROUTER_MODEL
+    
+    # Try current model first, then fallback through the list
+    models_to_try = len(AVAILABLE_MODELS)
+    
+    for attempt in range(models_to_try):
+        try:
+            r = requests.post(
+                OPENROUTER_API_URL,
+                headers={
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/rally-news",
+                    "X-Title": "Rally News Scraper"
+                },
+                json={
+                    "model": OPENROUTER_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "max_tokens": 150,
+                    "temperature": 0.7
+                },
+                timeout=15
+            )
             
-        data = r.json()
-        
-        # OpenRouter returns: {choices: [{message: {content: "..."}}]}
-        if 'choices' in data and len(data['choices']) > 0:
-            result = data['choices'][0]['message']['content'].strip()
-            print(f"       Got: {result[:50]}")
-            return result
-        
-        print(f"       Unexpected response format")
-        return None
-        
-    except requests.Timeout:
-        print(f"       Timeout after 15s")
-        return None
-    except Exception as e:
-        print(f"       Exception: {str(e)[:150]}")
-        return None
+            if r.status_code == 200:
+                data = r.json()
+                if 'choices' in data and len(data['choices']) > 0:
+                    result = data['choices'][0]['message']['content'].strip()
+                    print(f"       ✓ [{OPENROUTER_MODEL.split('/')[1][:20]}] {result[:40]}")
+                    return result
+            
+            # Handle rate limits or errors
+            elif r.status_code == 429 or r.status_code == 503:
+                print(f"       ⚠️  {OPENROUTER_MODEL.split('/')[1][:30]} rate-limited, switching...")
+                current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
+                OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
+                time.sleep(1)
+                continue
+            
+            else:
+                print(f"       Error {r.status_code}, trying next model...")
+                current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
+                OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
+                time.sleep(1)
+                continue
+                
+        except requests.Timeout:
+            print(f"       ⏱️  Timeout, switching models...")
+            current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
+            OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
+            time.sleep(1)
+            continue
+            
+        except Exception as e:
+            print(f"       Exception: {str(e)[:100]}, trying next...")
+            current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
+            OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
+            time.sleep(1)
+            continue
+    
+    # If all models failed, return None (will trigger keyword fallback)
+    print(f"       ❌ All models failed, using keyword fallback")
+    return None
 
 def build_ai_prompt(title, summary, task="check"):
     """Build AI prompt using criteria.txt and examples.json"""
@@ -347,12 +382,12 @@ def main():
     print(f"Target: 5 new articles\n")
     
     # Warm up the AI model
-    print("🔥 Warming up AI model...")
+    print(f"🔥 Finding working AI model from {len(AVAILABLE_MODELS)} options...")
     warmup_result = call_ai("Test. Reply: OK")
     if warmup_result:
-        print(f"  ✓ Model ready\n")
+        print(f"  ✓ Using: {OPENROUTER_MODEL}\n")
     else:
-        print(f"  ⚠️  Model warming up, may be slow at first\n")
+        print(f"  ⚠️  All models busy, will use keyword fallback\n")
     
     # Select random sources from sources.json
     sources = random.sample(list(NEWS_SOURCES.items()), min(10, len(NEWS_SOURCES)))
