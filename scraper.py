@@ -18,7 +18,7 @@ HF_API_KEY = os.environ.get('HUGGINGFACE_API_KEY')
 if not HF_API_KEY:
     raise ValueError("HUGGINGFACE_API_KEY not set")
 
-HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct"
 
 print("📂 Loading configuration files...")
 
@@ -105,9 +105,12 @@ def call_ai(prompt):
             timeout=20  # Increased timeout to 20 seconds
         )
         
-        # Log response status for debugging
+        # Log full response for debugging
+        print(f"       API Status: {r.status_code}")
+        
         if r.status_code != 200:
-            print(f"       API Error {r.status_code}: {r.text[:150]}")
+            print(f"       Full error: {r.text[:500]}")
+            print(f"       URL: {HF_API_URL}")
             return None
             
         data = r.json()
@@ -117,7 +120,9 @@ def call_ai(prompt):
             print(f"       Model Error: {data['error'][:150]}")
             return None
         
-        return data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
+        result = data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
+        print(f"       Got response: {result[:50]}")
+        return result
     except requests.Timeout:
         print(f"       Request timeout after 20s - model may be loading")
         return None
