@@ -1,438 +1,381 @@
 #!/usr/bin/env python3
 """
-Rally News Scraper - Fully modular version
-Reads ALL configuration from: sources.json, criteria.txt, examples.json
+Rally News Scraper - Completely Rebuilt
+Only scrapes positive news from whitelisted sources within last 48 hours
 """
+
+import requests
 import json
-import random
+import feedparser
+from datetime import datetime, timedelta
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
 import time
 import os
-import re
-from datetime import datetime
-import requests
-import feedparser
-from bs4 import BeautifulSoup
 
-# Load OpenRouter API key
+# ═══════════════════════════════════════════════════════════════
+# CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
-if not OPENROUTER_API_KEY:
-    raise ValueError("OPENROUTER_API_KEY not set")
 
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# Strict whitelist - ONLY these sources allowed
+WHITELISTED_SOURCES = {
+    'BBC News', 'The Guardian', 'Reuters', 'NPR', 'Al Jazeera',
+    'The New York Times', 'The Washington Post', 'The Atlantic',
+    'Scientific American', 'Nature News', 'Science News', 'Wired',
+    'TechCrunch', 'Ars Technica', 'MIT Technology Review',
+    'The Wall Street Journal', 'Bloomberg', 'CNBC',
+    'Los Angeles Times', 'The Japan Times', 'The Straits Times',
+    'The Sydney Morning Herald', 'The Globe and Mail',
+    'Le Monde', 'DW (Deutsche Welle)', 'The Telegraph',
+    'Grist', 'Science', 'New Scientist', 'Newsweek'
+}
 
-# Try free models first, then fallback to paid
-AVAILABLE_MODELS = [
-    "nvidia/nemotron-3-super-120b-a12b:free",
-    "poolside/laguna-m.1:free",
-    "openai/gpt-oss-120b:free",
-    "minimax/minimax-m2.5:free",
-    "inclusionai/ring-2.6-1t:free",
-    "openai/gpt-oss-20b:free",
-    "google/gemini-2.5-flash-lite-preview-09-2025"  # Paid fallback (last resort)
+# RSS feeds for whitelisted sources
+RSS_FEEDS = {
+    'BBC News': 'http://feeds.bbci.co.uk/news/rss.xml',
+    'The Guardian': 'https://www.theguardian.com/world/rss',
+    'Reuters': 'https://www.reuters.com/rssFeed/worldNews',
+    'NPR': 'https://feeds.npr.org/1001/rss.xml',
+    'Al Jazeera': 'https://www.aljazeera.com/xml/rss/all.xml',
+    'Scientific American': 'http://rss.sciam.com/ScientificAmerican-Global',
+    'Nature News': 'http://feeds.nature.com/nature/rss/current',
+    'Science News': 'https://www.sciencenews.org/feed',
+    'Wired': 'https://www.wired.com/feed/rss',
+    'TechCrunch': 'https://techcrunch.com/feed/',
+    'Ars Technica': 'http://feeds.arstechnica.com/arstechnica/index',
+    'MIT Technology Review': 'https://www.technologyreview.com/feed/',
+    'Los Angeles Times': 'https://www.latimes.com/world-nation/rss2.0.xml',
+    'The Japan Times': 'https://www.japantimes.co.jp/feed/topstories/',
+    'The Straits Times': 'https://www.straitstimes.com/news/singapore/rss.xml',
+    'The Sydney Morning Herald': 'https://www.smh.com.au/rss/feed.xml',
+    'The Globe and Mail': 'https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/world/',
+    'Le Monde': 'https://www.lemonde.fr/en/rss/une.xml',
+    'DW (Deutsche Welle)': 'https://rss.dw.com/rdf/rss-en-all',
+    'The Telegraph': 'https://www.telegraph.co.uk/rss.xml',
+    'Grist': 'https://grist.org/feed/',
+    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/',
+    'Newsweek': 'https://www.newsweek.com/rss'
+}
+
+CATEGORIES = {
+    'climate': ['climate', 'environment', 'renewable', 'sustainability', 'conservation', 'green energy'],
+    'transportation': ['transport', 'transit', 'railway', 'subway', 'train', 'infrastructure', 'mobility'],
+    'ai': ['AI', 'artificial intelligence', 'technology', 'science', 'research', 'innovation', 'space'],
+    'business': ['business', 'economy', 'finance', 'startup', 'entrepreneurship'],
+    'politics': ['politics', 'policy', 'legislation', 'government', 'democracy', 'election'],
+    'entertainment': ['entertainment', 'film', 'movie', 'television', 'music', 'celebrity'],
+    'world': ['international', 'global', 'world', 'foreign', 'diplomatic'],
+    'religion': ['religion', 'faith', 'spiritual', 'church', 'temple', 'mosque'],
+    'arts': ['art', 'culture', 'literature', 'book', 'museum', 'theater', 'dance']
+}
+
+# Multi-model fallback (free models first, paid as fallback)
+AI_MODELS = [
+    'nvidia/llama-3.1-nemotron-70b-instruct',
+    'poolside/laguna-70b-chat',
+    'openai/gpt-4o-mini-2024-07-18',
+    'minimax/minimax-01',
+    'inclusionai/ring-flash-preview',
+    'openai/o1-mini-2024-09-12',
+    'google/gemini-2.0-flash-exp:free'  # Paid fallback
 ]
 
-# Track which model we're currently using
-current_model_index = 0
-OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
+# ═══════════════════════════════════════════════════════════════
+# HELPER FUNCTIONS
+# ═══════════════════════════════════════════════════════════════
 
-print("📂 Loading configuration files...")
-
-# Load news sources
-with open('sources.json', 'r') as f:
-    NEWS_SOURCES = json.load(f)
-    print(f"  ✓ Loaded {len(NEWS_SOURCES)} news sources")
-
-# Load examples
-with open('examples.json', 'r') as f:
-    EXAMPLES = json.load(f)
-    print(f"  ✓ Loaded {len(EXAMPLES)} training examples")
-
-# Parse criteria.txt for keywords and categories
-with open('criteria.txt', 'r') as f:
-    criteria_text = f.read()
-    print(f"  ✓ Loaded criteria ({len(criteria_text)} chars)")
-
-# Extract sections from criteria.txt
-def parse_section(text, section_name):
-    """Extract comma-separated values from a [SECTION] in criteria.txt"""
-    pattern = rf'\[{section_name}\](.*?)(?=\[|$)'
-    match = re.search(pattern, text, re.DOTALL)
-    if match:
-        content = match.group(1).strip()
-        # Split by comma and clean
-        keywords = [kw.strip() for kw in content.split(',')]
-        keywords = [kw for kw in keywords if kw and not kw.startswith('#')]
-        return keywords
-    return []
-
-# Extract keywords from criteria.txt
-NEGATIVE_KW = parse_section(criteria_text, 'NEGATIVE_KEYWORDS')
-POSITIVE_KW = parse_section(criteria_text, 'POSITIVE_KEYWORDS')
-
-print(f"  ✓ Parsed {len(NEGATIVE_KW)} negative keywords")
-print(f"  ✓ Parsed {len(POSITIVE_KW)} positive keywords")
-
-# Extract category keywords
-CATEGORY_KEYWORDS = {}
-for category in ['climate', 'transportation', 'ai', 'business', 'politics', 'entertainment', 'world', 'religion']:
-    keywords = parse_section(criteria_text, f'CATEGORY:{category}')
-    if keywords:
-        CATEGORY_KEYWORDS[category] = keywords
-        print(f"  ✓ Parsed {len(keywords)} keywords for '{category}'")
-
-# Extract AI criteria (everything after the AI FILTERING CRITERIA header)
-ai_criteria_match = re.search(r'# AI FILTERING CRITERIA\n# ={40}\n\n(.+)', criteria_text, re.DOTALL)
-CRITERIA = ai_criteria_match.group(1).strip() if ai_criteria_match else criteria_text
-
-print()
-
-def quick_filter(title, summary):
-    """Fast keyword pre-filter before AI"""
-    title_lower = title.lower()
-    full_text = (title + ' ' + summary).lower()
-    
-    # Check negative keywords ONLY in title
-    if any(neg in title_lower for neg in NEGATIVE_KW):
+def is_recent(article_date):
+    """Check if article is within last 48 hours"""
+    if not article_date:
         return False
     
-    # Check positive keywords in title OR summary
-    return any(pos in full_text for pos in POSITIVE_KW)
+    try:
+        if isinstance(article_date, str):
+            # Try parsing various date formats
+            for fmt in ['%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%S%z', '%Y-%m-%d']:
+                try:
+                    pub_date = datetime.strptime(article_date, fmt)
+                    break
+                except:
+                    continue
+            else:
+                return False
+        else:
+            pub_date = datetime(*article_date[:6])
+        
+        # Make timezone-aware if naive
+        if pub_date.tzinfo is None:
+            pub_date = pub_date.replace(tzinfo=datetime.now().astimezone().tzinfo)
+        
+        cutoff = datetime.now(pub_date.tzinfo) - timedelta(hours=48)
+        return pub_date > cutoff
+    except:
+        return False
 
-def detect_category(title, summary):
-    """Detect article category using keywords from criteria.txt"""
-    text = (title + ' ' + summary).lower()
+def call_ai(prompt, timeout=15):
+    """Call OpenRouter API with multi-model fallback"""
+    if not OPENROUTER_API_KEY:
+        print("ERROR: OPENROUTER_API_KEY not set")
+        return None
     
-    # Check each category
-    for category, keywords in CATEGORY_KEYWORDS.items():
-        if any(kw in text for kw in keywords):
-            return category
-    
-    # Default to Arts & Culture
-    return 'arts'
-
-def call_ai(prompt):
-    """Call OpenRouter API with automatic model fallback"""
-    global current_model_index, OPENROUTER_MODEL
-    
-    # Try current model first, then fallback through the list
-    models_to_try = len(AVAILABLE_MODELS)
-    
-    for attempt in range(models_to_try):
+    for model in AI_MODELS:
         try:
-            r = requests.post(
-                OPENROUTER_API_URL,
+            response = requests.post(
+                'https://openrouter.ai/api/v1/chat/completions',
                 headers={
-                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/rally-news",
-                    "X-Title": "Rally News Scraper"
+                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+                    'Content-Type': 'application/json'
                 },
                 json={
-                    "model": OPENROUTER_MODEL,
-                    "messages": [{"role": "user", "content": prompt}],
-                    "max_tokens": 150,
-                    "temperature": 0.7
+                    'model': model,
+                    'messages': [{'role': 'user', 'content': prompt}],
+                    'max_tokens': 100
                 },
-                timeout=15
+                timeout=timeout
             )
             
-            if r.status_code == 200:
-                data = r.json()
-                if 'choices' in data and len(data['choices']) > 0:
-                    result = data['choices'][0]['message']['content'].strip()
-                    print(f"       ✓ [{OPENROUTER_MODEL.split('/')[1][:20]}] {result[:40]}")
-                    return result
-            
-            # Handle rate limits or errors
-            elif r.status_code == 429 or r.status_code == 503:
-                print(f"       ⚠️  {OPENROUTER_MODEL.split('/')[1][:30]} rate-limited, switching...")
-                current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
-                OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
-                time.sleep(1)
-                continue
-            
+            if response.status_code == 200:
+                result = response.json()['choices'][0]['message']['content'].strip()
+                print(f"✓ Model {model} succeeded")
+                return result
             else:
-                print(f"       Error {r.status_code}, trying next model...")
-                current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
-                OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
-                time.sleep(1)
+                print(f"✗ Model {model} failed: {response.status_code}")
                 continue
                 
-        except requests.Timeout:
-            print(f"       ⏱️  Timeout, switching models...")
-            current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
-            OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
-            time.sleep(1)
-            continue
-            
         except Exception as e:
-            print(f"       Exception: {str(e)[:100]}, trying next...")
-            current_model_index = (current_model_index + 1) % len(AVAILABLE_MODELS)
-            OPENROUTER_MODEL = AVAILABLE_MODELS[current_model_index]
-            time.sleep(1)
+            print(f"✗ Model {model} error: {str(e)}")
             continue
     
-    # If all models failed, return None (will trigger keyword fallback)
-    print(f"       ❌ All models failed, using keyword fallback")
+    print("ERROR: All AI models failed")
     return None
 
-def build_ai_prompt(title, summary, task="check"):
-    """Build AI prompt using criteria.txt and examples.json"""
-    
-    if task == "check":
-        # Show clear ACCEPT and REJECT examples from examples.json
-        accept_examples = "\n".join([f"✓ \"{ex['title']}\" - {ex['why_positive']}" for ex in EXAMPLES[:5]])
-        
-        reject_examples = """✗ "Hurricane devastates Florida coast" - Pure disaster, no solution
-✗ "Stock market plunges on recession fears" - Crisis with no progress
-✗ "Teacher shortage worsens in public schools" - Problem getting worse
-✗ "Tensions rise between nations over border dispute" - Conflict escalating
-✗ "War casualties mount as fighting intensifies" - Violence increasing"""
-        
-        prompt = f"""You are a news filter. ONLY accept articles showing IMPROVEMENT or PROGRESS.
+def is_positive_news(title, summary):
+    """Use AI to determine if article is genuinely positive news"""
+    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)?
 
-ACCEPT if showing:
-- Solutions implemented
-- Deals/agreements reached  
-- Reforms announced
-- Breakthroughs achieved
-- Aid/protection provided
-- Infrastructure opening
-- Positive policy changes
-
-REJECT if showing:
-- Pure disasters/crises
-- Problems worsening
-- Conflicts escalating
-- Warnings/fears without action
-- Casualties/deaths
-- Economic decline
-
-ACCEPT Examples:
-{accept_examples}
-
-REJECT Examples:
-{reject_examples}
-
-Article to evaluate:
 Title: {title}
-Summary: {summary[:200]}
+Summary: {summary}
 
-Answer ONLY "ACCEPT" or "REJECT":"""
-        
-        return prompt
+Rules:
+- YES only if it's genuinely positive/uplifting
+- NO if it's neutral, negative, explanatory, or just informational
+- NO if it's about problems, conflicts, crises, or disasters
+- NO if it's an explainer or educational content
+- NO if it's about controversy or debate
+
+Answer ONLY: YES or NO"""
     
-    elif task == "rallying_cry":
-        prompt = f"""The TITLE states WHAT happened. Write WHY it matters AND WHY it's positive in under 12 words.
-
-TITLE: "Writers Guild reaches deal, ending strike"
-RALLYING CRY: "Workers secured better conditions through collective action"
-
-TITLE: "L.A. subway under Wilshire Boulevard opens"
-RALLYING CRY: "Public transit expansion improves accessibility and reduces emissions"
-
-TITLE: "Scientists discover link between peppers and bacteria"
-RALLYING CRY: "New weapon against antibiotic-resistant infections discovered"
-
-TITLE: {title}
-RALLYING CRY:"""
-        return prompt
-
-def ai_check_positive(title, summary):
-    """AI check using criteria.txt and examples.json"""
-    prompt = build_ai_prompt(title, summary, task="check")
     result = call_ai(prompt)
-    
-    # Fallback: if AI times out, trust keywords
-    if result is None:
-        print(f"       ⏱️  AI timeout, trusting keywords")
-        return True
-    
-    # Look for ACCEPT in response
-    return "ACCEPT" in result.upper()[:30]
+    return result and 'YES' in result.upper()
 
-def generate_rallying_cry(title, summary):
-    """Generate rallying cry explaining why it's positive"""
-    prompt = build_ai_prompt(title, summary, task="rallying_cry")
-    result = call_ai(prompt)
+def categorize_article(title, summary):
+    """Determine article category"""
+    text = f"{title} {summary}".lower()
     
-    if result:
-        # Clean up the response aggressively
-        cry = result.strip()
-        
-        # Remove common prefixes (case-insensitive)
-        prefixes = ['RALLYING CRY:', 'RALLYING CRY', 'Impact:', 'Why it matters:', 'The impact:', 'This shows', 'WHY IT MATTERS:', 'The']
-        for prefix in prefixes:
-            if cry.upper().startswith(prefix.upper()):
-                cry = cry[len(prefix):].strip()
-                cry = cry.lstrip(':').strip()  # Remove trailing colons
-        
-        # Remove quotes
-        cry = cry.strip('"\'')
-        
-        # Take ONLY the first sentence/line (before any newline, period, or common separators)
-        cry = cry.split('\n')[0]  # First line only
-        cry = cry.split('.')[0]   # Before first period
-        cry = cry.split('!')[0]   # Before first exclamation
-        cry = cry.split('?')[0]   # Before first question mark
-        cry = cry.split('TITLE:')[0]  # Remove any instructions that leaked through
-        cry = cry.strip()
-        
-        # If it's too similar to title or too short, use fallback
-        if len(cry) < 15 or cry.lower() == title.lower():
-            # Fallback: extract key insight from summary
-            cry = summary[:100].split('.')[0].strip()
-        
-        # Final cleanup and length limit
-        return cry[:150].strip()
+    scores = {}
+    for category, keywords in CATEGORIES.items():
+        score = sum(1 for keyword in keywords if keyword.lower() in text)
+        if score > 0:
+            scores[category] = score
     
-    # Ultimate fallback
-    return title[:100]
+    if scores:
+        return max(scores, key=scores.get)
+    return 'world'
 
-def get_content(html):
-    """Extract paragraph and image from HTML"""
+def extract_first_paragraph(url):
+    """Extract first paragraph from article"""
     try:
-        soup = BeautifulSoup(html, 'html.parser')
+        response = requests.get(url, timeout=10, headers={
+            'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
+        })
+        soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Get image
-        og = soup.find('meta', property='og:image')
-        img = og['content'] if og and og.get('content') else "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800"
+        # Try common paragraph selectors
+        for selector in ['article p', '.article-body p', '.story-body p', 'p']:
+            paragraphs = soup.select(selector)
+            for p in paragraphs:
+                text = p.get_text().strip()
+                if len(text) > 100:  # Substantial paragraph
+                    return text[:500]
         
-        # Get first paragraph
-        for tag in soup(['script', 'style', 'nav', 'header', 'footer']):
-            tag.decompose()
-        
-        for p in soup.find_all('p'):
-            text = p.get_text().strip()
-            if len(text) > 100 and not text.startswith(('By ', 'Published', 'Updated')):
-                return text[:500], img
-        
-        return "", img
+        return None
     except:
-        return "", "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800"
+        return None
 
-def fetch_article(url):
-    """Fetch full article content"""
+def get_article_image(entry, used_images):
+    """Extract unique image URL from article"""
+    # Try media content
+    if hasattr(entry, 'media_content') and entry.media_content:
+        img = entry.media_content[0].get('url')
+        if img and img not in used_images:
+            return img
+    
+    # Try media thumbnail
+    if hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
+        img = entry.media_thumbnail[0].get('url')
+        if img and img not in used_images:
+            return img
+    
+    # Try enclosures
+    if hasattr(entry, 'enclosures') and entry.enclosures:
+        for enc in entry.enclosures:
+            if 'image' in enc.get('type', ''):
+                img = enc.get('href')
+                if img and img not in used_images:
+                    return img
+    
+    # Fallback: fetch from page
     try:
-        r = requests.get(url, timeout=5, headers={'User-Agent': 'Mozilla/5.0'})
-        if r.status_code == 200:
-            return get_content(r.text)
+        response = requests.get(entry.link, timeout=10, headers={
+            'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
+        })
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Try og:image
+        og_image = soup.find('meta', property='og:image')
+        if og_image and og_image.get('content'):
+            img = og_image['content']
+            if img not in used_images:
+                return img
+        
+        # Try first img tag
+        img_tag = soup.find('img', src=True)
+        if img_tag:
+            img = urljoin(entry.link, img_tag['src'])
+            if img not in used_images:
+                return img
     except:
         pass
-    return "", "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800"
+    
+    return None
 
-def scrape_source(source_name, feed_url, target_remaining):
-    """Scrape one news source"""
-    articles = []
-    print(f"\n📰 Scraping {source_name}...")
-    
-    try:
-        feed = feedparser.parse(feed_url)
-        
-        for entry in feed.entries[:20]:
-            if len(articles) >= min(2, target_remaining):
-                break
-            
-            title = entry.get('title', '').strip()
-            summary = entry.get('summary', entry.get('description', '')).strip()
-            link = entry.get('link', '')
-            
-            if not title or not link:
-                continue
-            
-            # Step 1: Quick keyword filter (using criteria.txt keywords)
-            if not quick_filter(title, summary):
-                continue
-            
-            print(f"  📋 {title[:70]}")
-            print(f"     Keywords look good, checking with AI...")
-            
-            # Step 2: AI check using criteria.txt and examples.json
-            if not ai_check_positive(title, summary):
-                print(f"     ❌ Doesn't show improvement")
-                continue
-            
-            print(f"     ✅ Shows progress! Getting details...")
-            
-            # Step 3: Fetch full article
-            para, img = fetch_article(link)
-            if not para:
-                para = summary[:500]
-            
-            # Step 4: Generate rallying cry
-            cry = generate_rallying_cry(title, para)
-            
-            # Step 5: Detect category (using criteria.txt keywords)
-            category = detect_category(title, summary)
-            
-            article = {
-                "title": title,
-                "source": source_name,
-                "url": link,
-                "first_paragraph": para,
-                "rallying_cry": cry,
-                "image_url": img,
-                "timestamp": datetime.utcnow().isoformat() + "Z",
-                "category": category
-            }
-            
-            articles.append(article)
-            print(f"     💚 [{category}] {cry}")
-            time.sleep(2)
-        
-    except Exception as e:
-        print(f"  ⚠️  Error: {e}")
-    
-    return articles
+# ═══════════════════════════════════════════════════════════════
+# MAIN SCRAPER
+# ═══════════════════════════════════════════════════════════════
 
-def main():
-    print("🌱 Rally News Scraper")
-    print(f"Target: 5 new articles\n")
+def scrape_news():
+    """Main scraping function"""
+    print("═" * 60)
+    print("RALLY NEWS SCRAPER - Starting")
+    print("═" * 60)
     
-    # Warm up the AI model
-    print(f"🔥 Finding working AI model from {len(AVAILABLE_MODELS)} options...")
-    warmup_result = call_ai("Test. Reply: OK")
-    if warmup_result:
-        print(f"  ✓ Using: {OPENROUTER_MODEL}\n")
-    else:
-        print(f"  ⚠️  All models busy, will use keyword fallback\n")
+    # Load existing articles
+    existing_articles = []
+    used_images = set()
     
-    # Select random sources from sources.json
-    sources = random.sample(list(NEWS_SOURCES.items()), min(10, len(NEWS_SOURCES)))
-    print(f"Selected sources: {[n for n, _ in sources]}\n")
-    
-    all_articles = []
-    
-    for source_name, feed_url in sources:
-        if len(all_articles) >= 5:
-            break
-        
-        articles = scrape_source(source_name, feed_url, 5 - len(all_articles))
-        all_articles.extend(articles)
-        time.sleep(2)
-    
-    # Load existing news.json (includes hardcoded examples)
     try:
         with open('news.json', 'r') as f:
-            existing = json.load(f)
-    except:
-        existing = []
+            existing_articles = json.load(f)
+            # Remove rallying_cry field from existing articles
+            for article in existing_articles:
+                article.pop('rallying_cry', None)
+            used_images = {a.get('image_url') for a in existing_articles if a.get('image_url')}
+            print(f"Loaded {len(existing_articles)} existing articles")
+    except FileNotFoundError:
+        print("No existing articles found")
     
-    # Merge new articles with existing (preserve examples!)
-    seen_urls = {article['url'] for article in existing}
-    new_articles = [a for a in all_articles if a['url'] not in seen_urls]
+    new_articles = []
     
-    # Prepend new articles (newest first)
-    combined = new_articles + existing
-    combined = combined[:200]  # Keep 200 most recent
+    # Scrape each feed
+    for source_name, feed_url in RSS_FEEDS.items():
+        if source_name not in WHITELISTED_SOURCES:
+            continue
+        
+        print(f"\nScraping: {source_name}")
+        
+        try:
+            feed = feedparser.parse(feed_url)
+            
+            for entry in feed.entries[:10]:  # Check 10 most recent
+                # Check if recent (48 hours)
+                pub_date = entry.get('published_parsed') or entry.get('updated_parsed')
+                if not is_recent(pub_date):
+                    continue
+                
+                title = entry.get('title', '').strip()
+                summary = entry.get('summary', entry.get('description', '')).strip()
+                url = entry.get('link', '').strip()
+                
+                if not all([title, url]):
+                    continue
+                
+                # Skip if already exists
+                if any(a['url'] == url for a in existing_articles):
+                    continue
+                
+                # Check if positive news (AI filter)
+                print(f"  Checking: {title[:60]}...")
+                if not is_positive_news(title, summary):
+                    print(f"    ✗ Not positive news")
+                    continue
+                
+                print(f"    ✓ Positive news!")
+                
+                # Get unique image
+                image_url = get_article_image(entry, used_images)
+                if not image_url:
+                    print(f"    ✗ No unique image found")
+                    continue
+                
+                used_images.add(image_url)
+                
+                # Extract first paragraph
+                first_paragraph = extract_first_paragraph(url)
+                if not first_paragraph:
+                    first_paragraph = summary[:500]
+                
+                # Categorize
+                category = categorize_article(title, summary)
+                
+                # Create article object (NO rallying_cry field)
+                article = {
+                    'title': title,
+                    'source': source_name,
+                    'url': url,
+                    'first_paragraph': first_paragraph,
+                    'summary': summary[:300] if summary else first_paragraph[:300],
+                    'image_url': image_url,
+                    'timestamp': datetime.now().isoformat() + 'Z',
+                    'category': category
+                }
+                
+                new_articles.append(article)
+                print(f"    ✓ Added to queue")
+                
+                # Rate limiting
+                time.sleep(2)
+        
+        except Exception as e:
+            print(f"  ✗ Error scraping {source_name}: {str(e)}")
+            continue
+    
+    # Merge with existing articles
+    all_articles = new_articles + existing_articles
+    
+    # Remove duplicates by URL
+    seen_urls = set()
+    unique_articles = []
+    for article in all_articles:
+        if article['url'] not in seen_urls:
+            seen_urls.add(article['url'])
+            unique_articles.append(article)
+    
+    # Sort by timestamp (newest first)
+    unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+    
+    # Keep only last 100 articles
+    final_articles = unique_articles[:100]
     
     # Save
     with open('news.json', 'w') as f:
-        json.dump(combined, f, indent=2)
+        json.dump(final_articles, f, indent=2)
     
-    print(f"\n✅ Scraping complete!")
-    print(f"📊 New articles: {len(new_articles)}")
-    print(f"📚 Total in database: {len(combined)}")
+    print("\n" + "═" * 60)
+    print(f"COMPLETE: {len(new_articles)} new articles added")
+    print(f"Total articles: {len(final_articles)}")
+    print("═" * 60)
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    scrape_news()
