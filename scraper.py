@@ -13,12 +13,13 @@ import requests
 import feedparser
 from bs4 import BeautifulSoup
 
-# Load Hugging Face API key
-HF_API_KEY = os.environ.get('HUGGINGFACE_API_KEY')
-if not HF_API_KEY:
-    raise ValueError("HUGGINGFACE_API_KEY not set")
+# Load OpenRouter API key
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+if not OPENROUTER_API_KEY:
+    raise ValueError("OPENROUTER_API_KEY not set")
 
-HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct"
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+OPENROUTER_MODEL = "mistralai/mistral-7b-instruct"  # Fast and cheap
 
 print("📂 Loading configuration files...")
 
@@ -96,35 +97,43 @@ def detect_category(title, summary):
     return 'arts'
 
 def call_ai(prompt):
-    """Call AI with better error handling"""
+    """Call OpenRouter API with better error handling"""
     try:
         r = requests.post(
-            HF_API_URL,
-            headers={"Authorization": f"Bearer {HF_API_KEY}"},
-            json={"inputs": prompt, "parameters": {"max_new_tokens": 150, "temperature": 0.7}},
-            timeout=20  # Increased timeout to 20 seconds
+            OPENROUTER_API_URL,
+            headers={
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": OPENROUTER_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 150,
+                "temperature": 0.7
+            },
+            timeout=15
         )
         
-        # Log full response for debugging
+        # Log status
         print(f"       API Status: {r.status_code}")
         
         if r.status_code != 200:
-            print(f"       Full error: {r.text[:500]}")
-            print(f"       URL: {HF_API_URL}")
+            print(f"       Error: {r.text[:300]}")
             return None
             
         data = r.json()
         
-        # Check for error in response
-        if isinstance(data, dict) and 'error' in data:
-            print(f"       Model Error: {data['error'][:150]}")
-            return None
+        # OpenRouter returns: {choices: [{message: {content: "..."}}]}
+        if 'choices' in data and len(data['choices']) > 0:
+            result = data['choices'][0]['message']['content'].strip()
+            print(f"       Got: {result[:50]}")
+            return result
         
-        result = data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
-        print(f"       Got response: {result[:50]}")
-        return result
+        print(f"       Unexpected response format")
+        return None
+        
     except requests.Timeout:
-        print(f"       Request timeout after 20s - model may be loading")
+        print(f"       Timeout after 15s")
         return None
     except Exception as e:
         print(f"       Exception: {str(e)[:150]}")
