@@ -18,7 +18,7 @@ HF_API_KEY = os.environ.get('HUGGINGFACE_API_KEY')
 if not HF_API_KEY:
     raise ValueError("HUGGINGFACE_API_KEY not set")
 
-HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
+HF_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
 
 print("📂 Loading configuration files...")
 
@@ -96,20 +96,34 @@ def detect_category(title, summary):
     return 'arts'
 
 def call_ai(prompt):
-    """Call AI with timeout"""
+    """Call AI with better error handling"""
     try:
         r = requests.post(
             HF_API_URL,
             headers={"Authorization": f"Bearer {HF_API_KEY}"},
             json={"inputs": prompt, "parameters": {"max_new_tokens": 150, "temperature": 0.7}},
-            timeout=8
+            timeout=20  # Increased timeout to 20 seconds
         )
-        if r.status_code == 200:
-            data = r.json()
-            return data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
-    except:
-        pass
-    return None
+        
+        # Log response status for debugging
+        if r.status_code != 200:
+            print(f"       API Error {r.status_code}: {r.text[:150]}")
+            return None
+            
+        data = r.json()
+        
+        # Check for error in response
+        if isinstance(data, dict) and 'error' in data:
+            print(f"       Model Error: {data['error'][:150]}")
+            return None
+        
+        return data[0]["generated_text"] if isinstance(data, list) else data.get("generated_text", "")
+    except requests.Timeout:
+        print(f"       Request timeout after 20s - model may be loading")
+        return None
+    except Exception as e:
+        print(f"       Exception: {str(e)[:150]}")
+        return None
 
 def build_ai_prompt(title, summary, task="check"):
     """Build AI prompt using criteria.txt and examples.json"""
