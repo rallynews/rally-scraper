@@ -18,7 +18,7 @@ HF_API_KEY = os.environ.get('HUGGINGFACE_API_KEY')
 if not HF_API_KEY:
     raise ValueError("HUGGINGFACE_API_KEY not set")
 
-HF_API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-3.2-1B-Instruct"
+HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
 
 print("📂 Loading configuration files...")
 
@@ -329,6 +329,14 @@ def scrape_source(source_name, feed_url, target_remaining):
 def main():
     print("🌱 Rally News Scraper")
     print(f"Target: 5 new articles\n")
+    
+    # Warm up the AI model
+    print("🔥 Warming up AI model...")
+    warmup_result = call_ai("Test. Reply: OK")
+    if warmup_result:
+        print(f"  ✓ Model ready\n")
+    else:
+        print(f"  ⚠️  Model warming up, may be slow at first\n")
     
     # Select random sources from sources.json
     sources = random.sample(list(NEWS_SOURCES.items()), min(10, len(NEWS_SOURCES)))
