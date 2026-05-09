@@ -2,7 +2,7 @@ name: Scrape Positive News
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '3-59/10 * * * *'
   workflow_dispatch:
 
 jobs:
