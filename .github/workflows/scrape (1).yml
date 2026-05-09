@@ -1,0 +1,51 @@
+name: Run Rally News Scraper
+
+on:
+  schedule:
+    # Runs every 10 minutes
+    - cron: '*/10 * * * *'
+  
+  # Allows manual trigger from Actions tab
+  workflow_dispatch:
+  
+  # Runs on push to main (for testing)
+  push:
+    branches:
+      - main
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 pillow --break-system-packages
+      
+      - name: Run scraper
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python scraper.py
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+      
+      - name: Commit and push changes
+        run: |
+          git add news.json
+          git diff --staged --quiet || git commit -m "Update news.json - $(date '+%Y-%m-%d %H:%M UTC')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
