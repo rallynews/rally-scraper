@@ -1,5 +1,45 @@
 [
   {
+    "title": "David Attenborough celebrates his 100th birthday",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/david-attenborough-celebrates-his-100th-birthday/",
+    "first_paragraph": "David Attenborough once directed programming at the BBC and has hosted numerous award-winning nature documentaries, but he\u2019s always stayed down-to-earth, colleagues say",
+    "rallying_cry": "David Attenborough celebrates his 100th birthday",
+    "image_url": "https://static.scientificamerican.com/dam/asset/048a26c1-70bd-4f27-a9b9-e63290cca48f/David-Attenborough-moth.jpeg?m=1778202046.61&w=1200",
+    "timestamp": "2026-05-09T12:01:06.306956Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "\u2018We\u2019re coming after those other seats\u2019: Pauline Hanson jubilant as One Nation wins Farrer byelection",
+    "source": "The Guardian",
+    "url": "https://www.theguardian.com/australia-news/2026/may/09/farrer-byelection-results-one-nation-michelle-milthorpe-coalition",
+    "first_paragraph": "David Farley wins One Nation\u2019s first lower house seat after Coalition vote collapses and Angus Taylor says Liberals will take \u2018hard lessons\u2019 from result",
+    "rallying_cry": "\u2018We\u2019re coming after those other seats\u2019: Pauline Hanson jubilant as One Nation wins Farrer byelection",
+    "image_url": "https://i.guim.co.uk/img/media/5c89da1424e8b96b3103b8feb5aa10d44bd63a93/786_0_7857_6286/master/7857.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&precrop=40:21,offset-x50,offset-y0&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdGctZGVmYXVsdC5wbmc&enable=upscale&s=5070c0f6d8574f4dec4568bb2bb40ee9",
+    "timestamp": "2026-05-09T12:01:13.172285Z",
+    "category": "transportation"
+  },
+  {
+    "title": "Goodbye GDP? 31 ways to replace the world's favourite measure of economic health",
+    "source": "Nature News",
+    "url": "https://www.nature.com/articles/d41586-026-01511-x",
+    "first_paragraph": "Thank you for visiting nature.com. You are using a browser version with limited support for CSS. To obtain\n            the best experience, we recommend you use a more up to date browser (or turn off compatibility mode in\n            Internet Explorer). In the meantime, to ensure continued support, we are displaying the site without styles\n            and JavaScript.",
+    "rallying_cry": "Goodbye GDP? 31 ways to replace the world's favourite measure of economic health",
+    "image_url": "https://media.nature.com/lw1200/magazine-assets/d41586-026-01511-x/d41586-026-01511-x_52389490.jpg",
+    "timestamp": "2026-05-09T12:01:18.698512Z",
+    "category": "climate"
+  },
+  {
+    "title": "How a passion for baking fermented a fresh career move",
+    "source": "Nature News",
+    "url": "https://www.nature.com/articles/d41586-026-01390-2",
+    "first_paragraph": "Thank you for visiting nature.com. You are using a browser version with limited support for CSS. To obtain\n            the best experience, we recommend you use a more up to date browser (or turn off compatibility mode in\n            Internet Explorer). In the meantime, to ensure continued support, we are displaying the site without styles\n            and JavaScript.",
+    "rallying_cry": "How a passion for baking fermented a fresh career move",
+    "image_url": "https://media.nature.com/lw1200/magazine-assets/d41586-026-01390-2/d41586-026-01390-2_52283554.jpg",
+    "timestamp": "2026-05-09T12:01:21.733400Z",
+    "category": "ai"
+  },
+  {
     "title": "K-shaped economy is showing up at the gas pump: NY Fed",
     "source": "The Hill",
     "url": "https://thehill.com/business/5870589-k-shaped-economy-gasoline-consumption/",
