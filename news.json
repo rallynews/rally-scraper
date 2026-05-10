@@ -1,5 +1,55 @@
 [
   {
+    "title": "Putin says he thinks Ukraine war is 'coming to an end'",
+    "source": "DW (Deutsche Welle)",
+    "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
+    "first_paragraph": "The Russian president made the remarks as Moscow and Kyiv observe a three-day ceasefire in their four-year conflict.",
+    "summary": "The Russian president made the remarks as Moscow and Kyiv observe a three-day ceasefire in their four-year conflict.",
+    "image_url": "https://static.dw.com/image/77103662_6.jpg",
+    "timestamp": "2026-05-10T09:54:53.234501Z",
+    "category": "world"
+  },
+  {
+    "title": "The top 160 high schools for maths and literacy growth",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/national/nsw/the-top-160-high-schools-for-maths-and-literacy-growth-20260504-p5ztn2.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Every lesson at Ingleburn High runs on a two-minute clock. Teachers deliver a new instruction roughly every two minutes. They check for student understanding every two minutes. And then they provide feedback. How often? Every two minutes.",
+    "summary": "Naplan data reveals the best Sydney schools for progress between years 7 and 9.",
+    "image_url": "https://static.ffx.io/images/$zoom_0.1282703488372093%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_0%2C$y_73/t_crop_custom/q_86%2Cf_auto/541746b538dcbade0d3e70bd7e785362761d5417",
+    "timestamp": "2026-05-10T09:54:24.149648Z",
+    "category": "world"
+  },
+  {
+    "title": "Elderly woman rescued after being pinned under car near Jalan Besar",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/elderly-woman-rescued-by-scdf-after-being-pinned-under-car-near-jalan-besar",
+    "first_paragraph": "SINGAPORE \u2013 An 84-year-old pedestrian was extricated by the Singapore Civil Defence Force after being pinned underneath a car following an accident near Jalan Besar on May 9.",
+    "summary": "<p>The 84-year-old was freed her using hydraulic rescue equipment, said SCDF.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/e4cf8969f131a6a3b430fea380e914ce041b9a23978333545dd81d2745afc291",
+    "timestamp": "2026-05-10T09:54:05.432152Z",
+    "category": "transportation"
+  },
+  {
+    "title": "Muslim couples to receive support for parenthood journey as pilot programme is made permanent",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/muslim-couples-to-receive-support-for-parenthood-journey-as-pilot-programme-is-made-permanent",
+    "first_paragraph": "ARIF programme beneficiaries (from left) Nurashima Kamal, her husband Daud Basan, and their son Miqdad Daud speaking with Acting Minister-in-charge of Muslim Affairs Faishal Ibrahim\u00a0on May 10.",
+    "summary": "<p>The pilot programme has supported about 12,000 people.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/f8d74ebade4339b3c51708886916ad71e175f445853d48d9467c9ab287c9763f",
+    "timestamp": "2026-05-10T09:53:53.216787Z",
+    "category": "religion"
+  },
+  {
+    "title": "The Instax Wide 400 builds on instant photography\u2019s simplicity and stretches it, literally",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/09/the-instax-wide-400-builds-on-instant-photographys-simplicity-and-stretches-it-literally/",
+    "first_paragraph": "In an increasingly AI-driven and digital world, analog instant film and retro-style cameras remain popular, fueled by a combination of both nostalgia and charm. Instant cameras, in particular, stand out for their simplicity and an experience that has remained largely unchanged over time.",
+    "summary": "In an AI and digital world, analog instant film and retro-style cameras continue to remain popular, fueled by a mix of both nostalgia and novelty.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/instax-wide-400.jpg?resize=1200,900",
+    "timestamp": "2026-05-10T09:53:23.220681Z",
+    "category": "arts"
+  },
+  {
     "title": "U.S. Senate Committee set to consider long-awaited crypto bill next week",
     "source": "The Globe and Mail",
     "url": "https://www.theglobeandmail.com/business/international-business/us-business/article-us-senate-committee-set-to-consider-long-awaited-crypto-bill-next-week/",
@@ -906,50 +956,5 @@
     "image_url": "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800",
     "timestamp": "2026-05-07T12:00:00Z",
     "category": "ai"
-  },
-  {
-    "title": "Venom and Hot Peppers Offer a Key to Killing Resistant Bacteria",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/mexican-science-transforms-scorpion-venom-and-habanero-chile-into-antibiotics-against-resistant-bacteria/",
-    "first_paragraph": "Mexican researchers have discovered that compounds from scorpion venom and habanero peppers can effectively combat antibiotic-resistant bacteria, offering hope in the fight against superbugs.",
-    "image_url": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800",
-    "timestamp": "2026-05-07T11:00:00Z",
-    "category": "ai"
-  },
-  {
-    "title": "A Federal Worker Was Fired for Filming DOGE. Now She's Running for Congress",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/a-federal-worker-was-fired-for-filming-doge-now-shes-running-for-congress/",
-    "first_paragraph": "After being terminated for documenting government inefficiency, a former federal employee announced her congressional campaign, vowing to fight for transparency and accountability.",
-    "image_url": "https://images.unsplash.com/photo-1551522435-a13afa10f103?w=800",
-    "timestamp": "2026-05-07T10:00:00Z",
-    "category": "politics"
-  },
-  {
-    "title": "In the remote Amazon, locals are saving a giant fish\u2014and helping their villages",
-    "source": "Science",
-    "url": "https://www.science.org/content/article/remote-amazon-locals-are-saving-giant-fish-and-helping-their-villages",
-    "first_paragraph": "Indigenous communities in the Amazon have developed sustainable fishing practices that protect endangered giant fish while improving local food security and economic stability.",
-    "image_url": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
-    "timestamp": "2026-05-07T09:00:00Z",
-    "category": "climate"
-  },
-  {
-    "title": "Induction of broadly neutralizing HIV antibodies by a two-step mechanism informs vaccine design",
-    "source": "Science",
-    "url": "https://www.science.org/doi/10.1126/science.aec6396",
-    "first_paragraph": "Researchers have identified a two-step process for inducing broadly neutralizing antibodies against HIV, representing a major breakthrough in vaccine development.",
-    "image_url": "https://images.unsplash.com/photo-1532187643603-ba119ca4109e?w=800",
-    "timestamp": "2026-05-07T08:00:00Z",
-    "category": "ai"
-  },
-  {
-    "title": "AI Actors and Writers Not Eligible for Oscars",
-    "source": "Le Monde",
-    "url": "https://www.lemonde.fr/en/culture/article/2026/05/02/ai-actors-and-writers-not-eligble-for-oscars_6753048_30.html",
-    "first_paragraph": "The Academy of Motion Picture Arts and Sciences ruled that AI-generated performances and scripts will not be eligible for Oscar consideration, protecting human creativity in film.",
-    "image_url": "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800",
-    "timestamp": "2026-05-02T12:00:00Z",
-    "category": "arts"
   }
 ]
