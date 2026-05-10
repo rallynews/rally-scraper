@@ -59,17 +59,18 @@ RSS_FEEDS = {
     'Newsweek': 'https://www.newsweek.com/rss'
 }
 
-CATEGORIES = {
-    'climate': ['climate', 'environment', 'renewable', 'sustainability', 'conservation', 'green energy'],
-    'transportation': ['transport', 'transit', 'railway', 'subway', 'train', 'infrastructure', 'mobility'],
-    'ai': ['AI', 'artificial intelligence', 'technology', 'science', 'research', 'innovation', 'space'],
-    'business': ['business', 'economy', 'finance', 'startup', 'entrepreneurship'],
-    'politics': ['politics', 'policy', 'legislation', 'government', 'democracy', 'election'],
-    'entertainment': ['entertainment', 'film', 'movie', 'television', 'music', 'celebrity'],
-    'world': ['international', 'global', 'world', 'foreign', 'diplomatic'],
-    'religion': ['religion', 'faith', 'spiritual', 'church', 'temple', 'mosque'],
-    'arts': ['art', 'culture', 'literature', 'book', 'museum', 'theater', 'dance']
-}
+# Valid categories (AI will categorize into these)
+VALID_CATEGORIES = [
+    'climate',        # Environment, sustainability, renewable energy
+    'transportation', # Transit, infrastructure, mobility
+    'ai',            # Technology, science, research, innovation
+    'business',      # Economy, finance, companies, startups
+    'politics',      # Government, policy, legislation, elections
+    'entertainment', # Film, music, celebrity, sports, TV
+    'world',         # International news, diplomacy, global affairs
+    'religion',      # Faith, spirituality, religious leaders
+    'arts'           # Culture, literature, books, museums, theater
+]
 
 # Multi-model fallback (free models first, paid as fallback)
 AI_MODELS = [
@@ -171,17 +172,34 @@ Answer ONLY: YES or NO"""
     return result and 'YES' in result.upper()
 
 def categorize_article(title, summary):
-    """Determine article category"""
-    text = f"{title} {summary}".lower()
+    """Determine article category using AI"""
+    prompt = f"""Categorize this article into ONE category:
+
+Title: {title}
+Summary: {summary}
+
+Categories:
+- climate (environment, sustainability, renewable energy, conservation, emissions)
+- transportation (transit, infrastructure, mobility, trains, subways, roads)
+- ai (technology, science, research, innovation, space, computing)
+- business (economy, finance, companies, startups, trade, investments)
+- politics (government, policy, legislation, elections, democracy, parliament)
+- entertainment (film, music, celebrity, sports, games, TV, events)
+- world (international news, diplomacy, global affairs, conflicts, peace)
+- religion (faith, spirituality, churches, religious leaders)
+- arts (culture, literature, books, museums, theater, visual arts)
+
+Answer with ONLY the category name (one word)."""
     
-    scores = {}
-    for category, keywords in CATEGORIES.items():
-        score = sum(1 for keyword in keywords if keyword.lower() in text)
-        if score > 0:
-            scores[category] = score
+    result = call_ai(prompt, timeout=10)
     
-    if scores:
-        return max(scores, key=scores.get)
+    if result:
+        category = result.strip().lower()
+        # Validate it's a real category
+        if category in VALID_CATEGORIES:
+            return category
+    
+    # Fallback to world if AI fails or returns invalid category
     return 'world'
 
 def extract_first_paragraph(url):
@@ -328,6 +346,7 @@ def scrape_news():
                 
                 # Categorize
                 category = categorize_article(title, summary)
+                print(f"    ✓ Categorized as: {category}")
                 
                 # Create article object (NO rallying_cry field)
                 article = {
