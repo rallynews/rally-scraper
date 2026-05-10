@@ -1,5 +1,35 @@
 [
   {
+    "title": "Tiny 'metajets' could use light to steer sails for interstellar travel",
+    "source": "New Scientist",
+    "url": "https://www.newscientist.com/article/2525802-tiny-metajets-could-use-light-to-steer-sails-for-interstellar-travel/?utm_campaign=RSS%7CNSNS&utm_source=NSNS&utm_medium=RSS&utm_content=technology",
+    "first_paragraph": "Minuscule silicon wafers propelled by lasers could be used to steer light sails, helping them travel beyond the solar system",
+    "summary": "Minuscule silicon wafers propelled by lasers could be used to steer light sails, helping them travel beyond the solar system",
+    "image_url": "https://images.newscientist.com/wp-content/uploads/2026/05/08160316/SEI_296276168.jpg",
+    "timestamp": "2026-05-10T11:17:15.071811Z",
+    "category": "ai"
+  },
+  {
+    "title": "Listed companies post record profits around the world",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/economy/article/2026/05/10/listed-companies-post-record-profits-around-the-world_6753303_19.html",
+    "first_paragraph": "The number of publicly traded companies reporting  superprofits is multiplying, as are the sums returned to shareholders in the form of dividends or buybacks.",
+    "summary": "The number of publicly traded companies reporting  superprofits is multiplying, as are the sums returned to shareholders in the form of dividends or buybacks.",
+    "image_url": "https://img.lemde.fr/2026/05/08/916/0/5906/2953/644/322/60/0/2c23916_upload-1-7v486dgrjk2c-020-2274937613.jpg",
+    "timestamp": "2026-05-10T11:16:36.955939Z",
+    "category": "business"
+  },
+  {
+    "title": "Libya\u2019s Zawiya refinery resumes full operations",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/10/libyas-zawiya-refinery-resumes-full-operations?traffic_source=rss",
+    "first_paragraph": "Libya\u2019s largest functioning oil refinery has resumed full operations after fighting over the past two days forced a shutdown of the facility, according to a statement by the refinery.",
+    "summary": "Refinery closed for about two days after fighting near the facility 40km west of Tripoli.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2023/08/33R99XN-highres-1692263180.jpg?resize=1920%2C1440",
+    "timestamp": "2026-05-10T11:15:41.991985Z",
+    "category": "business"
+  },
+  {
     "title": "Putin says he thinks Ukraine war is 'coming to an end'",
     "source": "DW (Deutsche Welle)",
     "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
@@ -929,32 +959,5 @@
     "image_url": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800",
     "timestamp": "2026-05-07T16:00:00Z",
     "category": "world"
-  },
-  {
-    "title": "OnlyFans Stake Sale Values Adult-Content Powerhouse at $3.15 Billion",
-    "source": "Wall Street Journal",
-    "url": "https://www.wsj.com/business/deals/onlyfans-stake-sale-values-adult-content-powerhouse-at-3-15-billion-fd187a2d",
-    "first_paragraph": "The sale values OnlyFans at $3.15 billion, highlighting the platform's success in empowering independent creators to monetize their content directly.",
-    "image_url": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800",
-    "timestamp": "2026-05-07T15:00:00Z",
-    "category": "business"
-  },
-  {
-    "title": "The Boss Who Gave His Employees a $240 Million Gift",
-    "source": "Wall Street Journal",
-    "url": "https://www.wsj.com/business/fibrebond-eaton-bonus-walker-30844d62",
-    "first_paragraph": "When Terry Walker sold his manufacturing company, he distributed $240 million among his employees, setting a new standard for ethical business transitions.",
-    "image_url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800",
-    "timestamp": "2026-05-07T14:00:00Z",
-    "category": "business"
-  },
-  {
-    "title": "'Orbs,' 'Saucers,' and 'Flashes' on the Moon: Pentagon Drops New UFO Files",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/pentagon-drops-new-ufo-files/",
-    "first_paragraph": "The Pentagon released previously classified UFO reports, including lunar observations, sparking renewed public interest in space phenomena and government transparency.",
-    "image_url": "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800",
-    "timestamp": "2026-05-07T12:00:00Z",
-    "category": "ai"
   }
 ]
