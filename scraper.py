@@ -171,6 +171,43 @@ Answer ONLY: YES or NO"""
     result = call_ai(prompt)
     return result and 'YES' in result.upper()
 
+def is_duplicate_topic(new_title, new_summary, recent_articles):
+    """Check if this article is about the same topic as recent articles"""
+    # Compare with last 20 articles to detect duplicate topics
+    for article in recent_articles[:20]:
+        prompt = f"""Are these two articles about the SAME topic/event/story?
+
+Article 1:
+Title: {new_title}
+Summary: {new_summary}
+
+Article 2:
+Title: {article['title']}
+Summary: {article.get('summary', article.get('first_paragraph', ''))[:300]}
+
+Rules:
+- YES if they're about the same specific event, announcement, or story
+- YES if one is a follow-up to the other
+- NO if they're just in the same general category
+- NO if they're about different aspects of a broader topic
+
+Examples of SAME topic:
+- "Nvidia invests $40B in AI" vs "Nvidia embraces AI investor role" → YES (same investment)
+- "Hungary elects new PM" vs "Peter Magyar sworn in as PM" → YES (same event)
+
+Examples of DIFFERENT topics:
+- "NASA Mars rover" vs "SpaceX launches satellite" → NO (different space stories)
+- "NYC rent freeze" vs "LA housing policy" → NO (different cities)
+
+Answer ONLY: YES or NO"""
+        
+        result = call_ai(prompt, timeout=10)
+        if result and 'YES' in result.upper():
+            print(f"    ✗ Duplicate topic of: {article['title'][:60]}...")
+            return True
+    
+    return False
+
 def categorize_article(title, summary):
     """Determine article category using AI"""
     prompt = f"""Categorize this article into ONE category:
@@ -330,6 +367,13 @@ def scrape_news():
                     continue
                 
                 print(f"    ✓ Positive news!")
+                
+                # Check for duplicate topics (compare with recent articles)
+                combined_articles = new_articles + existing_articles
+                if is_duplicate_topic(title, summary, combined_articles):
+                    continue
+                
+                print(f"    ✓ Unique topic!")
                 
                 # Get unique image
                 image_url = get_article_image(entry, used_images)
