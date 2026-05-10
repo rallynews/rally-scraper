@@ -45,10 +45,9 @@ jobs:
       - name: Commit and push changes
         run: |
           git add news.json
-          git diff --staged --quiet || {
+          if ! git diff --staged --quiet; then
             git commit -m "Update news.json - $(date '+%Y-%m-%d %H:%M UTC')"
-            git pull --rebase origin main
-            git push
-          }
+            git push --force origin main
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
