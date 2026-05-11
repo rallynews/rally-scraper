@@ -433,22 +433,24 @@ def scrape_news():
             print(f"  ✗ Error scraping {source_name}: {str(e)}")
             continue
     
-    # Merge with existing articles
+    # Merge new articles with existing, preserving all existing articles
+    # New articles come first so they take priority in URL deduplication
     all_articles = new_articles + existing_articles
-    
-    # Remove duplicates by URL
+
+    # Remove duplicates by URL (existing articles are never removed, only deduped)
     seen_urls = set()
     unique_articles = []
     for article in all_articles:
         if article['url'] not in seen_urls:
             seen_urls.add(article['url'])
             unique_articles.append(article)
-    
+
     # Sort by timestamp (newest first)
     unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
-    
-    # Keep only last 100 articles
-    final_articles = unique_articles[:100]
+
+    # All existing articles are preserved; the 48-hour filter only applies to
+    # new RSS candidates above, so nothing already in news.json is ever dropped.
+    final_articles = unique_articles
     
     # Save
     with open('news.json', 'w') as f:
