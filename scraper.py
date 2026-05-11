@@ -154,7 +154,8 @@ def call_ai(prompt, timeout=15):
 
 def is_positive_news(title, summary):
     """Use AI to determine if article is genuinely positive news"""
-    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is uplifting in nature, actively displaying progress or development in one of the approved categories. It can be a celebration of an artist, businessperson, scientist, or politician. It can be developments towards peace and improvement of the world's safety and security. It can be new technical or scientific innovations, successful developments on climate change, reduction of inequality, violence, or pain. It can also center around compromise, consensus, the reduction of violence, danger, or cruelty. It can be an interesting and innovation approach to our world, and it can be a successful test or anything else giving a positive message. It cannot talk about war, poverty, inequality, tension, agression, crime, controversy, pain, brutality, death, or anything which points to the situation in the world worsening. Neutral stories (developments in sports, coupon codes, announcements of events or products that aren't otherwise positive), are also not positive. Positive news must show improvement in the state of it's source.
+    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing progress or development in one of the approved categories. It can be a celebration of an artist, businessperson, scientist, or politician. It can be developments towards peace and improvement of the world's safety and security. It can be new technical or scientific innovations, successful developments on climate change, reduction of inequality, violence, or pain. It can also center around compromise, consensus, the reduction of violence, danger, or cruelty. It can be an interesting and innovation approach to our world, and it can be a successful test or anything else giving a positive message. It cannot talk about war, poverty, inequality, tension, agression, crime, controversy, pain, brutality, death, or anything which points to the situation in the world worsening. Neutral stories (developments in sports, coupon codes, announcements of events or products that aren't otherwise positive), are also not positive.
+
 Examples of positive news stories:
 - A Single Infusion Could Suppress H.I.V. for Years, Study Suggests
 - A Writer With a Healthy Appetite, and a Love of New York City
@@ -174,13 +175,6 @@ Examples of negative news stories:
 - American Passengers Exposed to Hantavirus Begin Quarantine in U.S.
 - Emissions rise by 10% over last year, according to new data
 
-Examples of neutral news stories: 
-- F1 set for another engine tweak in 2027, and what's this about V8s?
-- Stephen A. Smith Reacts to Knicks ECF Run With Bold Prediction
-- Top ten coupon codes from CES 2026
-- What are the best headphones for your ears? Top headphones ranked.
-
-Alex Marshall
 Title: {title}
 Summary: {summary}
 
