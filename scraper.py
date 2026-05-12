@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Rally News Scraper - Completely Rebuilt
-Only scrapes positive news from whitelisted sources within last 48 hours
+Rally News Scraper - German Edition
+Only scrapes positive news from whitelisted German-language sources within last 48 hours
 """
 
 import requests
@@ -20,63 +20,51 @@ import os
 
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
-# Strict whitelist - ONLY these sources allowed
+# Strict whitelist - ONLY these German-language sources allowed
 WHITELISTED_SOURCES = {
-    'BBC News', 'The Guardian', 'Reuters', 'NPR', 'Al Jazeera',
-    'The New York Times', 'The Washington Post', 'The Atlantic',
-    'Scientific American', 'Nature News', 'Science News', 'Wired',
-    'TechCrunch', 'Ars Technica', 'MIT Technology Review',
-    'The Wall Street Journal', 'Bloomberg', 'CNBC',
-    'Los Angeles Times', 'The Japan Times', 'The Straits Times',
-    'The Sydney Morning Herald', 'The Globe and Mail',
-    'Le Monde', 'DW (Deutsche Welle)', 'The Telegraph',
-    'Grist', 'Science', 'New Scientist', 'Newsweek'
+    'Berliner Zeitung',
+    'Sueddeutsche Zeitung',
+    'Berliner Morgenpost',
+    'Die Zeit',
+    'Tagesschau',
+    'Spiegel',
+    'FAZ',
+    'Deutsche Welle',
+    'ZDF',
+    'ARD',
+    'Deutschlandfunk',
+    'Klimareporter',
+    'Sport.de',
 }
 
-# RSS feeds for whitelisted sources
+# RSS feeds for whitelisted German sources
 RSS_FEEDS = {
-    'BBC News': 'http://feeds.bbci.co.uk/news/rss.xml',
-    'The Guardian': 'https://www.theguardian.com/world/rss',
-    'Reuters': 'https://www.reuters.com/rssFeed/worldNews',
-    'NPR': 'https://feeds.npr.org/1001/rss.xml',
-    'Al Jazeera': 'https://www.aljazeera.com/xml/rss/all.xml',
-    'The New York Times': 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
-    'The Washington Post': 'https://feeds.washingtonpost.com/rss/world',
-    'The Atlantic': 'https://www.theatlantic.com/feed/all/',
-    'The Wall Street Journal': 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
-    'CNBC': 'https://www.cnbc.com/id/100003114/device/rss/rss.html',
-    'Scientific American': 'http://rss.sciam.com/ScientificAmerican-Global',
-    'Nature News': 'http://feeds.nature.com/nature/rss/current',
-    'Science News': 'https://www.sciencenews.org/feed',
-    'Science': 'https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science',
-    'Wired': 'https://www.wired.com/feed/rss',
-    'TechCrunch': 'https://techcrunch.com/feed/',
-    'Ars Technica': 'http://feeds.arstechnica.com/arstechnica/index',
-    'MIT Technology Review': 'https://www.technologyreview.com/feed/',
-    'Los Angeles Times': 'https://www.latimes.com/world-nation/rss2.0.xml',
-    'The Japan Times': 'https://www.japantimes.co.jp/feed/topstories/',
-    'The Straits Times': 'https://www.straitstimes.com/news/singapore/rss.xml',
-    'The Sydney Morning Herald': 'https://www.smh.com.au/rss/feed.xml',
-    'The Globe and Mail': 'https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/world/',
-    'Le Monde': 'https://www.lemonde.fr/en/rss/une.xml',
-    'DW (Deutsche Welle)': 'https://rss.dw.com/rdf/rss-en-all',
-    'The Telegraph': 'https://www.telegraph.co.uk/rss.xml',
-    'Grist': 'https://grist.org/feed/',
-    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/',
-    'Newsweek': 'https://www.newsweek.com/rss'
+    'Berliner Zeitung':    'https://www.berliner-zeitung.de/feed.xml',
+    'Sueddeutsche Zeitung': 'https://rss.sueddeutsche.de/rss/Topthemen',
+    'Berliner Morgenpost': 'https://www.morgenpost.de/rss.xml',
+    'Die Zeit':            'https://newsfeed.zeit.de/index',
+    'Tagesschau':          'https://www.tagesschau.de/xml/rss2',
+    'Spiegel':             'https://www.spiegel.de/schlagzeilen/tops/index.rss',
+    'FAZ':                 'https://www.faz.net/rss/aktuell/',
+    'Deutsche Welle':      'https://rss.dw.com/rdf/rss-de-all',
+    'ZDF':                 'https://www.zdf.de/rss/zdf/nachrichten.rss',
+    'ARD':                 'https://www.tagesschau.de/inland/index~rss2.xml',
+    'Deutschlandfunk':     'https://www.deutschlandfunk.de/die-nachrichten.353.de.rss',
+    'Klimareporter':       'https://klimareporter.de/feed',
+    'Sport.de':            'https://www.sport.de/rss/alle-sportmeldungen.rss',
 }
 
 # Valid categories (AI will categorize into these)
 VALID_CATEGORIES = [
-    'climate',        # Environment, sustainability, renewable energy
-    'transportation', # Transit, infrastructure, mobility
-    'ai',            # Technology, science, research, innovation
-    'business',      # Economy, finance, companies, startups
-    'politics',      # Government, policy, legislation, elections
-    'entertainment', # Film, music, celebrity, sports, TV
-    'world',         # International news, diplomacy, global affairs
-    'religion',      # Faith, spirituality, religious leaders
-    'arts'           # Culture, literature, books, museums, theater
+    'climate',        # Umwelt, Nachhaltigkeit, erneuerbare Energien
+    'transportation', # Verkehr, Infrastruktur, Mobilität
+    'ai',            # Technologie, Wissenschaft, Forschung, Innovation
+    'business',      # Wirtschaft, Finanzen, Unternehmen, Startups
+    'politics',      # Politik, Gesetze, Wahlen, Demokratie
+    'entertainment', # Film, Musik, Sport, Kultur, TV
+    'world',         # Internationale Nachrichten, Diplomatie
+    'religion',      # Glaube, Spiritualität, religiöse Themen
+    'arts'           # Kultur, Literatur, Museen, Theater
 ]
 
 # Multi-model fallback (free models first, paid as fallback)
@@ -237,7 +225,7 @@ def call_ai(prompt, timeout=15):
     if not OPENROUTER_API_KEY:
         print("ERROR: OPENROUTER_API_KEY not set")
         return None
-    
+
     for model in AI_MODELS:
         try:
             response = requests.post(
@@ -253,7 +241,7 @@ def call_ai(prompt, timeout=15):
                 },
                 timeout=timeout
             )
-            
+
             if response.status_code == 200:
                 result = response.json()['choices'][0]['message']['content'].strip()
                 print(f"✓ Model {model} succeeded")
@@ -261,36 +249,33 @@ def call_ai(prompt, timeout=15):
             else:
                 print(f"✗ Model {model} failed: {response.status_code}")
                 continue
-                
+
         except Exception as e:
             print(f"✗ Model {model} error: {str(e)}")
             continue
-    
+
     print("ERROR: All AI models failed")
     return None
 
 def is_positive_news(title, summary):
     """Use AI to determine if article is genuinely positive news"""
-    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing prog[...]
+    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing progress or improvement. The article may be in German or English.
 
-Examples of positive news stories:
+Examples of positive news stories (German/English):
+- Durchbruch bei Solarenergie: Neue Zellen erreichen Rekordwirkungsgrad
+- Neue U-Bahn-Linie in Hamburg eröffnet – kürzere Fahrzeiten für 50.000 Pendler
+- Friedensabkommen zwischen zwei Ländern unterzeichnet
 - A Single Infusion Could Suppress H.I.V. for Years, Study Suggests
-- A Writer With a Healthy Appetite, and a Love of New York City
-- Worksite testing AI to provide early high heat alerts to keep workers safe
 - Innovation abounds in device charging
 - Sharp drop in 'forever chemicals' in seabird eggs hailed as win for regulation
-- How Japan created the ultimate take-away food
 - Macron announces €23 billion of investment at Africa summit
-- How a Hollywood star's photos inspired The Waterboys' latest album
-- A year after his death, we look back at the legacy of David Bowe.
 
-Examples of negative news stories:
+Examples of negative news stories (German/English):
+- Anschlag in Berlin: Mehrere Verletzte
+- Hochwasser verwüstet Teile Süddeutschlands
 - Kennedy Is Driving a Vast Inquiry Into Vaccines, Despite His Public Silence
-- Inside the Israeli Voting Controversy That Engulfed Eurovision
-- Reflecting Pool Costs Balloon to $13.1 Million, Records Show
-- Man Charged With Assassination Attempt at Press Gala Pleads Not Guilty
-- American Passengers Exposed to Hantavirus Begin Quarantine in U.S.
 - Emissions rise by 10% over last year, according to new data
+- Man Charged With Assassination Attempt at Press Gala Pleads Not Guilty
 
 Title: {title}
 Summary: {summary}
@@ -303,7 +288,7 @@ Rules:
 - NO if it's about controversy or debate
 
 Answer ONLY: YES or NO"""
-    
+
     result = call_ai(prompt)
     return result and 'YES' in result.upper()
 
@@ -311,7 +296,7 @@ def is_duplicate_topic(new_title, new_summary, recent_articles):
     """Check if this article is about the same topic as recent articles"""
     # Compare with last 20 articles to detect duplicate topics
     for article in recent_articles[:20]:
-        prompt = f"""Are these two articles about the SAME topic/event/story?
+        prompt = f"""Are these two articles about the SAME topic/event/story? The articles may be in German or English.
 
 Article 1:
 Title: {new_title}
@@ -328,51 +313,49 @@ Rules:
 - NO if they're about different aspects of a broader topic
 
 Examples of SAME topic:
-- "Nvidia invests $40B in AI" vs "Nvidia embraces AI investor role" → YES (same investment)
-- "Hungary elects new PM" vs "Peter Magyar sworn in as PM" → YES (same event)
+- "Nvidia investiert 40 Mrd. in KI" vs "Nvidia setzt auf KI-Strategie" → YES (same investment)
+- "Hamburg wählt neuen Bürgermeister" vs "Peter Tschentscher wiedergewählt" → YES (same event)
 
 Examples of DIFFERENT topics:
-- "NASA Mars rover" vs "SpaceX launches satellite" → NO (different space stories)
-- "NYC rent freeze" vs "LA housing policy" → NO (different cities)
+- "NASA Mars-Rover" vs "SpaceX startet Satellit" → NO (different space stories)
+- "Berliner Mietstopp" vs "Wohnungspolitik in München" → NO (different cities)
 
 Answer ONLY: YES or NO"""
-        
+
         result = call_ai(prompt, timeout=10)
         if result and 'YES' in result.upper():
             print(f"    ✗ Duplicate topic of: {article['title'][:60]}...")
             return True
-    
+
     return False
 
 def categorize_article(title, summary):
     """Determine article category using AI"""
-    prompt = f"""Categorize this article into ONE category:
+    prompt = f"""Categorize this article into ONE category. The article may be in German or English.
 
 Title: {title}
 Summary: {summary}
 
 Categories:
-- climate (environment, sustainability, renewable energy, conservation, emissions)
-- transportation (transit, infrastructure, mobility, trains, subways, roads)
-- ai (technology, science, research, innovation, space, computing)
-- business (economy, finance, companies, startups, trade, investments)
-- politics (government, policy, legislation, elections, democracy, parliament)
-- entertainment (film, music, celebrity, sports, games, TV, events)
-- world (international news, diplomacy, global affairs, conflicts, peace)
-- religion (faith, spirituality, churches, religious leaders)
-- arts (culture, literature, books, museums, theater, visual arts)
+- climate (Umwelt, Nachhaltigkeit, erneuerbare Energien, Klimaschutz, Emissionen / environment, sustainability, renewable energy)
+- transportation (Verkehr, Infrastruktur, Mobilität, Bahn, U-Bahn, Straßen / transit, infrastructure, mobility, trains)
+- ai (Technologie, Wissenschaft, Forschung, Innovation, Weltraum, KI / technology, science, research, AI, space)
+- business (Wirtschaft, Finanzen, Unternehmen, Startups, Handel / economy, finance, companies, startups, trade)
+- politics (Politik, Gesetze, Wahlen, Demokratie, Parlament / government, policy, legislation, elections, democracy)
+- entertainment (Film, Musik, Sport, Spiele, TV, Kultur / film, music, celebrity, sports, games, TV)
+- world (Internationale Nachrichten, Diplomatie, globale Ereignisse / international news, diplomacy, global affairs)
+- religion (Glaube, Kirche, spirituelle Themen / faith, spirituality, churches, religious leaders)
+- arts (Kultur, Literatur, Bücher, Museen, Theater / culture, literature, books, museums, theater)
 
 Answer with ONLY the category name (one word)."""
-    
+
     result = call_ai(prompt, timeout=10)
-    
+
     if result:
         category = result.strip().lower()
-        # Validate it's a real category
         if category in VALID_CATEGORIES:
             return category
-    
-    # Fallback to world if AI fails or returns invalid category
+
     return 'world'
 
 def extract_first_paragraph(url):
@@ -382,7 +365,7 @@ def extract_first_paragraph(url):
             'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
         })
         soup = BeautifulSoup(response.text, 'html.parser')
-        
+
         # Try common paragraph selectors
         for selector in ['article p', '.article-body p', '.story-body p', 'p']:
             paragraphs = soup.select(selector)
@@ -390,7 +373,7 @@ def extract_first_paragraph(url):
                 text = p.get_text().strip()
                 if len(text) > 100:  # Substantial paragraph
                     return text[:500]
-        
+
         return None
     except:
         return None
@@ -416,13 +399,13 @@ def get_article_image(entry, used_images):
                 img = enc.get('href')
                 if img and img not in used_images:
                     return img
-    
+
     # Fallback: fetch from page
     try:
         article_url = entry.get('link', '')
         if not article_url:
             return None
-            
+
         response = requests.get(article_url, timeout=10, headers={
             'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
         })
@@ -443,7 +426,7 @@ def get_article_image(entry, used_images):
                 return img
     except:
         pass
-    
+
     return None
 
 # ═══════════════════════════════════════════════════════════════
@@ -453,7 +436,7 @@ def get_article_image(entry, used_images):
 def scrape_news():
     """Main scraping function"""
     print("═" * 60)
-    print("RALLY NEWS SCRAPER - Starting")
+    print("RALLY NEWS SCRAPER (German Edition) - Starting")
     print("═" * 60)
 
     SCRAPE_TIMEOUT = 45 * 60   # 45 minutes max per run
@@ -605,7 +588,7 @@ def scrape_news():
     final_articles = unique_articles
 
     with open('news.json', 'w') as f:
-        json.dump(final_articles, f, indent=2)
+        json.dump(final_articles, f, indent=2, ensure_ascii=False)
 
     print("\n" + "═" * 60)
     print(f"COMPLETE: {len(new_articles)} new articles added")
