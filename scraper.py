@@ -6,8 +6,9 @@ Only scrapes positive news from whitelisted sources within last 48 hours
 
 import requests
 import json
-import feedparser
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta
+from email.utils import parsedate_to_datetime
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import time
@@ -90,6 +91,110 @@ AI_MODELS = [
 ]
 
 # ═══════════════════════════════════════════════════════════════
+# RSS PARSER (stdlib only — no feedparser dependency)
+# ═══════════════════════════════════════════════════════════════
+
+def parse_feed(url, timeout=15):
+    """Fetch and parse an RSS or Atom feed; return list of entry dicts."""
+    try:
+        resp = requests.get(url, timeout=timeout, headers={
+            'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
+        })
+        resp.raise_for_status()
+    except Exception as e:
+        print(f"  Feed fetch error: {e}")
+        return []
+
+    try:
+        root = ET.fromstring(resp.content)
+    except ET.ParseError as e:
+        print(f"  Feed parse error: {e}")
+        return []
+
+    MEDIA_NS = 'http://search.yahoo.com/mrss/'
+
+    def local(el):
+        return el.tag.split('}', 1)[-1] if '}' in el.tag else el.tag
+
+    def find_local(parent, name):
+        return next((c for c in parent if local(c) == name), None)
+
+    def findall_local(parent, name):
+        return [c for c in parent if local(c) == name]
+
+    def elem_text(parent, *path):
+        node = parent
+        for step in path:
+            node = find_local(node, step)
+            if node is None:
+                return ''
+        return (node.text or '').strip()
+
+    def parse_entry(item, is_atom):
+        entry = {}
+        if is_atom:
+            entry['title'] = elem_text(item, 'title')
+            for link_el in findall_local(item, 'link'):
+                href = link_el.get('href', '')
+                if href:
+                    entry.setdefault('link', href)
+                    if link_el.get('rel', 'alternate') == 'alternate':
+                        entry['link'] = href
+                        break
+            summary_el = find_local(item, 'summary')
+            if summary_el is None:
+                summary_el = find_local(item, 'content')
+            entry['summary'] = (summary_el.text or '').strip() if summary_el is not None else ''
+            pub_el = find_local(item, 'published')
+            if pub_el is None:
+                pub_el = find_local(item, 'updated')
+            entry['published_parsed'] = (pub_el.text or '').strip() if pub_el is not None else None
+        else:
+            entry['title'] = elem_text(item, 'title')
+            link_el = find_local(item, 'link')
+            entry['link'] = (link_el.text or '').strip() if link_el is not None else ''
+            if not entry['link']:
+                guid_el = find_local(item, 'guid')
+                if guid_el is not None:
+                    val = (guid_el.text or '').strip()
+                    if val.startswith('http'):
+                        entry['link'] = val
+            desc_el = find_local(item, 'description')
+            entry['summary'] = (desc_el.text or '').strip() if desc_el is not None else ''
+            pub_el = find_local(item, 'pubDate')
+            if pub_el is None:
+                pub_el = find_local(item, 'date')
+            entry['published_parsed'] = (pub_el.text or '').strip() if pub_el is not None else None
+
+        entry.setdefault('link', '')
+
+        media_content = [{'url': el.get('url')} for el in item
+                         if el.tag == f'{{{MEDIA_NS}}}content' and el.get('url')]
+        if media_content:
+            entry['media_content'] = media_content
+
+        media_thumbnail = [{'url': el.get('url')} for el in item
+                           if el.tag == f'{{{MEDIA_NS}}}thumbnail' and el.get('url')]
+        if media_thumbnail:
+            entry['media_thumbnail'] = media_thumbnail
+
+        enclosures = [{'href': el.get('url', ''), 'type': el.get('type', '')}
+                      for el in item if local(el) == 'enclosure' and el.get('url')]
+        if enclosures:
+            entry['enclosures'] = enclosures
+
+        return entry
+
+    root_local = local(root)
+    if root_local == 'feed':
+        return [parse_entry(e, is_atom=True) for e in findall_local(root, 'entry')]
+    else:
+        channel = find_local(root, 'channel')
+        parent = channel if channel is not None else root
+        return [parse_entry(item, is_atom=False) for item in findall_local(parent, 'item')]
+
+
+# ═══════════════════════════════════════════════════════════════
 # HELPER FUNCTIONS
 # ═══════════════════════════════════════════════════════════════
 
@@ -97,28 +202,34 @@ def is_recent(article_date):
     """Check if article is within last 48 hours"""
     if not article_date:
         return False
-    
+
     try:
+        pub_date = None
         if isinstance(article_date, str):
-            # Try parsing various date formats
-            for fmt in ['%a, %d %b %Y %H:%M:%S %z', '%Y-%m-%dT%H:%M:%S%z', '%Y-%m-%d']:
-                try:
-                    pub_date = datetime.strptime(article_date, fmt)
-                    break
-                except:
-                    continue
-            else:
+            # Try RFC 2822 (handles GMT, +0000, etc.)
+            try:
+                pub_date = parsedate_to_datetime(article_date)
+            except Exception:
+                pass
+            # Try ISO 8601 variants
+            if pub_date is None:
+                for fmt in ['%Y-%m-%dT%H:%M:%S%z', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%d']:
+                    try:
+                        pub_date = datetime.strptime(article_date, fmt)
+                        break
+                    except Exception:
+                        continue
+            if pub_date is None:
                 return False
         else:
             pub_date = datetime(*article_date[:6])
-        
-        # Make timezone-aware if naive
+
         if pub_date.tzinfo is None:
             pub_date = pub_date.replace(tzinfo=datetime.now().astimezone().tzinfo)
-        
+
         cutoff = datetime.now(pub_date.tzinfo) - timedelta(hours=48)
         return pub_date > cutoff
-    except:
+    except Exception:
         return False
 
 def call_ai(prompt, timeout=15):
@@ -287,20 +398,20 @@ def extract_first_paragraph(url):
 def get_article_image(entry, used_images):
     """Extract unique image URL from article"""
     # Try media content
-    if hasattr(entry, 'media_content') and entry.media_content:
-        img = entry.media_content[0].get('url')
+    if entry.get('media_content'):
+        img = entry['media_content'][0].get('url')
         if img and img not in used_images:
             return img
-    
+
     # Try media thumbnail
-    if hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
-        img = entry.media_thumbnail[0].get('url')
+    if entry.get('media_thumbnail'):
+        img = entry['media_thumbnail'][0].get('url')
         if img and img not in used_images:
             return img
-    
+
     # Try enclosures
-    if hasattr(entry, 'enclosures') and entry.enclosures:
-        for enc in entry.enclosures:
+    if entry.get('enclosures'):
+        for enc in entry['enclosures']:
             if 'image' in enc.get('type', ''):
                 img = enc.get('href')
                 if img and img not in used_images:
@@ -396,9 +507,9 @@ def scrape_news():
             print(f"\nScraping: {source_name}")
 
             try:
-                feed = feedparser.parse(feed_url)
+                entries = parse_feed(feed_url)
 
-                for entry in feed.entries[start_idx:end_idx]:
+                for entry in entries[start_idx:end_idx]:
                     url = entry.get('link', '').strip()
                     if not url or url in checked_urls:
                         continue
@@ -406,7 +517,7 @@ def scrape_news():
                     checked_urls.add(url)
                     new_candidates_this_pass += 1
 
-                    pub_date = entry.get('published_parsed') or entry.get('updated_parsed')
+                    pub_date = entry.get('published_parsed')
                     if not is_recent(pub_date):
                         continue
 
