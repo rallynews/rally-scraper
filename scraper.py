@@ -419,22 +419,22 @@ def get_article_image(entry, used_images):
     
     # Fallback: fetch from page
     try:
-        response = requests.get(entry.link, timeout=10, headers={
+        response = requests.get(entry['link'], timeout=10, headers={
             'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
         })
         soup = BeautifulSoup(response.text, 'html.parser')
-        
+
         # Try og:image
         og_image = soup.find('meta', property='og:image')
         if og_image and og_image.get('content'):
             img = og_image['content']
             if img not in used_images:
                 return img
-        
+
         # Try first img tag
         img_tag = soup.find('img', src=True)
         if img_tag:
-            img = urljoin(entry.link, img_tag['src'])
+            img = urljoin(entry['link'], img_tag['src'])
             if img not in used_images:
                 return img
     except:
