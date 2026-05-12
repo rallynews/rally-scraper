@@ -39,9 +39,15 @@ RSS_FEEDS = {
     'Reuters': 'https://www.reuters.com/rssFeed/worldNews',
     'NPR': 'https://feeds.npr.org/1001/rss.xml',
     'Al Jazeera': 'https://www.aljazeera.com/xml/rss/all.xml',
+    'The New York Times': 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+    'The Washington Post': 'https://feeds.washingtonpost.com/rss/world',
+    'The Atlantic': 'https://www.theatlantic.com/feed/all/',
+    'The Wall Street Journal': 'https://feeds.a.dj.com/rss/RSSWorldNews.xml',
+    'CNBC': 'https://www.cnbc.com/id/100003114/device/rss/rss.html',
     'Scientific American': 'http://rss.sciam.com/ScientificAmerican-Global',
     'Nature News': 'http://feeds.nature.com/nature/rss/current',
     'Science News': 'https://www.sciencenews.org/feed',
+    'Science': 'https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science',
     'Wired': 'https://www.wired.com/feed/rss',
     'TechCrunch': 'https://techcrunch.com/feed/',
     'Ars Technica': 'http://feeds.arstechnica.com/arstechnica/index',
@@ -334,110 +340,142 @@ def scrape_news():
     print("═" * 60)
     print("RALLY NEWS SCRAPER - Starting")
     print("═" * 60)
-    
+
+    SCRAPE_TIMEOUT = 45 * 60   # 45 minutes max per run
+    MIN_NEW_ARTICLES = 6        # target per run
+    BATCH_SIZE = 10             # feed entries examined per pass
+
+    start_time = time.time()
+
     # Load existing articles
     existing_articles = []
     used_images = set()
-    
+
     try:
         with open('news.json', 'r') as f:
             existing_articles = json.load(f)
-            # Remove rallying_cry field from existing articles
             for article in existing_articles:
                 article.pop('rallying_cry', None)
             used_images = {a.get('image_url') for a in existing_articles if a.get('image_url')}
             print(f"Loaded {len(existing_articles)} existing articles")
     except FileNotFoundError:
         print("No existing articles found")
-    
+
     new_articles = []
-    
-    # Scrape each feed
-    for source_name, feed_url in RSS_FEEDS.items():
-        if source_name not in WHITELISTED_SOURCES:
-            continue
-        
-        print(f"\nScraping: {source_name}")
-        
-        try:
-            feed = feedparser.parse(feed_url)
-            
-            for entry in feed.entries[:10]:  # Check 10 most recent
-                # Check if recent (48 hours)
-                pub_date = entry.get('published_parsed') or entry.get('updated_parsed')
-                if not is_recent(pub_date):
-                    continue
-                
-                title = entry.get('title', '').strip()
-                summary = entry.get('summary', entry.get('description', '')).strip()
-                url = entry.get('link', '').strip()
-                
-                if not all([title, url]):
-                    continue
-                
-                # Skip if already exists
-                if any(a['url'] == url for a in existing_articles):
-                    continue
-                
-                # Check if positive news (AI filter)
-                print(f"  Checking: {title[:60]}...")
-                if not is_positive_news(title, summary):
-                    print(f"    ✗ Not positive news")
-                    continue
-                
-                print(f"    ✓ Positive news!")
-                
-                # Check for duplicate topics (compare with recent articles)
-                combined_articles = new_articles + existing_articles
-                if is_duplicate_topic(title, summary, combined_articles):
-                    continue
-                
-                print(f"    ✓ Unique topic!")
-                
-                # Get unique image
-                image_url = get_article_image(entry, used_images)
-                if not image_url:
-                    print(f"    ✗ No unique image found")
-                    continue
-                
-                used_images.add(image_url)
-                
-                # Extract first paragraph
-                first_paragraph = extract_first_paragraph(url)
-                if not first_paragraph:
-                    first_paragraph = summary[:500]
-                
-                # Categorize
-                category = categorize_article(title, summary)
-                print(f"    ✓ Categorized as: {category}")
-                
-                # Create article object (NO rallying_cry field)
-                article = {
-                    'title': title,
-                    'source': source_name,
-                    'url': url,
-                    'first_paragraph': first_paragraph,
-                    'summary': summary[:300] if summary else first_paragraph[:300],
-                    'image_url': image_url,
-                    'timestamp': datetime.now().isoformat() + 'Z',
-                    'category': category
-                }
-                
-                new_articles.append(article)
-                print(f"    ✓ Added to queue")
-                
-                # Rate limiting
-                time.sleep(2)
-        
-        except Exception as e:
-            print(f"  ✗ Error scraping {source_name}: {str(e)}")
-            continue
-    
-    # Merge new articles with existing, preserving all existing articles
-    # New articles come first so they take priority in URL deduplication
+    checked_urls = set()  # URLs already evaluated this run (across all passes)
+    pass_num = 0
+
+    while True:
+        elapsed = time.time() - start_time
+
+        if elapsed >= SCRAPE_TIMEOUT:
+            print(f"\nTimeout reached after {pass_num} passes ({elapsed/60:.1f} min)")
+            break
+
+        if len(new_articles) >= MIN_NEW_ARTICLES:
+            print(f"\nTarget reached: {len(new_articles)} new articles found")
+            break
+
+        start_idx = pass_num * BATCH_SIZE
+        end_idx = start_idx + BATCH_SIZE
+
+        print(f"\n{'─' * 60}")
+        print(f"Pass {pass_num + 1}: checking feed entries {start_idx + 1}–{end_idx}")
+        print(f"Articles found so far: {len(new_articles)}/{MIN_NEW_ARTICLES}")
+        print(f"{'─' * 60}")
+
+        new_candidates_this_pass = 0
+
+        for source_name, feed_url in RSS_FEEDS.items():
+            if source_name not in WHITELISTED_SOURCES:
+                continue
+
+            if time.time() - start_time >= SCRAPE_TIMEOUT:
+                break
+
+            print(f"\nScraping: {source_name}")
+
+            try:
+                feed = feedparser.parse(feed_url)
+
+                for entry in feed.entries[start_idx:end_idx]:
+                    url = entry.get('link', '').strip()
+                    if not url or url in checked_urls:
+                        continue
+
+                    checked_urls.add(url)
+                    new_candidates_this_pass += 1
+
+                    pub_date = entry.get('published_parsed') or entry.get('updated_parsed')
+                    if not is_recent(pub_date):
+                        continue
+
+                    title = entry.get('title', '').strip()
+                    summary = entry.get('summary', entry.get('description', '')).strip()
+
+                    if not all([title, url]):
+                        continue
+
+                    if any(a['url'] == url for a in existing_articles):
+                        continue
+
+                    print(f"  Checking: {title[:60]}...")
+                    if not is_positive_news(title, summary):
+                        print(f"    ✗ Not positive news")
+                        continue
+
+                    print(f"    ✓ Positive news!")
+
+                    combined_articles = new_articles + existing_articles
+                    if is_duplicate_topic(title, summary, combined_articles):
+                        continue
+
+                    print(f"    ✓ Unique topic!")
+
+                    image_url = get_article_image(entry, used_images)
+                    if not image_url:
+                        print(f"    ✗ No unique image found")
+                        continue
+
+                    used_images.add(image_url)
+
+                    first_paragraph = extract_first_paragraph(url)
+                    if not first_paragraph:
+                        first_paragraph = summary[:500]
+
+                    category = categorize_article(title, summary)
+                    print(f"    ✓ Categorized as: {category}")
+
+                    article = {
+                        'title': title,
+                        'source': source_name,
+                        'url': url,
+                        'first_paragraph': first_paragraph,
+                        'summary': summary[:300] if summary else first_paragraph[:300],
+                        'image_url': image_url,
+                        'timestamp': datetime.now().isoformat() + 'Z',
+                        'category': category
+                    }
+
+                    new_articles.append(article)
+                    print(f"    ✓ Added ({len(new_articles)}/{MIN_NEW_ARTICLES})")
+
+                    time.sleep(2)
+
+            except Exception as e:
+                print(f"  ✗ Error scraping {source_name}: {str(e)}")
+                continue
+
+        pass_num += 1
+
+        # No new URLs found anywhere — all feeds exhausted at this depth
+        if new_candidates_this_pass == 0:
+            print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
+            break
+
+    # Merge and deduplicate
     all_articles = new_articles + existing_articles
 
-    # Remove duplicates by URL (existing articles are never removed, only deduped)
     seen_urls = set()
     unique_articles = []
     for article in all_articles:
@@ -445,17 +483,15 @@ def scrape_news():
             seen_urls.add(article['url'])
             unique_articles.append(article)
 
-    # Sort by timestamp (newest first)
     unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
 
     # All existing articles are preserved; the 48-hour filter only applies to
     # new RSS candidates above, so nothing already in news.json is ever dropped.
     final_articles = unique_articles
-    
-    # Save
+
     with open('news.json', 'w') as f:
         json.dump(final_articles, f, indent=2)
-    
+
     print("\n" + "═" * 60)
     print(f"COMPLETE: {len(new_articles)} new articles added")
     print(f"Total articles: {len(final_articles)}")
