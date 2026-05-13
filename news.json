@@ -1,5 +1,105 @@
 [
   {
+    "title": "Latrell's perfect dropout against Roosters",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/sport/nrl/latrells-perfect-dropout-against-roosters-20260513-p5zwl4.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Latrell Michell nails a perfect goal-line dropout against the Roosters.",
+    "summary": "Latrell Michell nails a perfect goal-line dropout against the Roosters.",
+    "image_url": "https://static.ffx.io/images/$width_800%2C$height_450/t_crop_fill/q_86%2Cf_jpg/9ae61956fadb864bf16cddf780aa0b6c0d1351b9",
+    "timestamp": "2026-05-13T08:19:14.466240Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "S\u2019pore sets out economic strategy road map to stay competitive, create good jobs",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/spore-sets-out-economic-strategy-road-map-to-stay-competitive-create-good-jobs-after-review",
+    "first_paragraph": "The country needs to be more agile and adaptable to the rapid pace of change. This includes helping workers transition to new jobs or reskill in their current ones.",
+    "summary": "<p>The Economic Strategy Review was tasked to chart a road map for the next five to 10 years.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/90bd60e43f4771b8498ec341d9dec6d469413e189044488db8484c4c41738d9f",
+    "timestamp": "2026-05-13T08:18:54.886458Z",
+    "category": "business"
+  },
+  {
+    "title": "Bedok Central TB screening: 85.1% of more than 3,000 people screened test negative",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/health/bedok-central-tb-screening-85-1-per-cent-out-of-more-than-3000-people-screened-tested-negative",
+    "first_paragraph": "On-site chest X-ray screening has commenced at Heartbeat@Bedok on May 13. It will take place until May 15.",
+    "summary": "<p>473 people whose blood tests returned positive will have to do a chest X-ray.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/a1ee851f6dc3c700998801b89409a1b0ba967984e78a83f8a10c13872657bd7f",
+    "timestamp": "2026-05-13T08:18:37.220903Z",
+    "category": "world"
+  },
+  {
+    "title": "Once again, SpaceX has set a new record for the tallest rocket ever built",
+    "source": "Ars Technica",
+    "url": "https://arstechnica.com/space/2026/05/spacex-completes-fueling-test-setting-stage-for-first-launch-of-starship-v3/",
+    "first_paragraph": "For the third time in three years, SpaceX has stacked a new version of its enormous Starship rocket on a launch pad in South Texas, just a few miles north of the US-Mexico border. The newest-generation Starship, known as Starship Version 3, is taller and more powerful than the ones that came before it.",
+    "summary": "SpaceX cleared an important milestone Monday on the road to launching a new version of Starship.",
+    "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/starshipflight12wdr1-1152x648-1778542487.jpg",
+    "timestamp": "2026-05-13T08:18:01.891987Z",
+    "category": "ai"
+  },
+  {
+    "title": "Everything Google announced at its Android Show, from Googlebooks to vibe-coded widgets",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/12/everything-google-announced-at-its-android-show-from-googlebooks-to-vibe-coded-widgets/",
+    "first_paragraph": "At Google\u2019s virtual Android Show: I/O Edition event on Tuesday, the tech giant announced a series of upcoming updates and features, including improved Gemini Intelligence features; new hardware called Googlebook; and other Android improvements, like vibe-coded widgets, Gemini in Chrome, and new emoji.",
+    "summary": "Google unveiled its new AI-first Googlebooks laptops, more agentic Gemini features, vibe-coded Android widgets, Gemini in Chrome, refreshed Android Auto, and more ahead of I/O.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/googlebook.png?resize=1200,843",
+    "timestamp": "2026-05-13T08:17:32.700503Z",
+    "category": "ai"
+  },
+  {
+    "title": "Medicare\u2019s new payment model is built for AI, and most of the tech world has no idea",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/12/medicares-new-payment-model-is-built-for-ai-and-most-of-the-tech-world-has-no-idea/",
+    "first_paragraph": "Neil Batlivala has spent seven years building a healthcare company that most of the tech industry has never heard of and that serves a patient population most of Silicon Valley ignores. But last month, that work put him at the center of something much bigger.",
+    "summary": "There is no governmental mechanism to pay for an AI agent that monitors a patient between visits, calls to check in, coordinates a housing referral, or makes sure someone picks up their medication. ACCESS creates that mechanism for the first time.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2022/06/GettyImages-877394926.jpg?resize=1200,800",
+    "timestamp": "2026-05-13T08:17:13.650985Z",
+    "category": "ai"
+  },
+  {
+    "title": "SoftBank posts $46 billion gain at Vision Fund driven mainly by massive OpenAI bet",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/13/softbank-earnings-fy-2025-vision-fund-openai-stake.html",
+    "first_paragraph": "SoftBank booked a yearly gain of $46 billion at its Vision Fund driven mainly by the huge rise in value of its investment in OpenAI.",
+    "summary": "SoftBank booked a yearly gain of $46 billion at its Vision Fund driven in large part by the huge rise in value of its investment in OpenAI.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108246661-17671042772025-02-03t064652z_1577749545_rc2umcauaumr_rtrmadp_0_softbank-openai.jpeg?v=1767104415&w=1920&h=1080",
+    "timestamp": "2026-05-13T08:16:35.184909Z",
+    "category": "business"
+  },
+  {
+    "title": "Wembanyama returns, Spurs rout Wolves for 3-2 lead in NBA Playoff series",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/sports/2026/5/13/wembanyama-returns-spurs-rout-wolves-for-3-2-lead-in-nba-playoff-series?traffic_source=rss",
+    "first_paragraph": "Wembanyama scores 27 points on return from ejection as San Antonio Spurs beat Minnesota Timberwolves 126-97 in Game 5.",
+    "summary": "Wembanyama scores 27 points on return from ejection as San Antonio Spurs beat Minnesota Timberwolves 126-97 in Game 5.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/AP26133088500890-1778654742.jpg?resize=1920%2C1440",
+    "timestamp": "2026-05-13T08:15:46.866929Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Daily pill to help keep weight off after stopping obesity jabs",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/cwy2e9wlvjxo?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "Trials found that patients given the tablet, called orforglipron, every day for a year avoided regaining much of the weight they had lost - a known risk when coming off GLP-1 injections.",
+    "summary": "The tablet - orforglipron - is available in the US and could soon launch in the UK.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d8b3/live/55c5d990-4d53-11f1-a556-3191549e7ed9.jpg",
+    "timestamp": "2026-05-13T08:14:56.260062Z",
+    "category": "business"
+  },
+  {
+    "title": "Twenty-two people set to leave hospital after hantavirus isolation",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/clyp4nk09k1o?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "Twenty-two people evacuated from a cruise ship after a hantavirus outbreak are set to start leaving a Liverpool hospital where they have been isolating since returning to the UK.",
+    "summary": "The passengers and crew will have spent 72-hours isolating at Arrowe Park Hospital in Merseyside.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/944d/live/94ffe280-4e94-11f1-b092-4797e4fbbf94.jpg",
+    "timestamp": "2026-05-13T08:14:39.253323Z",
+    "category": "world"
+  },
+  {
     "title": "&#039;American Idol&#039; Judges Celebrate Hannah Harper After Season 24 Win",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/entertainment/reality-tv/american-idol-judges-celebrate-hannah-harper-after-season-24-win-11943370",
