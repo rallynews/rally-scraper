@@ -1,5 +1,95 @@
 [
   {
+    "title": "How a post-Cold War uranium program proved even old foes can work together",
+    "source": "The Globe and Mail",
+    "url": "https://www.theglobeandmail.com/world/article-post-cold-war-uranium-program-nuclear-russia-us-iran/",
+    "first_paragraph": "Power lines come off the nuclear plant on Three Mile Island, with the operational plant run by Exelon Generation on the right, in Middletown, Penn. in 2019.ANDREW CABALLERO-REYNOLDS/AFP/Getty Images",
+    "summary": "The 1990s-era program to repurpose uranium from nuclear warheads could provide a solution to the impasse over Iran\u2019s nuclear stockpile",
+    "image_url": "https://www.theglobeandmail.com/resizer/v2/Q622EVNZUNFRBJXNRQ5JN55UBY.jpg?auth=58dd52c61919769907a3c5ef1f64d6215ea8d2902f2c5fb6e2d1c25326465bd7&smart=true&width=5626&height=3700",
+    "timestamp": "2026-05-13T19:28:09.934441Z",
+    "category": "world"
+  },
+  {
+    "title": "The one dish that Ottolenghi can\u2019t wait to eat in Australia",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/goodfood/eating-out/the-one-dish-that-ottolenghi-can-t-wait-to-eat-in-australia-20260511-p5zvnx.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "The Israeli-British chef has a long list of foods he wants to eat on his upcoming trip to Australia, and a classic dessert is in the top spot.",
+    "summary": "The Israeli-British chef has a long list of foods he wants to eat on his upcoming trip to Australia, with a classic dessert in the top spot.",
+    "image_url": "https://static.ffx.io/images/$zoom_0.3361%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_119%2C$y_85/t_crop_custom/q_86%2Cf_jpg/14121fd583d322f7ac2b9f87ce67d0d2223530f7",
+    "timestamp": "2026-05-13T19:27:51.825739Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Windows Update is getting better at saving your PC from buggy drivers",
+    "source": "Ars Technica",
+    "url": "https://arstechnica.com/gadgets/2026/05/windows-update-is-getting-better-at-saving-your-pc-from-buggy-drivers/",
+    "first_paragraph": "Hardware driver updates can be a blessing and a curse. When they\u2019re good, they can fix bugs, improve performance, and add new capabilities, giving your PC a minor upgrade without requiring any extra effort or investment. When they\u2019re bad, they can make a once-reliable PC slower and unstable, handing you a one-way ticket to blue screen town (or whatever color the Windows error screen is these days).",
+    "summary": "Driver recovery can automate what used to be an irritating manual process.",
+    "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2021/10/windows-11-band-aid-patch-1152x648.jpg",
+    "timestamp": "2026-05-13T19:26:21.780156Z",
+    "category": "ai"
+  },
+  {
+    "title": "X launches a History tab for bookmarks, likes, videos, and articles",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/13/x-launches-a-history-tab-for-bookmarks-likes-videos-and-articles/",
+    "first_paragraph": "X is turning itself into more of a \u201csave-it-for-later\u201d app with the launch of a new History tab that collects your bookmarks, likes, videos, and articles all in one place for easy access.",
+    "summary": "X\u2019s new History tab combines bookmarks, likes, watched videos, and read articles into a single place, expanding the app\u2019s role as a save-it-for-later tool.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2023/11/X-and-Threads-GettyImages-1763609384.jpeg?resize=1200,832",
+    "timestamp": "2026-05-13T19:25:59.083702Z",
+    "category": "business"
+  },
+  {
+    "title": "Inside the Race to Develop a Test for the Rare Andes Hantavirus",
+    "source": "Wired",
+    "url": "https://www.wired.com/story/race-to-develop-andes-hantavirus-test/",
+    "first_paragraph": "As passengers return to the US from the cruise that saw a rare hantavirus outbreak, much of the country is lacking a basic public health tool: a test to diagnose the illness in the earliest stages of infection. Nebraska may be the first state with the ability to do so.",
+    "summary": "A University of Nebraska lab has developed a test that can detect the virus before symptoms become severe. Now, it's ready to start testing those returning to the US after a cruise outbreak.",
+    "image_url": "https://media.wired.com/photos/6a023cd0676f3047201fdc4d/master/pass/States-Dont-Have-Enough-Capacity-to-Test-for-Hantavirus-Science-2274271417.jpg",
+    "timestamp": "2026-05-13T19:25:17.578252Z",
+    "category": "ai"
+  },
+  {
+    "title": "Baby \u2018cosmic fossil\u2019 galaxy brings JWST closer to glimpsing the universe\u2019s first stars",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/baby-cosmic-fossil-galaxy-brings-jwst-closer-to-glimpsing-the-universes-first-stars/",
+    "first_paragraph": "Seen just 800 million years after the big bang, an object called LAP1-B is a galactic building block that seems to hold some of the first stars to ever shine",
+    "summary": "<p>Seen just 800 million years after the big bang, an object called LAP1-B is a galactic building block that seems to hold some of the first stars to ever shine</p>",
+    "image_url": "https://static.scientificamerican.com/dam/m/6cc22a389ea7a746/original/Galaxy-cluster-MACS0416-Hubble-and-Webb-composite-image.jpg?m=1778694128.995&w=1200",
+    "timestamp": "2026-05-13T19:24:47.772475Z",
+    "category": "ai"
+  },
+  {
+    "title": "Americans are increasingly open to using psychedelics for medical reasons",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/americans-are-increasingly-open-to-using-psychedelics-for-medical-reasons/",
+    "first_paragraph": "A survey found that more than 60 percent of respondents \u201cstrongly support\u201d making psychedelics easier to study, reflecting a growing consensus that some could have therapeutic use",
+    "summary": "<p>A survey found that more than 60 percent of respondents &ldquo;strongly support&rdquo; making psychedelics easier to study, reflecting a growing consensus that some could have therapeutic use</p>",
+    "image_url": "https://static.scientificamerican.com/dam/asset/8e7b8e52-5e09-4e3b-9070-2d75b9e7b8cf/psilocybin.jpg?m=1778695904.136&w=1200",
+    "timestamp": "2026-05-13T19:24:10.004898Z",
+    "category": "world"
+  },
+  {
+    "title": "Drug overdose deaths drop in United States for third year in a row",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/13/drug-overdose-deaths-drop-in-united-states-for-third-year-in-a-row?traffic_source=rss",
+    "first_paragraph": "Experts cite range of factors as overdose deaths drop to nearly 70,000 in 2025, a 14 percent decline over the previous year.",
+    "summary": "Experts cite range of factors as overdose deaths drop to nearly 70,000 in 2025, a 14 percent decline over previous year.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/afp_6a04a7adb936-1778689965.jpg?resize=1920%2C1440",
+    "timestamp": "2026-05-13T19:23:15.225452Z",
+    "category": "world"
+  },
+  {
+    "title": "There\u2019s an app for that: Gaza\u2019s developers use tech to solve war problems",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/features/2026/5/13/theres-an-app-for-that-gazas-developers-use-tech-to-solve-war-problems?traffic_source=rss",
+    "first_paragraph": "Gaza\u2019s battered tech sector is being reshaped by young developers building practical apps to navigate life.",
+    "summary": "Gaza\u2019s battered tech sector is being reshaped by young developers building practical apps to navigate life.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/873A2735-1778694617.jpg?resize=1920%2C1440",
+    "timestamp": "2026-05-13T19:22:55.019059Z",
+    "category": "world"
+  },
+  {
     "title": "Tariff Refund Update: Americans Start Receiving Checks\u2014How to Claim?",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/tariff-refund-update-americans-start-receiving-checks-how-to-claim-11946970",
