@@ -79,15 +79,10 @@ VALID_CATEGORIES = [
     'arts'           # Culture, literature, books, museums, theater
 ]
 
-# Multi-model fallback (free models first, paid as fallback)
+# Primary model, then paid fallback
 AI_MODELS = [
-    'nvidia/llama-3.1-nemotron-70b-instruct',
-    'poolside/laguna-70b-chat',
-    'openai/gpt-4o-mini-2024-07-18',
-    'minimax/minimax-01',
-    'inclusionai/ring-flash-preview',
+    'google/gemini-2.0-flash-exp:free',
     'openai/o1-mini-2024-09-12',
-    'google/gemini-2.0-flash-exp:free'  # Paid fallback
 ]
 
 # ═══════════════════════════════════════════════════════════════
@@ -268,6 +263,86 @@ def call_ai(prompt, timeout=15):
     
     print("ERROR: All AI models failed")
     return None
+
+def call_ai_long(prompt, max_tokens=500, timeout=30):
+    """Call OpenRouter API with multi-model fallback, for longer prose responses"""
+    if not OPENROUTER_API_KEY:
+        print("ERROR: OPENROUTER_API_KEY not set")
+        return None
+
+    for model in AI_MODELS:
+        try:
+            response = requests.post(
+                'https://openrouter.ai/api/v1/chat/completions',
+                headers={
+                    'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+                    'Content-Type': 'application/json'
+                },
+                json={
+                    'model': model,
+                    'messages': [{'role': 'user', 'content': prompt}],
+                    'max_tokens': max_tokens
+                },
+                timeout=timeout
+            )
+
+            if response.status_code == 200:
+                result = response.json()['choices'][0]['message']['content'].strip()
+                print(f"✓ Model {model} succeeded")
+                return result
+            else:
+                print(f"✗ Model {model} failed: {response.status_code}")
+                continue
+
+        except Exception as e:
+            print(f"✗ Model {model} error: {str(e)}")
+            continue
+
+    print("ERROR: All AI models failed")
+    return None
+
+def generate_balance(rejected_articles):
+    """Summarise rejected (negative/neutral) articles into one plain paragraph."""
+    if not rejected_articles:
+        return None
+
+    articles_text = '\n'.join(
+        f"- {a['title']}: {a['summary'][:200]}"
+        for a in rejected_articles[:50]
+    )
+
+    prompt = f"""You have read the following news articles that were deemed negative or neutral today. Write a single, concise paragraph summarising your findings. Use simple, plain language and be straightforward. Everything must be truthful and based only on what these articles actually say — do not invent or extrapolate.
+
+Articles:
+{articles_text}
+
+Write ONE paragraph only. No headers, no bullet points. Be factual and direct."""
+
+    return call_ai_long(prompt, max_tokens=400, timeout=30)
+
+def generate_rallying_cry(approved_articles):
+    """Create a one-sentence upbeat summary of today's positive articles."""
+    if not approved_articles:
+        return None
+
+    articles_text = '\n'.join(
+        f"- {a['title']}"
+        for a in approved_articles[:20]
+    )
+
+    prompt = f"""You have the following positive news headlines. Write a single, upbeat, conversational one-sentence summary of today's good news, mentioning 2–4 specific stories naturally.
+
+Style examples (do not copy these, they are just to show the tone and structure):
+- "A new hydropower startup got funded for 2.5 million, Warsaw government recognizes gay marriage, and six new delicious recipes to try this year."
+- "A new, reform-minded Prime Minister promises change in India, and global child hunger drops to its lowest ever."
+- "Remembering the life and works of Alan Rickman, and a new airport opens its doors in Rio."
+
+Headlines:
+{articles_text}
+
+Write ONE sentence only. Be specific, conversational, and uplifting. Do not use quotation marks around the sentence."""
+
+    return call_ai_long(prompt, max_tokens=200, timeout=30)
 
 def is_positive_news(title, summary):
     """Use AI to determine if article is genuinely positive news"""
@@ -477,7 +552,8 @@ def scrape_news():
         print("No existing articles found")
 
     new_articles = []
-    checked_urls = set()  # URLs already evaluated this run (across all passes)
+    rejected_articles = []   # negative/neutral articles collected for balance.json
+    checked_urls = set()     # URLs already evaluated this run (across all passes)
     pass_num = 0
 
     while True:
@@ -534,9 +610,16 @@ def scrape_news():
                     if any(a['url'] == url for a in existing_articles):
                         continue
 
+                    # Cap: no more than 2 new articles per source per run
+                    source_count = sum(1 for a in new_articles if a['source'] == source_name)
+                    if source_count >= 2:
+                        print(f"    ✗ Already have 2 articles from {source_name} this run")
+                        continue
+
                     print(f"  Checking: {title[:60]}...")
                     if not is_positive_news(title, summary):
                         print(f"    ✗ Not positive news")
+                        rejected_articles.append({'title': title, 'summary': summary[:300]})
                         continue
 
                     print(f"    ✓ Positive news!")
@@ -606,6 +689,27 @@ def scrape_news():
 
     with open('news.json', 'w') as f:
         json.dump(final_articles, f, indent=2)
+
+    run_timestamp = datetime.now().isoformat() + 'Z'
+    run_date = datetime.now().strftime('%Y-%m-%d')
+
+    print("\nGenerating balance.json...")
+    balance_text = generate_balance(rejected_articles)
+    if balance_text:
+        with open('balance.json', 'w') as f:
+            json.dump({'date': run_date, 'timestamp': run_timestamp, 'content': balance_text}, f, indent=2)
+        print("✓ balance.json written")
+    else:
+        print("✗ balance.json skipped (no rejected articles or AI failure)")
+
+    print("\nGenerating rallyingcry.json...")
+    rallying_text = generate_rallying_cry(new_articles)
+    if rallying_text:
+        with open('rallyingcry.json', 'w') as f:
+            json.dump({'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text}, f, indent=2)
+        print("✓ rallyingcry.json written")
+    else:
+        print("✗ rallyingcry.json skipped (no approved articles or AI failure)")
 
     print("\n" + "═" * 60)
     print(f"COMPLETE: {len(new_articles)} new articles added")
