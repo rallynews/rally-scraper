@@ -1,5 +1,115 @@
 [
   {
+    "title": "Warsaw recognizes same-sex marriage from other EU countries for the first time",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/lgbtq/article/2026/05/14/warsaw-recognizes-same-sex-marriage-from-other-eu-countries-for-the-first-time_6753462_211.html",
+    "first_paragraph": "Poland's Supreme Administrative Court ruled in March that same-sex marriages contracted in other EU states must be recognized in Poland, incorporating a 2025 EU ruling.",
+    "summary": "Poland's Supreme Administrative Court ruled in March that same-sex marriages contracted in other EU states must be recognized in Poland, incorporating a 2025 EU ruling.",
+    "image_url": "https://img.lemde.fr/2026/05/14/771/0/4129/2064/644/322/60/0/865ae80_ftp-1-7rpsgvjfge5e-eeb9bf978074441e9192fd7853a8c00b-0-7f8eaf0d5da440db9898ef32efc25779.jpg",
+    "timestamp": "2026-05-15T00:20:56.340789Z",
+    "category": "politics"
+  },
+  {
+    "title": "US senators unanimously agree to suspend their own pay during government shutdowns",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/international/article/2026/05/14/us-senators-unanimously-agree-to-suspend-their-own-pay-during-government-shutdowns_6753464_4.html",
+    "first_paragraph": "The measure reflects an attempt to make federal closures financially painful for lawmakers after a string of record-breaking impasses in the past year.",
+    "summary": "The measure reflects an attempt to make federal closures financially painful for lawmakers after a string of record-breaking impasses in the past year.",
+    "image_url": "https://img.lemde.fr/2026/05/12/183/0/6408/3204/644/322/60/0/aec5ba7_ftp-1-vk1y0pomhvvb-5012070-01-06.jpg",
+    "timestamp": "2026-05-15T00:20:36.571608Z",
+    "category": "politics"
+  },
+  {
+    "title": "Shakira, Madonna to headline FIFA World Cup final",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/sport/soccer/shakira-madonna-to-headline-fifa-world-cup-final-20260515-p5zx72.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Shakira, Madonna and BTS will headline a Super Bowl-style half time show during the FIFA men's World Cup final.",
+    "summary": "Shakira, Madonna and BTS will headline a Super Bowl-style half time show during the FIFA men's World Cup final.",
+    "image_url": "https://static.ffx.io/images/$width_800%2C$height_450/t_crop_fill/q_86%2Cf_jpg/90b42349a2fd8af1f72c5b0e4f58930ee408c6bb",
+    "timestamp": "2026-05-15T00:20:11.031357Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "The Princess of Wales finishes Italian tour",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/lifestyle/the-princess-of-wales-finishes-italian-tour-20260515-p5zx7c.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "The Princess of Wales has put to practice her Italian cooking skills on the final day of her international tour.",
+    "summary": "The Princess of Wales has put to practice her Italian cooking skills on the final day of her international tour.",
+    "image_url": "https://static.ffx.io/images/$width_800%2C$height_450/t_crop_fill/q_86%2Cf_jpg/d6d609dbf2976d77c4a83d0622108b393ce480a3",
+    "timestamp": "2026-05-15T00:19:53.448072Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Illness is no limit: Student with severe genetic conditions emerges as a top Temasek Poly graduate",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/illness-is-not-her-limit-tp-student-with-critical-genetic-conditions-becomes-a-top-graduate",
+    "first_paragraph": "The TL;DR: Temasek Polytechnic graduate Gwyn Lim Qi Zheng lives with severe genetic illnesses that affected her mobility, eyesight, speech and other functions. Her learning journey has been markedly different from that of her peers, but she never gave up. Today, she is a recipient of the Ngee Ann Kongsi Most Outstanding Overcomer Award.",
+    "summary": "<p>Ms Gwyn Lim Qi Zheng's mobility, eyesight and speech have been affected by her illnesses.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/1dda73973dc4c8e7342dff8bcc76f0d3e8dddc82448307d0c09b7af7b5d433b1",
+    "timestamp": "2026-05-15T00:19:33.797144Z",
+    "category": "world"
+  },
+  {
+    "title": "Crypto industry scores win as Clarity Act regulation bill clears Senate hurdle",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/14/clarity-act-congress-crypto-senate.html",
+    "first_paragraph": "The cryptocurrency industry notched a key win after a Senate panel on Thursday approved the Clarity Act, the first wide-ranging piece of legislation pertaining to the new industry.",
+    "summary": "The Senate Banking Committee advanced a rules-of-the-road crypto bill known as the Clarity Act by a vote of 15-9.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108299012-1777463168692-gettyimages-1034363382-_koh1643_2.jpeg?v=1777463188&w=1920&h=1080",
+    "timestamp": "2026-05-15T00:18:54.589970Z",
+    "category": "politics"
+  },
+  {
+    "title": "Alex Honnold: \u2018You just see how much it matters\u2019",
+    "source": "Grist",
+    "url": "https://grist.org/grist-events/alex-honnold-you-just-see-how-much-it-matters/",
+    "first_paragraph": "Climber Alex Honnold is best-known for his daring feats, recently scaling Taiwan\u2019s Taipei 101 tower live on Netflix, but he\u2019s more typically climbing some of the world\u2019s most challenging natural landscapes. But he\u2019s also an advocate for renewable energy, and the foundation he started, the Honnold Foundation, supports community-led solar energy growth around the world.",
+    "summary": "At Grist\u2019s Turning the Tide event at SF Climate Week, free solo climber and solar energy advocate Alex Honnold shared how his love of climbing became a passion for empowering communities.",
+    "image_url": "https://grist.org/wp-content/uploads/2026/05/Honnold-event-still.jpg?quality=75&strip=all",
+    "timestamp": "2026-05-15T00:17:45.343125Z",
+    "category": "climate"
+  },
+  {
+    "title": "\u2018Organised chaos\u2019: how the Swans turned their weakness into a weapon",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/sport/afl/organised-chaos-how-the-swans-turned-their-weakness-into-a-weapon-20260514-p5zwob.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Swans midfielder Chad Warner cannot remember the last time he enjoyed his job so much. The reason? An \u201corganised chaos\u201d game plan under coach Dean Cox.",
+    "summary": "The Swans are top of the table going into Friday night\u2019s clash against Collingwood. Chad Warner says their unorthodox game plan is paying dividends.",
+    "image_url": "https://static.ffx.io/images/$zoom_0.20106322384659198%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_0%2C$y_98/t_crop_custom/q_86%2Cf_auto/686ee5e324c8f0046827c4590a59e9762197bbbd",
+    "timestamp": "2026-05-15T00:17:13.728054Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Gemini surges after Winklevoss Capital Fund invests $100 million in the crypto exchange",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/14/gemini-surges-after-winklevoss-capital-invests-100-million-in-the-crypto-exchange.html",
+    "first_paragraph": "Gemini Space Station, the crypto exchange founded and led by the Winklevoss brothers, saw shares surge in extended trading after it announced a $100 million capital injection from Winklevoss Capital Fund, the crypto billionaires' venture capital fund.",
+    "summary": "The company also topped revenue expectations for the quarter and posted a narrower-than-expected loss than analysts anticipated, according to FactSet.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108198236-17576943512025-09-12t162407z_1620249728_rc2dqgaf1uhw_rtrmadp_0_gemini-ipo.jpeg?v=1757694452&w=1920&h=1080",
+    "timestamp": "2026-05-15T00:15:49.826706Z",
+    "category": "business"
+  },
+  {
+    "title": "Canada is welcome to join Eurovision, says song contest director",
+    "source": "The Guardian",
+    "url": "https://www.theguardian.com/tv-and-radio/2026/may/15/canada-eurovision-song-contest",
+    "first_paragraph": "Canada is welcome to join Eurovision if it wishes, its director has said, months after the country revealed it wanted to \u201cexplore\u201d joining the song contest in its federal budget.",
+    "summary": "<p>\u2018We know that Mark Carney wants to sort of embrace Europe,\u2019 says competition director Martin Green</p><p>Canada is welcome to join Eurovision if it wishes, its director has said, months after the country revealed it wanted to \u201cexplore\u201d joining the song contest in its federal budget.</p><p>Eurovis",
+    "image_url": "https://i.guim.co.uk/img/media/0a05b8099c91e87f854dc7048c6898ec82bba159/616_0_5859_4688/master/5859.jpg?width=140&quality=85&auto=format&fit=max&s=c9ef56403addeb92a1301a8141a9f05d",
+    "timestamp": "2026-05-15T00:13:59.256123Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Australia soars into Eurovision final as UK song debuts",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/c9weyz8nk4ro?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "Pop star Delta Goodrem has dramatically increased Australia's odds of winning the Eurovision Song Contest, after a stunning performance of her power ballad, Eclipse, at Thursday's semi-final.",
+    "summary": "Delta Goodrem is now a favourite to win Eurovision, following a spectacular semi-final performance.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/c1ea/live/67040640-4fe8-11f1-bb02-e3cccdfcefab.jpg",
+    "timestamp": "2026-05-15T00:13:32.031467Z",
+    "category": "entertainment"
+  },
+  {
     "title": "This is The Best Player Development Team in MLB",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/sports/mlb/this-is-the-best-player-development-team-in-mlb-11952721",
