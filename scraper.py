@@ -81,6 +81,7 @@ VALID_CATEGORIES = [
 
 # Free Gemini first, then paid o1-mini, then stable fallbacks
 AI_MODELS = [
+    'mistral/mistral-small-3.2',            # cheap, Europe-based, hits first
     'google/gemini-2.0-flash-001',          # Gemini 2.0 Flash (stable release)
     'openai/o1-mini',                        # o1-mini (stable ID, no dated suffix)
     'openai/gpt-4o-mini',                    # fallback: reliable and cheap
