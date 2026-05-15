@@ -693,21 +693,33 @@ def scrape_news():
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
 
-    print("\nGenerating balance.json...")
+    print("\nGenerating balance.json entry...")
     balance_text = generate_balance(rejected_articles)
     if balance_text:
+        try:
+            with open('balance.json', 'r') as f:
+                balance_entries = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            balance_entries = []
+        balance_entries.insert(0, {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text})
         with open('balance.json', 'w') as f:
-            json.dump({'date': run_date, 'timestamp': run_timestamp, 'content': balance_text}, f, indent=2)
-        print("✓ balance.json written")
+            json.dump(balance_entries, f, indent=2)
+        print("✓ balance.json updated")
     else:
         print("✗ balance.json skipped (no rejected articles or AI failure)")
 
-    print("\nGenerating rallyingcry.json...")
+    print("\nGenerating rallyingcry.json entry...")
     rallying_text = generate_rallying_cry(new_articles)
     if rallying_text:
+        try:
+            with open('rallyingcry.json', 'r') as f:
+                rallying_entries = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            rallying_entries = []
+        rallying_entries.insert(0, {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text})
         with open('rallyingcry.json', 'w') as f:
-            json.dump({'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text}, f, indent=2)
-        print("✓ rallyingcry.json written")
+            json.dump(rallying_entries, f, indent=2)
+        print("✓ rallyingcry.json updated")
     else:
         print("✗ rallyingcry.json skipped (no approved articles or AI failure)")
 
