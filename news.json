@@ -1,5 +1,125 @@
 [
   {
+    "title": "Map Shows Where Northern Lights May Be Seen This Weekend",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/map-northern-lights-seen-this-weekend-11960917",
+    "first_paragraph": "A rare celestial display could light up skies across parts of the United States on Sunday night, with forecasters reporting that the aurora borealis (also called the northern lights in the northern hemisphere) may be visible far beyond its usual northern boundaries, thanks to heightened solar activity.",
+    "summary": "The northern lights may stretch far south this weekend as a solar storm boosts visibility across U.S. states.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/Copy-of-32-image-2026-05-17T145201.056.png?w=1200&crop=1",
+    "timestamp": "2026-05-17T15:45:37.911000Z",
+    "category": "ai"
+  },
+  {
+    "title": "Target Removing Cereals With Artificial Colors From Shelves This Month",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/target-removing-cereals-artificial-colors-11960978",
+    "first_paragraph": "Target is removing all cereals containing artificial colors from its shelves by the end of May\u2014replacing them with reformulated and dye-free alternatives.",
+    "summary": "Target is to remove artificial dye cereals by the end of the month, replacing them with cleaner, reformulated options.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/Copy-of-32-image-2026-05-17T153312.159.png?w=1200&crop=1",
+    "timestamp": "2026-05-17T15:45:24.604917Z",
+    "category": "business"
+  },
+  {
+    "title": "Bruno Fernandes equals assists record as Manchester United guarantee third place",
+    "source": "The Telegraph",
+    "url": "https://www.telegraph.co.uk/football/2026/05/17/man-utd-vs-nottingham-forest-live-score-latest-lineups-epl/",
+    "first_paragraph": "Bruno Fernandes sparked passionate debate after winning the Football Writers\u2019 Association player of the year award, yet there can be no doubts over his class this season. His assist here was his 20th of the campaign and is the joint-record, held also by Thierry Henry and Kevin De Bruyne.",
+    "summary": "Bruno Fernandes equals assists record as Manchester United guarantee third place",
+    "image_url": "https://www.telegraph.co.uk/content/dam/football/2026/05/17/TELEMMGLPICT000485099817_17790231614930_trans_NvBQzQNjv4BqK_vgMZMtToVksLIt2InIPdf11FLKtqwYaxK652uKeQE.jpeg",
+    "timestamp": "2026-05-17T15:45:02.303067Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Warriors fans light up Magic Round on Caxton Street",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/sport/nrl/warriors-fans-light-up-magic-round-on-caxton-street-20260517-p5zxxq.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Thousands of New Zealand Warriors fans march down Caxton Street towards Suncorp Stadium for the club's clash with the Broncos.",
+    "summary": "Thousands of New Zealand Warriors fans march down Caxton Street towards Suncorp Stadium for the club's clash with the Broncos.",
+    "image_url": "https://static.ffx.io/images/$width_800%2C$height_450/t_crop_fill/q_86%2Cf_jpg/732197fa5f617f5f038709a68d84eb3fd09228fd",
+    "timestamp": "2026-05-17T15:44:35.712968Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Eagles triple their AFL win count after big upset; Can Tigers name a full squad of 26 for Dreamtime?",
+    "source": "The Sydney Morning Herald",
+    "url": "https://www.smh.com.au/sport/afl/st-kilda-accounts-for-injury-riddled-richmond-tigers-as-real-challenges-await-20260517-p5zxtw.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
+    "first_paragraph": "Bailey Williams has produced the best game of his AFL career and Harley Reid was best afield as West Coast secured a shock 17-point win over GWS at Optus Stadium.",
+    "summary": "Bailey Williams has produced the best game of his AFL career and Harley Reid was best afield as West Coast shocked GWS. Meanwhile, Richmond are confident they will avoid having to call up VFL-listed top-up players against Essendon.",
+    "image_url": "https://static.ffx.io/images/$zoom_0.4285%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_431%2C$y_65/t_crop_custom/q_86%2Cf_auto/75d55d20654b04a9b5b32e4a146320a031c5254b",
+    "timestamp": "2026-05-17T15:44:21.937387Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "The \u2018Play, Instruct, Befriend\u2019 approach to parenting",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/parenting-education/the-play-instruct-befriend-approach-to-parenting",
+    "first_paragraph": "I\u2019m regularly asked these types of questions by friends or acquaintances I meet. It seems that writing a parenting column for a newspaper attracts such questions.",
+    "summary": "<p>They correspond to different stages when a child is growing up.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/2db82c486fcfed5e3fb1215db8264d2438b2873c64a79ffb5d5367ec1f75dab1",
+    "timestamp": "2026-05-17T15:44:05.483677Z",
+    "category": "arts"
+  },
+  {
+    "title": "Gaza Is Rebuilding With Lego-Like Bricks Made From Rubble",
+    "source": "Wired",
+    "url": "https://www.wired.com/story/gaza-is-rebuilding-with-lego-like-bricks-made-from-rubble/",
+    "first_paragraph": "Inside a makeshift workshop in Gaza, rebuilt after it was damaged by Israeli air strikes, Suleiman Abu Hassanin stands among piles of broken concrete, trying to give them a new form. His voice over the phone sounds tired, carrying the weight of what he is trying to do: rebuild in a place where building materials are no longer available.",
+    "summary": "As reconstruction materials remain blocked, Palestinians are crushing debris into interlocking blocks to build shelters from destruction.",
+    "image_url": "https://media.wired.com/photos/6a0776bdd75c523381f5884f/master/pass/Rubble_Lead.jpg",
+    "timestamp": "2026-05-17T15:43:32.959934Z",
+    "category": "world"
+  },
+  {
+    "title": "Top Wall Street analysts suggest these 3 stocks for their long-term prospects",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/17/top-analysts-suggest-these-3-stocks-for-their-long-term-prospects.html",
+    "first_paragraph": "The earnings season has revived investors' interest in artificial intelligence trades. Robust spending and strong demand for AI infrastructure have reinforced analysts' confidence in several stocks.",
+    "summary": "Robust spending and strong demand for AI infrastructure have reinforced analysts' confidence in several stocks after earnings season.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108285609-1774982732846-gettyimages-2269268367-emaz-1_em22544.jpeg?v=1775667155&w=1920&h=1080",
+    "timestamp": "2026-05-17T15:43:09.208474Z",
+    "category": "business"
+  },
+  {
+    "title": "Sonnet for the Tendered Garden",
+    "source": "The Atlantic",
+    "url": "https://www.theatlantic.com/books/2026/05/poem-jill-bialosky-sonnet/687197/?utm_source=feed",
+    "first_paragraph": "Tender shrub, green leaves of its foliage, the curl of a baby\u2019s fingernail, knocked over by storm, its brush crumbling to touch\u2014 how did I miss it\u2014it\u2019s all that I can do\u2014for those I could not save\u2014but twist the stubborn bush from its tangled roots & turn it upright as if giving birth to a baby in breach. I don\u2019t mind mud underneath my nails, worms my fingers touch (they enrich the soil), mosquitos swarming crazily (it\u2019s one hundred degrees!), circling my head like a halo of distrust. \u00a0 It\u2019s natu",
+    "summary": "A poem",
+    "image_url": "https://cdn.theatlantic.com/thumbor/ReRNhx37XKvvtYg7o2_FflPqGWE=/0x456:2400x1806/media/img/mt/2026/05/2026_05_15_Poem_the_tethered_garden/original.jpg",
+    "timestamp": "2026-05-17T15:42:50.573125Z",
+    "category": "arts"
+  },
+  {
+    "title": "Something Big Is Happening on Campus",
+    "source": "The Atlantic",
+    "url": "https://www.theatlantic.com/ideas/2026/05/david-brooks-something-is-going-right-at-universities/687200/?utm_source=feed",
+    "first_paragraph": "Roosevelt Mont\u00e1s grew up in a small mountain village in the Dominican Republic. Two days before his 12th birthday, his mother flew him up to New York, where she had found a minimum-wage job in a garment factory. A few years later, when he was a sophomore in high school, some neighbors in his apartment building threw out a bunch of books. One of them was a finely bound volume of Socratic dialogues. Mont\u00e1s snagged it\u2014and Socrates changed his life.",
+    "summary": "There\u2019s a lot going right at universities, if you're only willing to see it.",
+    "image_url": "https://cdn.theatlantic.com/thumbor/2U18D7uElhXjFdBIWJulkpS63tU=/media/img/mt/2026/05/2026_05_07_What_is_Going_Right_Universities/original.jpg",
+    "timestamp": "2026-05-17T15:42:36.138070Z",
+    "category": "arts"
+  },
+  {
+    "title": "What to know about Panama at the FIFA World Cup 2026",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/sports/2026/5/17/what-to-know-about-panama-at-the-fifa-world-cup-2026?traffic_source=rss",
+    "first_paragraph": "Panama are World Cup-bound for a second time in eight years, but in 2026, they\u2019re not there to just make up the numbers.",
+    "summary": "Panama are World Cup-bound for a second time in eight years, but in 2026, they&#039;re not there to just make up the numbers.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/03/AFP__20251119__84FT6G2__v1__HighRes__FblWc2026QualifierConcacafPanSlv-1773904945.jpg?resize=1920%2C1440",
+    "timestamp": "2026-05-17T15:41:57.343584Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "This new Irish trad band haven't released a record - but could be the next big thing",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/cz721w33ve1o?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "BIIRD had never played together when they stepped on stage in Trafalgar Square to face 10,000 people on St Patrick's Day 2024.",
+    "summary": "The all-female supergroup has sold out venues across the UK and Ireland, toured stadiums with Ed Sheeran, and built a global following - all without releasing a debut record.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/d194/live/8f78b630-5073-11f1-8b8c-6d33e1d5abb6.jpg",
+    "timestamp": "2026-05-17T15:41:08.582681Z",
+    "category": "entertainment"
+  },
+  {
     "title": "I Live With Another Single Mom\u2014We&#039;re Raising Our Kids in a &#039;Mommune&#039;",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/live-another-single-mom-raising-kids-mommune-11946890",
