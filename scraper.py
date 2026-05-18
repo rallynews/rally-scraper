@@ -405,7 +405,7 @@ Summary: {new_summary}
 
 Article 2:
 Title: {article['title']}
-Summary: {article.get('summary', article.get('first_paragraph', ''))[:300]}
+Summary: {article.get('summary', article.get('content', ''))[:300]}
 
 Rules:
 - YES if they're about the same specific event, announcement, or story
@@ -552,16 +552,17 @@ def ensure_table_exists(conn):
     with conn.cursor() as cursor:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS articles (
-                id            INT AUTO_INCREMENT PRIMARY KEY,
-                title         VARCHAR(1000) NOT NULL,
-                source        VARCHAR(200),
-                url           VARCHAR(2000) NOT NULL,
-                first_paragraph TEXT,
-                summary       TEXT,
-                image_url     VARCHAR(2000),
-                timestamp     DATETIME,
-                category      VARCHAR(50),
-                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                id              INT AUTO_INCREMENT PRIMARY KEY,
+                title           VARCHAR(1000) NOT NULL,
+                source          VARCHAR(200),
+                url             VARCHAR(2000) NOT NULL,
+                content         TEXT,
+                summary         TEXT,
+                image_url       VARCHAR(2000),
+                timestamp       DATETIME,
+                category        VARCHAR(50),
+                rally_originals TINYINT(1) NOT NULL DEFAULT 0,
+                created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_url (url(767))
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         """)
@@ -580,6 +581,46 @@ def load_existing_from_db(conn):
     used_images = {r['image_url'] for r in rows if r.get('image_url')}
     return list(rows), used_images
 
+def migrate_from_json(conn):
+    """One-time migration: insert all news.json articles into the DB if the table is empty."""
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) as count FROM articles")
+        if cursor.fetchone()['count'] > 0:
+            return
+
+    try:
+        with open('news.json', 'r') as f:
+            articles = json.load(f)
+    except FileNotFoundError:
+        print("No news.json found for migration — starting fresh")
+        return
+
+    if not articles:
+        return
+
+    print(f"First run: migrating {len(articles)} articles from news.json to database...")
+    with conn.cursor() as cursor:
+        for article in articles:
+            try:
+                cursor.execute("""
+                    INSERT IGNORE INTO articles
+                        (title, source, url, content, summary, image_url, timestamp, category, rally_originals)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0)
+                """, (
+                    article.get('title', ''),
+                    article.get('source', ''),
+                    article.get('url', ''),
+                    article.get('first_paragraph', article.get('content', '')),
+                    article.get('summary', ''),
+                    article.get('image_url', ''),
+                    article.get('timestamp', datetime.now().isoformat()),
+                    article.get('category', 'world'),
+                ))
+            except Exception as e:
+                print(f"  Warning: could not migrate '{article.get('title', '')[:60]}': {e}")
+    conn.commit()
+    print("✓ Migration complete")
+
 def save_articles_to_db(conn, articles):
     """Insert new articles; silently skips duplicates. Returns count inserted."""
     inserted = 0
@@ -588,13 +629,13 @@ def save_articles_to_db(conn, articles):
             try:
                 cursor.execute("""
                     INSERT IGNORE INTO articles
-                        (title, source, url, first_paragraph, summary, image_url, timestamp, category)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        (title, source, url, content, summary, image_url, timestamp, category, rally_originals)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 0)
                 """, (
                     article.get('title', ''),
                     article.get('source', ''),
                     article.get('url', ''),
-                    article.get('first_paragraph', ''),
+                    article.get('content', ''),
                     article.get('summary', ''),
                     article.get('image_url', ''),
                     article.get('timestamp', datetime.now().isoformat()),
@@ -606,6 +647,22 @@ def save_articles_to_db(conn, articles):
                 print(f"  Warning: could not insert '{article.get('title', '')[:60]}': {e}")
     conn.commit()
     return inserted
+
+def fetch_recent_articles(conn, limit=200):
+    """Fetch full articles from DB for news.json export."""
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT title, source, url, content, summary, image_url, timestamp, category, rally_originals
+            FROM articles
+            ORDER BY timestamp DESC
+            LIMIT %s
+        """, (limit,))
+        rows = cursor.fetchall()
+    # Convert datetime objects to ISO strings for JSON serialisation
+    for row in rows:
+        if isinstance(row.get('timestamp'), datetime):
+            row['timestamp'] = row['timestamp'].isoformat() + 'Z'
+    return rows
 
 # ═══════════════════════════════════════════════════════════════
 # MAIN SCRAPER
@@ -632,6 +689,7 @@ def scrape_news():
     try:
         db_conn = get_db_connection()
         ensure_table_exists(db_conn)
+        migrate_from_json(db_conn)
         existing_articles, used_images = load_existing_from_db(db_conn)
         existing_urls = {a['url'] for a in existing_articles}
         print(f"Loaded {len(existing_articles)} existing articles from database")
@@ -724,9 +782,9 @@ def scrape_news():
 
                     used_images.add(image_url)
 
-                    first_paragraph = extract_first_paragraph(url)
-                    if not first_paragraph:
-                        first_paragraph = summary[:500]
+                    content = extract_first_paragraph(url)
+                    if not content:
+                        content = summary[:500]
 
                     category = categorize_article(title, summary)
                     print(f"    ✓ Categorized as: {category}")
@@ -735,8 +793,8 @@ def scrape_news():
                         'title': title,
                         'source': source_name,
                         'url': url,
-                        'first_paragraph': first_paragraph,
-                        'summary': summary[:300] if summary else first_paragraph[:300],
+                        'content': content,
+                        'summary': summary[:300] if summary else content[:300],
                         'image_url': image_url,
                         'timestamp': datetime.now().isoformat() + 'Z',
                         'category': category
@@ -758,13 +816,18 @@ def scrape_news():
             print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
             break
 
-    # Save new articles to database
+    # Save new articles to database, then regenerate news.json from DB
     if db_conn:
         if new_articles:
             saved = save_articles_to_db(db_conn, new_articles)
             print(f"\nSaved {saved} new articles to database")
         else:
             print("\nNo new articles to save")
+
+        articles_for_json = fetch_recent_articles(db_conn)
+        with open('news.json', 'w') as f:
+            json.dump(articles_for_json, f, indent=2)
+        print("✓ news.json updated from database")
         db_conn.close()
     else:
         print("\nWarning: No database connection — articles not saved")
