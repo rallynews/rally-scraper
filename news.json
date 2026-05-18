@@ -1,5 +1,85 @@
 [
   {
+    "title": "New Hungarian PM opens Viktor Orban's luxurious offices to the public",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/international/article/2026/05/18/new-hungarian-pm-discloses-viktor-orban-s-luxurious-offices_6753545_4.html",
+    "first_paragraph": "P\u00e9ter Magyar launched a media campaign on Friday, signaling a break with his far-right predecessor, who was notorious for allowing corruption to flourish among his inner circle.",
+    "summary": "P\u00e9ter Magyar launched a media campaign on Friday, signaling a break with his far-right predecessor, who was notorious for allowing corruption to flourish among his inner circle.",
+    "image_url": "https://img.lemde.fr/2026/05/15/464/0/5568/2784/644/322/60/0/2badea1_ftp-1-baidlnbhlvrp-5038396-01-06.jpg",
+    "timestamp": "2026-05-18T12:08:27.258432Z",
+    "category": "politics"
+  },
+  {
+    "title": "'Trash!': New book by Canadian garbage collector-anthropologist has become a social phenomenon",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/books/article/2026/05/18/trash-new-book-by-canadian-garbage-collector-anthropologist-has-become-a-social-phenomenon_6753551_33.html",
+    "first_paragraph": "The author and garbage collector, who juggled waste collection work with higher education studies, has written a book about his experience.",
+    "summary": "The author and garbage collector, who juggled waste collection work with higher education studies, has written a book about his experience.",
+    "image_url": "https://img.lemde.fr/2026/05/05/803/0/2362/1181/644/322/60/0/246bdf1_upload-1-f2fw62uo4jka-37a2323.jpg",
+    "timestamp": "2026-05-18T12:08:12.523092Z",
+    "category": "arts"
+  },
+  {
+    "title": "3 retailers caught using misleading website features such as fake visitor counts, countdown timers",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/3-online-retailers-caught-using-misleading-website-features-such-as-fake-visitor-counts-countdown",
+    "first_paragraph": "Misleading features included fake visitor counts, fabricated countdown timers and false discount claims were used to create fake urgency and demand.",
+    "summary": "<p>They did this to influence shoppers and have since stopped these practices.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/b048f64d9374317d58cc0c91d8dc26face375047331ec8ffb6c2fc91e3957fa1",
+    "timestamp": "2026-05-18T12:07:44.710920Z",
+    "category": "business"
+  },
+  {
+    "title": "Eight start-ups compete for funding awards totalling up to $4m at sustainability challenge final",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/environment/eight-start-ups-compete-for-funding-awards-totalling-up-to-4m-at-sustainability-challenge-final",
+    "first_paragraph": "A panel comprising leaders from government, finance, industry and the technical community selecting finalists during a shortlisting session in March.",
+    "summary": "<p>The companies will pitch solutions for tackling carbon emissions and climate adaptation.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/2c0cf47b9cc3f74221193b38ac37c4a0a00cc5b32fb33765114e362aaff1ef41",
+    "timestamp": "2026-05-18T12:07:22.444026Z",
+    "category": "climate"
+  },
+  {
+    "title": "South Korea\u2019s LetinAR is building optics behind AI glasses",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/18/south-koreas-letinar-is-building-the-optics-behind-ai-glasses/",
+    "first_paragraph": "Imagine you\u2019re riding a motorcycle at 160 kilometers per hour when an arrow appears, floating on the road ahead, telling you exactly where to turn. No phone, no dashboard. Just your helmet, and a lens the size of a thumbnail.",
+    "summary": "A lens the size of a thumbnail \u2014 and the South Korean startup that makes it could become the optical backbone of the AI glasses era.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2024/05/GettyImages-1446311598.jpg?resize=1200,800",
+    "timestamp": "2026-05-18T12:06:53.872170Z",
+    "category": "ai"
+  },
+  {
+    "title": "Supercharging Immune Cells May Help Control HIV Long-Term",
+    "source": "Wired",
+    "url": "https://www.wired.com/story/car-t-therapy-may-help-control-hiv-long-term/",
+    "first_paragraph": "A Miracle cancer therapy that involves engineering a patient\u2019s own immune cells is being repurposed for HIV, and early results from two individuals hint at its promise for long-term control of the virus.",
+    "summary": "CAR-T cell therapy is already a potent treatment for certain cancers. Now, a small study is showing early promise for managing HIV.",
+    "image_url": "https://media.wired.com/photos/69f4dfcbdc16e4cd0edbb51d/master/pass/GettyImages-1187902849.jpg",
+    "timestamp": "2026-05-18T12:06:36.025088Z",
+    "category": "ai"
+  },
+  {
+    "title": "NextEra Energy to buy Dominion in deal that unites two key players in race to power AI data centers",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/18/nextera-nee-dominion-energy-d-data-center-ai.html",
+    "first_paragraph": "NextEra Energy will buy Dominion Energy in an all-stock deal that unites two leading players in the race to meet growing electricity demand from data centers that run artificial intelligence applications.",
+    "summary": "Dominion powers the world's largest data center market in Northern Virginia. NextEra is the biggest renewable energy developer in the U.S.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108308244-1779104802499-gettyimages-2273371079-TSCHNEIDER_66022_NextEra_Energy_P8528653.jpeg?v=1779104829&w=1920&h=1080",
+    "timestamp": "2026-05-18T12:06:06.064656Z",
+    "category": "business"
+  },
+  {
+    "title": "Rai first Englishman to win US PGA Championship since 1919",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/sport/golf/articles/c86d4lv37vwo?at_medium=RSS&at_campaign=rss",
+    "first_paragraph": "-9 A Rai (Eng); -6 J Rahm (Spa), A Smalley (US); -5 J Thomas (US), L Aberg (Swe), M Schmid (Ger); -4 C Smith (Aus), R McIlroy (NI), X Schauffele (US)",
+    "summary": "England's Aaron Rai wins the first major title of his career with a magnificent final-round 65 in the US PGA Championship at Aronimink.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/095a/live/87486e70-5248-11f1-b682-cf91850925ea.jpg",
+    "timestamp": "2026-05-18T12:03:21.019328Z",
+    "category": "entertainment"
+  },
+  {
     "title": "Norway's princess does first event in Sydney",
     "source": "The Sydney Morning Herald",
     "url": "https://www.smh.com.au/lifestyle/norways-princess-does-first-event-in-sydney-20260518-p5zxym.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
