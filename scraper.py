@@ -694,7 +694,7 @@ def scrape_news():
         existing_urls = {a['url'] for a in existing_articles}
         print(f"Loaded {len(existing_articles)} existing articles from database")
     except Exception as e:
-        print(f"Warning: Could not connect to database: {e}")
+        print(f"Warning: Could not connect to database ({type(e).__name__}): {e}")
 
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
@@ -867,7 +867,6 @@ def scrape_news():
 
     print("\n" + "═" * 60)
     print(f"COMPLETE: {len(new_articles)} new articles added")
-    print(f"Total articles: {len(final_articles)}")
     print("═" * 60)
 
 if __name__ == '__main__':
