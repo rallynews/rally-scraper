@@ -695,6 +695,16 @@ def scrape_news():
         print(f"Loaded {len(existing_articles)} existing articles from database")
     except Exception as e:
         print(f"Warning: Could not connect to database ({type(e).__name__}): {e}")
+        try:
+            with open('news.json', 'r') as f:
+                existing_articles = json.load(f)
+                for article in existing_articles:
+                    article.pop('rallying_cry', None)
+                used_images = {a.get('image_url') for a in existing_articles if a.get('image_url')}
+                existing_urls = {a['url'] for a in existing_articles}
+                print(f"Falling back to news.json: {len(existing_articles)} existing articles loaded")
+        except FileNotFoundError:
+            print("No news.json found either — starting fresh")
 
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
@@ -830,7 +840,18 @@ def scrape_news():
         print("✓ news.json updated from database")
         db_conn.close()
     else:
-        print("\nWarning: No database connection — articles not saved")
+        print("\nNo database connection — writing to news.json only")
+        all_articles = new_articles + existing_articles
+        seen_urls = set()
+        unique_articles = []
+        for article in all_articles:
+            if article['url'] not in seen_urls:
+                seen_urls.add(article['url'])
+                unique_articles.append(article)
+        unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
+        with open('news.json', 'w') as f:
+            json.dump(unique_articles[:200], f, indent=2)
+        print("✓ news.json updated")
 
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
