@@ -13,12 +13,20 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import time
 import os
+import pymysql
+import pymysql.cursors
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+
+DB_HOST = 'db5020489014.hosting-data.io'
+DB_PORT = 3306
+DB_NAME = 'dbs15689792'
+DB_USER = 'dbu2620088'
+DB_PASS = os.environ.get('DB_PASS')
 
 # Strict whitelist - ONLY these sources allowed
 WHITELISTED_SOURCES = {
@@ -525,6 +533,81 @@ def get_article_image(entry, used_images):
     return None
 
 # ═══════════════════════════════════════════════════════════════
+# DATABASE
+# ═══════════════════════════════════════════════════════════════
+
+def get_db_connection():
+    return pymysql.connect(
+        host=DB_HOST,
+        port=DB_PORT,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
+        charset='utf8mb4',
+        cursorclass=pymysql.cursors.DictCursor,
+        connect_timeout=10,
+    )
+
+def ensure_table_exists(conn):
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS articles (
+                id            INT AUTO_INCREMENT PRIMARY KEY,
+                title         VARCHAR(1000) NOT NULL,
+                source        VARCHAR(200),
+                url           VARCHAR(2000) NOT NULL,
+                first_paragraph TEXT,
+                summary       TEXT,
+                image_url     VARCHAR(2000),
+                timestamp     DATETIME,
+                category      VARCHAR(50),
+                created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_url (url(767))
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        """)
+    conn.commit()
+
+def load_existing_from_db(conn):
+    """Return (list of article dicts, set of used image URLs) for the last 200 articles."""
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT title, source, url, summary, image_url, category, timestamp
+            FROM articles
+            ORDER BY timestamp DESC
+            LIMIT 200
+        """)
+        rows = cursor.fetchall()
+    used_images = {r['image_url'] for r in rows if r.get('image_url')}
+    return list(rows), used_images
+
+def save_articles_to_db(conn, articles):
+    """Insert new articles; silently skips duplicates. Returns count inserted."""
+    inserted = 0
+    with conn.cursor() as cursor:
+        for article in articles:
+            try:
+                cursor.execute("""
+                    INSERT IGNORE INTO articles
+                        (title, source, url, first_paragraph, summary, image_url, timestamp, category)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    article.get('title', ''),
+                    article.get('source', ''),
+                    article.get('url', ''),
+                    article.get('first_paragraph', ''),
+                    article.get('summary', ''),
+                    article.get('image_url', ''),
+                    article.get('timestamp', datetime.now().isoformat()),
+                    article.get('category', 'world'),
+                ))
+                if cursor.rowcount > 0:
+                    inserted += 1
+            except Exception as e:
+                print(f"  Warning: could not insert '{article.get('title', '')[:60]}': {e}")
+    conn.commit()
+    return inserted
+
+# ═══════════════════════════════════════════════════════════════
 # MAIN SCRAPER
 # ═══════════════════════════════════════════════════════════════
 
@@ -540,19 +623,20 @@ def scrape_news():
 
     start_time = time.time()
 
-    # Load existing articles
+    # Load existing articles from database
     existing_articles = []
     used_images = set()
+    existing_urls = set()
+    db_conn = None
 
     try:
-        with open('news.json', 'r') as f:
-            existing_articles = json.load(f)
-            for article in existing_articles:
-                article.pop('rallying_cry', None)
-            used_images = {a.get('image_url') for a in existing_articles if a.get('image_url')}
-            print(f"Loaded {len(existing_articles)} existing articles")
-    except FileNotFoundError:
-        print("No existing articles found")
+        db_conn = get_db_connection()
+        ensure_table_exists(db_conn)
+        existing_articles, used_images = load_existing_from_db(db_conn)
+        existing_urls = {a['url'] for a in existing_articles}
+        print(f"Loaded {len(existing_articles)} existing articles from database")
+    except Exception as e:
+        print(f"Warning: Could not connect to database: {e}")
 
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
@@ -610,7 +694,7 @@ def scrape_news():
                     if not all([title, url]):
                         continue
 
-                    if any(a['url'] == url for a in existing_articles):
+                    if url in existing_urls:
                         continue
 
                     # Cap: no more than 2 new articles per source per run
@@ -674,24 +758,16 @@ def scrape_news():
             print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
             break
 
-    # Merge and deduplicate
-    all_articles = new_articles + existing_articles
-
-    seen_urls = set()
-    unique_articles = []
-    for article in all_articles:
-        if article['url'] not in seen_urls:
-            seen_urls.add(article['url'])
-            unique_articles.append(article)
-
-    unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
-
-    # All existing articles are preserved; the 48-hour filter only applies to
-    # new RSS candidates above, so nothing already in news.json is ever dropped.
-    final_articles = unique_articles
-
-    with open('news.json', 'w') as f:
-        json.dump(final_articles, f, indent=2)
+    # Save new articles to database
+    if db_conn:
+        if new_articles:
+            saved = save_articles_to_db(db_conn, new_articles)
+            print(f"\nSaved {saved} new articles to database")
+        else:
+            print("\nNo new articles to save")
+        db_conn.close()
+    else:
+        print("\nWarning: No database connection — articles not saved")
 
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
