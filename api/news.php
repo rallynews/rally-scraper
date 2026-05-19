@@ -47,16 +47,15 @@ if ($method === 'GET') {
         $stmt = $pdo->prepare("
             SELECT title, source, url, content, summary, image_url, timestamp, category, rally_originals
             FROM articles WHERE category = ?
-            ORDER BY timestamp DESC LIMIT ? OFFSET ?
+            ORDER BY timestamp DESC LIMIT $limit OFFSET $offset
         ");
-        $stmt->execute([$category, $limit, $offset]);
+        $stmt->execute([$category]);
     } else {
-        $stmt = $pdo->prepare("
+        $stmt = $pdo->query("
             SELECT title, source, url, content, summary, image_url, timestamp, category, rally_originals
             FROM articles
-            ORDER BY timestamp DESC LIMIT ? OFFSET ?
+            ORDER BY timestamp DESC LIMIT $limit OFFSET $offset
         ");
-        $stmt->execute([$limit, $offset]);
     }
 
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
