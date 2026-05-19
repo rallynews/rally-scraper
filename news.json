@@ -1,13 +1,164 @@
 [
   {
+    "title": "Map Shows Most Affordable Cities to Buy a Home",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/map-shows-most-affordable-cities-to-buy-a-home-11968347",
+    "content": "A newly released study by personal finance website WalletHub has ranked the most affordable cities in the U.S. to purchase a home, with Flint and Detroit, Michigan, and Surprise, Arizona, taking the top three spots.",
+    "summary": "A new study compared 300 U.S. cities on metrics including home purchase and maintenance costs, and tax and vacancy rates.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/Copy-of-32-circle-inset-right-11-2.jpg?w=1200&crop=1",
+    "timestamp": "2026-05-19T18:30:03.837335Z",
+    "category": "business"
+  },
+  {
+    "title": "NFL Announces Host City For 2028 Draft: Report",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/sports/nfl/nfl-announces-host-city-for-2028-draft-reportthe-11969287",
+    "content": "The NFL draft in Pittsburgh was a major success, drawing more than 500,000 fans over the three-day event and further reinforcing the league\u2019s decision to take the draft on the road, a move first introduced in 2015.",
+    "summary": "Commissioner Roger Goodell and the NFL have officially announced the host city for the 2028 NFL Draft.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2273161879.jpg?w=1200&crop=1",
+    "timestamp": "2026-05-19T18:29:37.301898Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "The best spa hotels in Devon",
+    "source": "The Telegraph",
+    "url": "https://www.telegraph.co.uk/travel/destinations/europe/united-kingdom/england/devon/articles/the-best-spa-hotels-in-devon/",
+    "content": "From sleek coastal retreats and state-of-the-art wellness spaces to traditional country house escapes with inviting outdoor pools",
+    "summary": "From sleek coastal retreats and state-of-the-art wellness spaces to traditional country house escapes with inviting outdoor pools",
+    "image_url": "https://www.telegraph.co.uk/content/dam/Travel/hotels/2024/may/sidmouth-harbour-hotel-devon.jpg",
+    "timestamp": "2026-05-19T18:29:16.179619Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Polytechnic students create AI chatbot to improve access to special needs resources and support",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/parenting-education/polytechnic-students-create-ai-chatbot-to-improve-access-to-special-needs-resources-and-support",
+    "content": "Senior Minister of State for Culture, Community and Youth Low Yen Ling speaking with students at the South West Community Inno Lab Symposium on May 19.",
+    "summary": "<p>Many forms of support exist, but applying for schemes was not easy as info was not easy to find.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/c2258e3807dc505530a82add4b5a607bc8acf722702f5d26fd5a5bd12b1fbbe9",
+    "timestamp": "2026-05-19T18:28:42.209526Z",
+    "category": "ai"
+  },
+  {
+    "title": "First S\u2019pore climate adaptation plan to take stock of current efforts and identify risks",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/singapore/environment/first-spore-adaptation-plan-to-identify-risks-and-take-stock-of-current-measures-rather-than-new",
+    "content": "Mr Sean Kidney, CEO of the Climate Bonds Initiative; Minister for Sustainability and the Environment Grace Fu and Mr Kelvin Wong, Chief Sustainability Officer, DBS, in conversation on May 19.",
+    "summary": "<p>Climate adaptation is a key area in bolstering ASEAN\u2019s resilience, said minister Grace Fu.</p>",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/fdca14cb172c2c341f1dc63361432ac8d14ddd98293e94ae3bdc7f40d809992c",
+    "timestamp": "2026-05-19T18:28:25.987254Z",
+    "category": "climate"
+  },
+  {
+    "title": "Civilization VII finally lets you build a civ that stands the test of time",
+    "source": "Ars Technica",
+    "url": "https://arstechnica.com/gaming/2026/05/civilization-vii-finally-lets-you-build-a-civilization-that-stands-the-test-of-time/",
+    "content": "\u201cBuild a civilization to stand the test of time.\u201d That was the promise on the box of Sid Meier\u2019s Civilization, the first in a long-running strategy game franchise that has evolved over 35 years and seven mainline entries.",
+    "summary": "<em>Civ 7</em>\u2019s devs talk walking back the game's most controversial decision.",
+    "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/Civ-7-Test-of-Time-map-1152x648-1779159382.jpg",
+    "timestamp": "2026-05-19T18:27:59.633572Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "With Gemini 3.5 Flash, Google bets its next AI wave on agents, not chatbots",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/19/with-gemini-3-5-flash-google-bets-its-next-ai-wave-on-agents-not-chatbots/",
+    "content": "Google launched on Tuesday Gemini 3.5 Flash, a new AI model that the company says is its strongest yet for coding and autonomous AI agents. The model, which was introduced at the company\u2019s annual I/O developer conference, can independently execute coding pipelines, manage research projects, and, in internal tests, build an operating system entirely from scratch.",
+    "summary": "Google launched Gemini 3.5 Flash, its most powerful coding and agentic AI model yet, at the company's annual developer conference. It is capable of autonomously executing complex tasks and building software from scratch.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/IMG_1192.jpg?resize=1200,900",
+    "timestamp": "2026-05-19T18:27:36.263173Z",
+    "category": "ai"
+  },
+  {
+    "title": "Google\u2019s Genie world model can now simulate real streets with Street View",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/19/googles-genie-world-model-can-now-simulate-real-streets-with-street-view/",
+    "content": "We\u2019ve all pulled up Street View on Google Maps to show a friend what our childhood home looked like, or dropped that little person icon onto the streets of Paris to see if we booked a hotel in a cool neighborhood. Imagine being able to do that, but in a more immersive, interactive way that allows you to really simulate the street and its environs, and even do things like adjust the weather or see what it would look like in a \u201cDay After Tomorrow\u201d scenario.",
+    "summary": "Google DeepMind is integrating Street View with Project Genie to create immersive, interactive world simulations for robotics, gaming, and travel, allowing users to explore environments, weather changes, and rare scenarios.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/Genie-Street-View-NYC.png?resize=1200,662",
+    "timestamp": "2026-05-19T18:26:57.096298Z",
+    "category": "ai"
+  },
+  {
+    "title": "Hands-On With All of Google\u2019s New Upcoming Android XR Smart Glasses",
+    "source": "Wired",
+    "url": "https://www.wired.com/story/hands-on-with-all-of-google-new-upcoming-android-xr-smart-glasses/",
+    "content": "Google has been teasing its Android XR-powered smart glasses for the past year and a half\u2014ever since it first announced the new mixed reality platform in December of 2024. Now, we're finally starting to see more polished versions of the hardware, several of which will actually go on sale this fall.",
+    "summary": "Here's your first look at smart glasses coming from Warby Parker and Gentle Monster, powered by Google and Samsung's XR platform.",
+    "image_url": "https://media.wired.com/photos/6a0c63e389f2122401dbdda2/master/pass/Google%20Reference%20Design%20Smart%20Glasses%20SOURCE%20Julian%20Chokkattu(1).jpg",
+    "timestamp": "2026-05-19T18:26:16.578409Z",
+    "category": "ai"
+  },
+  {
+    "title": "AI-powered whale-spotting tech may help save San Francisco Bay\u2019s gray whales",
+    "source": "Science News",
+    "url": "https://www.sciencenews.org/article/ai-tech-save-gray-whales",
+    "content": "A gray whale surfaces in San Francisco Bay on February 26. Whales are increasingly foraging in the heavily trafficked bay, facing danger of collision with ships.",
+    "summary": "An AI trained to use thermal images to detect whale body heat could help warn ships at risk of colliding with the marine mammals.",
+    "image_url": "https://www.sciencenews.org/wp-content/uploads/sites/2/2026/05/051926_CG_whales_main.jpg?w=800",
+    "timestamp": "2026-05-19T18:25:18.238162Z",
+    "category": "ai"
+  },
+  {
+    "title": "What freediving can reveal about human health \u2014 and our limits",
+    "source": "Science News",
+    "url": "https://www.sciencenews.org/article/freediving-physical-mental-limits-risks",
+    "content": "The extreme activity offers clues to lung and heart function that may improve treatments for common conditions",
+    "summary": "The practice of freediving is teaching physiologists how humans stretch their physical and mental limits, which in turn may improve treatments for lung and heart ailments.",
+    "image_url": "https://www.sciencenews.org/wp-content/uploads/sites/2/2026/05/0626_freediving_main.jpg?w=800",
+    "timestamp": "2026-05-19T18:24:36.290091Z",
+    "category": "ai"
+  },
+  {
+    "title": "Scientists race to develop Ebola drugs as outbreak surges",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/scientists-race-to-develop-ebola-drugs-as-outbreak-surges/",
+    "content": "Clinical trials for treatments against Ebola Bundibugyo virus are \u2018in a strong position\u2019 to be launched quickly in the Democratic Republic of the Congo and Uganda",
+    "summary": "<p>Clinical trials for treatments against Ebola Bundibugyo virus are &lsquo;in a strong position&rsquo; to be launched quickly in the Democratic Republic of the Congo and Uganda</p>",
+    "image_url": "https://static.scientificamerican.com/dam/asset/0521f452-b2d8-48e7-a0fb-2c795caa1509/ebola-vax-race.jpeg?m=1779196408.294&w=1200",
+    "timestamp": "2026-05-19T18:23:59.820819Z",
+    "category": "world"
+  },
+  {
+    "title": "\u2018Sensational\u2019 proof topples decades-old geometry problem",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/sensational-proof-topples-decades-old-geometry-problem/",
+    "content": "The sudden resolution of a well-known conjecture highlights the growing adoption of AI as an assistant in high-level mathematics",
+    "summary": "<p>The sudden resolution of a well-known conjecture highlights the growing adoption of AI as an assistant in high-level mathematics</p>",
+    "image_url": "https://static.scientificamerican.com/dam/asset/db9694af-000f-4c43-8d14-aaa0ad6c2f22/dot-shapes.jpg?m=1779206280.186&w=1200",
+    "timestamp": "2026-05-19T18:23:31.993122Z",
+    "category": "ai"
+  },
+  {
+    "title": "Anthropic hires OpenAI co-founder Andrej Karpathy, former Tesla AI leader",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/19/anthropic-hires-openai-cofounder-andrej-karpathy-former-tesla-ai-lead.html",
+    "content": "Andrej Karpathy, an artificial intelligence researcher who co-founded OpenAI before getting poached by Tesla, announced on Tuesday that he's joining Anthropic.",
+    "summary": "Andrej Karpathy, an artificial intelligence researcher who co-founded OpenAI before getting poached by Tesla, said he's joining Anthropic.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108309104-1779203699975-gettyimages-1321808924-56140952.jpeg?v=1779203735&w=1920&h=1080",
+    "timestamp": "2026-05-19T18:22:56.307942Z",
+    "category": "ai"
+  },
+  {
+    "title": "A Cheap Fix for Urban Crime",
+    "source": "The Atlantic",
+    "url": "https://www.theatlantic.com/ideas/2026/05/fix-urban-disorder-crime/687205/?utm_source=feed",
+    "content": "In the summer of 2014, the new mayor of New York City had a problem. Bill de Blasio had campaigned against aggressive policing, particularly the city\u2019s controversial policy of briefly detaining people and patting them down for weapons. Stop-and-frisk, which a federal court had ruled was discriminatory as practiced, had been touted as a form of crime prevention. Some New Yorkers feared that the progressive mayor, by dismissing the tactics of local police, would invite a rise in violence and disor",
+    "summary": "Instead of expanding arrests, try adding better lights.",
+    "image_url": "https://cdn.theatlantic.com/thumbor/k_0jLeOVl_kdG5wyam2oJwKZfWQ=/media/img/mt/2026/05/2026_05_16_The_Better_Way_to_Handle_Urban_Disorder_Elizabeth_Glazer/original.jpg",
+    "timestamp": "2026-05-19T18:22:37.856381Z",
+    "category": "politics"
+  },
+  {
     "title": "Spurs Coach Reacts to Victor Wembanyama&#039;s Game-Tying 3-Pointer vs Thunder",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/sports/nba/spurs-coach-reacts-to-victor-wembanyamas-game-tying-3-pointer-vs-thunder-11967377",
     "content": "Trailing by three points with just under 27 seconds left, San Antonio Spurs star Victor Wembanyama hit a three-point shot reminiscent of Steph Curry, a 28-foot bomb that knotted the game at 108 points apiece.",
     "summary": "San Antonio Spurs head coach Mitch Johnson reacted to Victor Wembanyama&#039;s game-tying three-pointer vs. Oklahoma City.",
     "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2276770773.jpg?w=1200&crop=1",
-    "timestamp": "2026-05-19T13:58:43.766922Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-19 13:58:43",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "The future of robot armies is here \u2013 and it\u2019s not what you think",
@@ -16,8 +167,9 @@
     "content": "Robots are becoming more a part of our lives every year, and worries about a robot army rising up have long plagued the technology. But columnist Annalee Newitz talks to nanobot researchers and finds out the real robot army could be a welcome solution to medical or environmental problems",
     "summary": "Robots are becoming more a part of our lives every year, and worries about a robot army rising up have long plagued the technology. But columnist Annalee Newitz talks to nanobot researchers and finds out the real robot army could be a welcome solution to medical or environmental problems",
     "image_url": "https://images.newscientist.com/wp-content/uploads/2026/05/18155012/SEI_297313245.jpg",
-    "timestamp": "2026-05-19T13:58:24.232097Z",
-    "category": "ai"
+    "timestamp": "2026-05-19 13:58:24",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "Colossal Biosciences is growing chickens in a 3D-printed container",
@@ -26,8 +178,9 @@
     "content": "In an early step towards artificial wombs, a biotech company claims it\u2019s developed a \u201cfully artificial\u201d chicken egg.",
     "summary": "The baby chicks were shifting and starting to pip\u2014or trying to hatch. But not from an egg.&#160; Instead, these chickens were growing inside transparent 3D-printed plastic cups at the Dallas headquarters of Colossal Biosciences. The biotech company today claimed it has developed a \u201cfully artificial ",
     "image_url": "https://wp.technologyreview.com/wp-content/uploads/2026/05/Hatch_2.jpg?resize=1200,600",
-    "timestamp": "2026-05-19T13:54:47.412622Z",
-    "category": "ai"
+    "timestamp": "2026-05-19 13:54:47",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "In addition to space stations, Vast says it will now build high-power satellites",
@@ -36,8 +189,9 @@
     "content": "As part of its plan to develop a private space station, Vast Space built and then launched a small demonstration spacecraft in early November. This vehicle then completed dozens of test objectives with flying colors before making a successful de-orbit three months later.",
     "summary": "\"Every single successful space company is diversified in its products.\"",
     "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/VAST-Satellite_watermark-1152x648.jpg",
-    "timestamp": "2026-05-19T13:53:21.493764Z",
-    "category": "ai"
+    "timestamp": "2026-05-19 13:53:21",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "Stilta raises $10.5M from a16z and YC to help companies rediscover the patents they forgot they had",
@@ -46,8 +200,9 @@
     "content": "He was just 18 when he launched his first startup, building machine learning models for sports betting. \u201cI\u2019ve always been drawn to solving difficult data problems,\u201d he told TechCrunch. He went on to consulting, where he helped companies with their AI integration strategies and learned what it took to get large enterprises to embrace the technology.",
     "summary": "Stilta announced Tuesday a $10 million seed round led by Andreessen Horowitz. Other investors in the round include YC and operators from companies like OpenAI, Legora, and Lovable.",
     "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/Stilta_founders.jpg?resize=1200,800",
-    "timestamp": "2026-05-19T13:51:55.001391Z",
-    "category": "business"
+    "timestamp": "2026-05-19 13:51:55",
+    "category": "business",
+    "rally_originals": 0
   },
   {
     "title": "Female beast hunters battled leopards in ancient Rome",
@@ -56,8 +211,9 @@
     "content": "Mosaic depictions of a weapon-wielding female gladiator are the first physical evidence showing women in ancient Rome could be skilled beast hunters",
     "summary": "<p>Mosaic depictions of a weapon-wielding female gladiator are the first physical evidence showing women in ancient Rome could be skilled beast hunters</p>",
     "image_url": "https://static.scientificamerican.com/dam/asset/e7c632d2-2515-4be7-99f2-8556240bcc8d/mosaic_web.png?m=1778873172.045&w=1200",
-    "timestamp": "2026-05-19T13:50:27.086644Z",
-    "category": "arts"
+    "timestamp": "2026-05-19 13:50:27",
+    "category": "arts",
+    "rally_originals": 0
   },
   {
     "title": "A History of \u2018Utterly Ordinary People\u2019",
@@ -66,8 +222,9 @@
     "content": "The historian Ada Ferrer\u2019s new family memoir retells the story of Cuba through the individuals who matter most to her.",
     "summary": "The historian Ada Ferrer\u2019s new family memoir retells the story of Cuba through the individuals who matter most to her.",
     "image_url": "https://cdn.theatlantic.com/thumbor/Bk6_Q5NWOzutOzzdmalLiXJNLgs=/media/img/mt/2026/05/2025_05_14_What_History_Does_to_a_Family/original.jpg",
-    "timestamp": "2026-05-19T13:47:29.862631Z",
-    "category": "arts"
+    "timestamp": "2026-05-19 13:47:29",
+    "category": "arts",
+    "rally_originals": 0
   },
   {
     "title": "Ronaldo to lead Portugal at sixth World Cup as Martinez names squad",
@@ -76,8 +233,9 @@
     "content": "Cristiano Ronaldo will embark on a sixth World Cup at the age of 41 after Portugal coach Roberto Martinez named him in a 27-man squad for the tournament, with a symbolic \u201cplus one\u201d in memory of the late Diogo Jota.",
     "summary": "Diogo Jota named as an honorary &#039;plus-one&#039; player in Portugal&#039;s squad for the FIFA World Cup 2026.",
     "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/AP26131781003576-1779196260.jpg?resize=1920%2C1440",
-    "timestamp": "2026-05-19T13:44:11.163820Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-19 13:44:11",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "'Big game scorer' Stewart and Curtis make Scotland World Cup squad",
@@ -86,8 +244,9 @@
     "content": "Ross Stewart \"can score big goals in big games\", says Scotland head coach Steve Clarke after ending the striker's four years in the international wilderness with a place in this summer's World Cup squad.",
     "summary": "Ross Stewart and Findlay Curtis are named in Scotland's World Cup squad but there is no place for Lennon Miller.",
     "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/434f/live/bc3d9850-536d-11f1-89a3-d1f559421220.png",
-    "timestamp": "2026-05-19T13:37:30.442874Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-19 13:37:30",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "Fundraiser for Security Guard Killed At San Diego Mosque Raises Over $1M",
@@ -2023,171 +2182,6 @@
     "image_url": "https://static.ffx.io/images/$width_800%2C$height_450/t_crop_fill/q_86%2Cf_jpg/b02fe2e0b743c58a8ae57e252db297273f1992ee",
     "timestamp": "2026-05-16 11:34:46",
     "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "Premier, rocker, billionaires assemble for Murdoch institute gala",
-    "source": "The Sydney Morning Herald",
-    "url": "https://www.smh.com.au/business/companies/premier-rocker-billionaires-assemble-for-murdoch-institute-gala-20260516-p5zxqb.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
-    "content": "Australia\u2019s business and political elite assembled in force on Saturday evening to celebrate the 40th anniversary of the Murdoch Children\u2019s Research Institute at Melbourne\u2019s State Library.",
-    "summary": "The institute, co-founded by Rupert Murdoch\u2019s mother, is celebrating its 40th year leading research into childhood diseases with a gala bash.",
-    "image_url": "https://static.ffx.io/images/$zoom_0.2118%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_0%2C$y_0/t_crop_custom/q_86%2Cf_auto/4504a02e852eeaaed00bd260b10e060b436cebb0",
-    "timestamp": "2026-05-16 11:34:28",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "18,000 flats in 12 neighbourhoods to be upgraded under Home Improvement Programme",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/housing/18000-flats-in-12-neighbourhoods-to-be-upgraded-under-home-improvement-programme",
-    "content": "The 198 blocks chosen for upgrades are located in estates including Bedok, Bishan, Jurong West, Pasir Ris, Sengkang, Serangoon, Tampines and Woodlands.",
-    "summary": "<p>Homeowners will get structural improvements, and can opt for subsidised upgrades to their toilets or bathrooms.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/aecdf70ae0328495f120d1bfd76cbf40dc7ec5786c7de50bd88f6cc8b7c5994b",
-    "timestamp": "2026-05-16 11:34:09",
-    "category": "politics",
-    "rally_originals": 0
-  },
-  {
-    "title": "No sensitive data leaked in global Canvas learning platform breach: MOE",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/no-sensitive-data-leaked-in-global-canvas-learning-platform-breach-moe",
-    "content": "SINGAPORE - No sensitive information has been leaked so far in the recent global data breach of the Canvas learning platform, the Ministry of Education (MOE) said on May 16.",
-    "summary": "<p>SIM said that there is no evidence that the university\u2019s systems, networks, or infrastructure have been compromised.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/006224f986142f9381f74757d2620e5b2732264bffb1b61b5e131874675cf392",
-    "timestamp": "2026-05-16 11:33:52",
-    "category": "politics",
-    "rally_originals": 0
-  },
-  {
-    "title": "Best Indoor Garden Systems: I've Been Testing All Year (2026)",
-    "source": "Wired",
-    "url": "https://www.wired.com/gallery/best-indoor-gardening-systems/",
-    "content": "I was a forestry major in college with an emphasis on dendrology and watershed management, so it probably won't come as a surprise that I'm a lifelong plant person and have been gardening for upward of 30 years. Even in apartments or living situations where a full garden wasn't feasible, I\u2019ve always tried to grow something, whether it\u2019s a single rosemary plant on a windowsill, a Topsy Turvy Tomato, or a few basil sprigs in an old-school AeroGarden.",
-    "summary": "Grow a backyard\u2019s worth of greens and vegetables in your house with a vertical hydroponic garden. Here are a few that might be worth the investment.",
-    "image_url": "https://media.wired.com/photos/688061d68203c2103d95c470/master/pass/We%20Tried%205%20of%20the%20Most%20Popular%20Indoor%20Gardening%20Systems.png",
-    "timestamp": "2026-05-16 11:33:15",
-    "category": "ai",
-    "rally_originals": 0
-  },
-  {
-    "title": "Old Oil and Gas Wells Could Find Second Life Producing Clean Energy",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/oil-wells-second-life-clean-energy/",
-    "content": "As states seek out much-needed supplies of clean, reliable energy, some are looking to an unconventional source: abandoned oil and gas wells harnessed for geothermal heat.",
-    "summary": "States across the US are looking to take major sources of pollution and use them to generate much-needed power.",
-    "image_url": "https://media.wired.com/photos/6a079d3343055fabd16c1020/master/pass/Old-Oil-Gas-Wells-Could-Find-Second-Life-Science-1088012650.jpg",
-    "timestamp": "2026-05-16 11:32:56",
-    "category": "climate",
-    "rally_originals": 0
-  },
-  {
-    "title": "Bill Ackman built Microsoft stake in first quarter during sell-off, betting on AI and cloud growth",
-    "source": "CNBC",
-    "url": "https://www.cnbc.com/2026/05/15/bill-ackman-says-he-built-microsoft-position-in-first-quarter.html",
-    "content": "Bill Ackman's Pershing Square has built a position in Microsoft, as the hedge fund manager said the software giant's recent pullback created a rare opportunity to buy one of the world's dominant technology franchises at a compelling valuation.",
-    "summary": "Bill Ackman's Pershing Square Capital Management has built a position in Microsoft, the billionaire hedge fund manager said Friday in a post on X.",
-    "image_url": "https://image.cnbcfm.com/api/v1/image/108299276-17774818472026-04-29t161444z_2052894093_rc21zkarvx8z_rtrmadp_0_pershing-square-ipo.jpeg?v=1777481893&w=1920&h=1080",
-    "timestamp": "2026-05-16 11:32:24",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "How Kansas City became unlikely 2026 World Cup hosts for the US",
-    "source": "Al Jazeera",
-    "url": "https://www.aljazeera.com/sports/2026/5/16/how-kansas-city-became-unlikely-2026-world-cup-hosts-for-the-us?traffic_source=rss",
-    "content": "Kansas City overcame major odds to become one of 11 venues in the United States for the biggest World Cup ever.",
-    "summary": "Kansas City overcame major odds to become one of 11 venues in the United States for the biggest World Cup ever.",
-    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/afp_69ff2611d958-1778329105_754233-1778330077.jpg?resize=1200%2C630&quality=80",
-    "timestamp": "2026-05-16 11:30:22",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "Hantavirus pilots to fly home after one night of quarantine with passengers",
-    "source": "The Sydney Morning Herald",
-    "url": "https://www.smh.com.au/national/western-australia/hantavirus-pilots-to-fly-home-after-one-night-of-quarantine-with-passengers-20260516-p5zxqj.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
-    "content": "Two pilots and their crew will leave Australia on Saturday from RAAF Base Pearce after they escorted passengers from the Hantavirus-striken cruise ship to Perth on Friday.",
-    "summary": "The charter pilots escorted the passengers from their virus-infected cruise ship to Australia and voluntarily quarantined with them on Friday night.",
-    "image_url": "https://static.ffx.io/images/$zoom_0.1765%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_0%2C$y_0/t_crop_custom/q_86%2Cf_auto/8dbbe14e1e9ddfe01b48ea3c75d27d6c69b9a888",
-    "timestamp": "2026-05-16 07:34:48",
-    "category": "world",
-    "rally_originals": 0
-  },
-  {
-    "title": "Unwanted filly gives Ryan breakthrough win as $151 shot at Scone",
-    "source": "The Sydney Morning Herald",
-    "url": "https://www.smh.com.au/sport/racing/unwanted-filly-gives-ryan-breakthrough-win-as-151-shot-at-scone-20260516-p5zxos.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
-    "content": "Hawkesbury trainer Blake Ryan gave a nod to Newgate boss Henry Field and looked ahead to the Princess Series after $151 shot Queen Regent gave him an unlikely first black-type victory on Saturday in the listed Woodlands Stakes at Scone.",
-    "summary": "Hawkesbury trainer Blake Ryan\u2019s boilover in the Woodlands Stakes with $151 chance and fourth emergency Queen Regent was a highlight at Scone on Saturday.",
-    "image_url": "https://static.ffx.io/images/$zoom_0.5775%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_566%2C$y_0/t_crop_custom/q_86%2Cf_auto/42ff3682bb6d06459310d042b5a1a360a5c53cee",
-    "timestamp": "2026-05-16 07:34:31",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "IKEA to host hide-and-seek competition at Alexandra outlet on June 6 and 7",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/ikea-to-host-hide-and-seek-competition-at-alexandra-outlet-on-june-6-and-7",
-    "content": "Participants will work in pairs to find eight professional hiders throughout the IKEA Alexandra store. Registration is open from May 14 to 31.",
-    "summary": "<p>The winning team will gain $10,000 worth of IKEA Family points.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/adfbe7e5420e6e0c437a5f656ba6b2c9b29ea90861f6802df9513adbcb1a5dd9",
-    "timestamp": "2026-05-16 07:34:18",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "S\u2019pore dengue cases drop 66% in first 5 months of 2026; most breeding sites in 2025 found in homes",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/spore-dengue-cases-drop-66-in-first-5-months-of-2026-most-breeding-sites-in-2025-found-in-homes",
-    "content": "Senior Minister of State for Sustainability and the Environment Janil Puthucheary speaking at the launch of the National Dengue Prevention Campaign 2026 on May 16.",
-    "summary": "<p>One death from dengue has been recorded so far in 2026.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/ae06df8ac1e052117b6030262d2a78a8f95b5e8c302728fd6ccdf93e05233b69",
-    "timestamp": "2026-05-16 07:34:03",
-    "category": "world",
-    "rally_originals": 0
-  },
-  {
-    "title": "AT&T Promo Codes and Bundle Deals: Save $50 in May",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/att-promo-code/",
-    "content": "Major wireless carriers: A necessary evil if you travel a lot, have a family, or are just interested in coverage that\u2019s reliably consistent and widespread. AT&T is the third-largest provider in the US (first for 5G), with the largest coverage map. I\u2019ve had various AT&T plans for more than a decade, first for just myself and now for my whole family, even though I only get one cell bar at my house and have to stand in one 5-square-foot patch of yard to make a phone call. And have lost entire days ",
-    "summary": "Whether you\u2019re looking to upgrade your internet or get the latest phone, we\u2019ve got you covered with our selection of AT&T coupons and deals.",
-    "image_url": "https://media.wired.com/photos/67b63b9c2c751893c256c1e8/master/pass/WIRED-Coupons-R2_13.png",
-    "timestamp": "2026-05-16 07:33:25",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Altra Promo Codes: Get 20% Off Plus Free Shipping",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/altra-promo-code/",
-    "content": "Altra Running\u2019s distinctive wide toe box and zero drop heel-toe design don\u2019t facilitate marathon PRs or punchy 5Ks. But there\u2019s a reason why Leonardo DiCaprio chose to wear all-weather Lone Peaks when playing Bob Ferguson in One Battle After Another. They\u2019re comfortable, rugged, and the zero-drop design keeps you from getting tendonitis. Altras are the perfect shoe for surviving in an off-grid dystopian war, even if they\u2019re not at the top of the list when it comes to the best running shoes.",
-    "summary": "Score big savings on Altra Running shoes with up to 50% off sale styles, 20% off select models, 10% off your first order when you sign up, plus free standard delivery on every purchase.",
-    "image_url": "https://media.wired.com/photos/67b63b9a4816461befb48207/master/pass/WIRED-Coupons-R2_12.png",
-    "timestamp": "2026-05-16 07:33:11",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Gaza aid convoy in Libya prepares to head to Gaza",
-    "source": "Al Jazeera",
-    "url": "https://www.aljazeera.com/video/newsfeed/2026/5/16/gaza-aid-convoy-in-libya-prepares-to-head-to-gaza?traffic_source=rss",
-    "content": "The \u201cSoumoud 2\u201d land convoy, carrying doctors, engineers and activists, is preparing to leave Libya for Egypt\u2019s Rafah crossing to deliver humanitarian aid to Gaza, a week after setting off from Algeria.",
-    "summary": "The &quot;Soumoud 2&quot; land convoy is preparing to leave Libya to bring aid to Gaza.",
-    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/Screenshot-2026-05-16-at-4.57.34-AM-1778896712.png?resize=1920%2C1440",
-    "timestamp": "2026-05-16 07:31:53",
-    "category": "world",
-    "rally_originals": 0
-  },
-  {
-    "title": "Lebanon says truce extension with Israel and US-backed security create opportunity for 'lasting stability'",
-    "source": "Le Monde",
-    "url": "https://www.lemonde.fr/en/international/article/2026/05/15/lebanon-says-truce-extension-with-israel-and-us-backed-security-create-opportunity-for-lasting-stability_6753500_4.html",
-    "content": "The Lebanese negotiating delegation said from Washington that the move would 'provide critical breathing space for our citizens' and 'reinforce state institutions.'",
-    "summary": "The Lebanese negotiating delegation said from Washington that the move would 'provide critical breathing space for our citizens' and 'reinforce state institutions.'",
-    "image_url": "https://img.lemde.fr/2026/05/15/446/0/5500/2750/644/322/60/0/04ded72_ftp-1-6vn7qkgc3aa5-2026-05-15t163826z-323304186-rc2p9la2apnh-rtrmadp-3-iran-crisis-lebanon-israel.JPG",
-    "timestamp": "2026-05-15 23:45:52",
-    "category": "world",
     "rally_originals": 0
   }
 ]
