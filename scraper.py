@@ -259,7 +259,7 @@ def call_ai(prompt, timeout=15):
                 print(f"✓ Model {model} succeeded")
                 return result
             else:
-                print(f"✗ Model {model} failed: {response.status_code}")
+                print(f"✗ Model {model} failed: {response.status_code} — {response.text[:200]}")
                 continue
                 
         except Exception as e:
@@ -296,7 +296,7 @@ def call_ai_long(prompt, max_tokens=500, timeout=30):
                 print(f"✓ Model {model} succeeded")
                 return result
             else:
-                print(f"✗ Model {model} failed: {response.status_code}")
+                print(f"✗ Model {model} failed: {response.status_code} — {response.text[:200]}")
                 continue
 
         except Exception as e:
