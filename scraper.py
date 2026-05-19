@@ -596,10 +596,13 @@ def scrape_news():
     used_images = set()
     existing_urls = set()
     api_available = bool(NEWS_API_URL and NEWS_API_KEY)
+    print(f"NEWS_API_URL set: {bool(NEWS_API_URL)}")
+    print(f"NEWS_API_KEY set: {bool(NEWS_API_KEY)}")
 
     if api_available:
         migrate_from_json_via_api()
         fetched = api_get({'limit': 200})
+        print(f"API GET result: {type(fetched).__name__}, length={len(fetched) if fetched is not None else 'N/A'}")
         if fetched is not None:
             existing_articles = fetched
             used_images = {a.get('image_url') for a in existing_articles if a.get('image_url')}
