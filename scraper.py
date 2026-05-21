@@ -22,6 +22,11 @@ OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 NEWS_API_URL = os.environ.get('NEWS_API_URL')
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 
+# Derive sibling endpoints from NEWS_API_URL
+_api_base = NEWS_API_URL.rsplit('/', 1)[0] if NEWS_API_URL else None
+BALANCE_API_URL     = f"{_api_base}/balance.php"     if _api_base else None
+RALLYING_API_URL    = f"{_api_base}/rallying-cry.php" if _api_base else None
+
 # Strict whitelist - ONLY these sources allowed
 WHITELISTED_SOURCES = {
     'BBC News', 'The Guardian', 'Reuters', 'NPR', 'Al Jazeera',
@@ -556,6 +561,54 @@ def api_post(articles):
         print(f"Warning: API POST failed ({type(e).__name__}): {e}")
     return 0
 
+def api_post_entry(url, entry):
+    """POST a single {date, timestamp, content} entry to a sidecar endpoint."""
+    if not url or not NEWS_API_KEY:
+        return False
+    try:
+        resp = requests.post(
+            url,
+            json=entry,
+            headers={'X-API-Key': NEWS_API_KEY, 'Content-Type': 'application/json'},
+            timeout=15,
+        )
+        return resp.ok
+    except Exception as e:
+        print(f"Warning: POST to {url} failed ({type(e).__name__}): {e}")
+        return False
+
+def migrate_json_entries_via_api(json_path, endpoint_url):
+    """One-time migration: POST all entries from a JSON file if the table is empty."""
+    if not endpoint_url or not NEWS_API_KEY:
+        return
+    try:
+        resp = requests.get(endpoint_url, params={'limit': 1}, timeout=15)
+        if not resp.ok or len(resp.json()) > 0:
+            return
+    except Exception:
+        return
+    try:
+        with open(json_path, 'r') as f:
+            entries = json.load(f)
+    except FileNotFoundError:
+        return
+    if not entries:
+        return
+    print(f"First run: migrating {len(entries)} entries from {json_path}...")
+    try:
+        resp = requests.post(
+            endpoint_url,
+            json=entries,
+            headers={'X-API-Key': NEWS_API_KEY, 'Content-Type': 'application/json'},
+            timeout=30,
+        )
+        if resp.ok:
+            print(f"✓ Migrated {json_path}")
+        else:
+            print(f"✗ Migration of {json_path} failed: {resp.status_code}")
+    except Exception as e:
+        print(f"✗ Migration of {json_path} error: {e}")
+
 def migrate_from_json_via_api():
     """One-time migration: POST all news.json articles to API if the DB is empty."""
     existing = api_get({'limit': 1})
@@ -601,6 +654,8 @@ def scrape_news():
 
     if api_available:
         migrate_from_json_via_api()
+        migrate_json_entries_via_api('balance.json', BALANCE_API_URL)
+        migrate_json_entries_via_api('rallyingcry.json', RALLYING_API_URL)
         fetched = api_get({'limit': 200})
         print(f"API GET result: {type(fetched).__name__}, length={len(fetched) if fetched is not None else 'N/A'}")
         if fetched is not None:
@@ -764,35 +819,43 @@ def scrape_news():
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
 
-    print("\nGenerating balance.json entry...")
+    print("\nGenerating balance entry...")
     balance_text = generate_balance(rejected_articles)
     if balance_text:
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text}
+        if api_available:
+            ok = api_post_entry(BALANCE_API_URL, entry)
+            print("✓ balance saved to database" if ok else "✗ balance database write failed")
         try:
             with open('balance.json', 'r') as f:
                 balance_entries = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             balance_entries = []
-        balance_entries.insert(0, {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text})
+        balance_entries.insert(0, entry)
         with open('balance.json', 'w') as f:
             json.dump(balance_entries, f, indent=2)
         print("✓ balance.json updated")
     else:
-        print("✗ balance.json skipped (no rejected articles or AI failure)")
+        print("✗ balance skipped (no rejected articles or AI failure)")
 
-    print("\nGenerating rallyingcry.json entry...")
+    print("\nGenerating rallying cry entry...")
     rallying_text = generate_rallying_cry(new_articles)
     if rallying_text:
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text}
+        if api_available:
+            ok = api_post_entry(RALLYING_API_URL, entry)
+            print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
         try:
             with open('rallyingcry.json', 'r') as f:
                 rallying_entries = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             rallying_entries = []
-        rallying_entries.insert(0, {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text})
+        rallying_entries.insert(0, entry)
         with open('rallyingcry.json', 'w') as f:
             json.dump(rallying_entries, f, indent=2)
         print("✓ rallyingcry.json updated")
     else:
-        print("✗ rallyingcry.json skipped (no approved articles or AI failure)")
+        print("✗ rallying cry skipped (no approved articles or AI failure)")
 
     print("\n" + "═" * 60)
     print(f"COMPLETE: {len(new_articles)} new articles added")
