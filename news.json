@@ -1,13 +1,174 @@
 [
   {
+    "title": "NOAA Predicts Below-Average Hurricane Season: How Other Forecasts Compare",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/noaa-predicts-below-average-hurricane-season-how-other-forecasts-compare-11980066",
+    "content": "The National Oceanic and Atmospheric Administration (NOAA) released its 2026 hurricane forecast on Thursday, predicting a below-average season for the Atlantic basin.",
+    "summary": "Hurricane season runs from June 1 to November 30, and NOAA is predicting a 55 percent chance it will be a below-average one.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-1243570665.jpg?w=1200&crop=1",
+    "timestamp": "2026-05-21T22:55:45.803629Z",
+    "category": "climate"
+  },
+  {
+    "title": "Medicare Would Change to Expand Options for Millions Under New Bill",
+    "source": "Newsweek",
+    "url": "https://www.newsweek.com/medicare-would-change-to-expand-options-for-millions-under-new-bill-11980305",
+    "content": "A new bill introduced by Republican U.S. Senator Rand Paul could significantly expand healthcare options for millions of Medicare recipients by allowing them to see the doctor of their choice.",
+    "summary": "The proposal would loosen current restrictions in Medicare, giving beneficiaries more flexibility.",
+    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2276531083.jpg?w=1200&crop=1",
+    "timestamp": "2026-05-21T22:55:30.719044Z",
+    "category": "politics"
+  },
+  {
+    "title": "JR covers Pont-Neuf bridge in Paris with giant inflatable cave",
+    "source": "Le Monde",
+    "url": "https://www.lemonde.fr/en/culture/article/2026/05/21/jr-covers-pont-neuf-bridge-in-paris-with-giant-inflatable-cave_6753688_30.html",
+    "content": "The temporary installation 'La Caverne du Pont-Neuf' has been set up on the Paris landmark since Thursday. The site will be open to the public free of charge, 24 hours a day, for three weeks from June 6.",
+    "summary": "The temporary installation 'La Caverne du Pont-Neuf' has been set up on the Paris landmark since Thursday. The site will be open to the public free of charge, 24 hours a day, for three weeks from June 6.",
+    "image_url": "https://img.lemde.fr/2026/05/21/465/0/5500/2750/644/322/60/0/9543576_ftp-1-63mjijdhivh7-2026-05-21t062816z-1590267915-rc2hdlarjaxv-rtrmadp-3-france-art-pont-neuf.JPG",
+    "timestamp": "2026-05-21T22:55:09.939278Z",
+    "category": "arts"
+  },
+  {
+    "title": "British police reassure World Cup venues that England fans will behave themselves",
+    "source": "The Globe and Mail",
+    "url": "https://www.theglobeandmail.com/world/article-england-fans-world-cup-hooligans-police/",
+    "content": "England fans watch a screening of the Women's World Cup 2023 final soccer match between England and Spain in London in August, 2023. As many as 15,000 English and 10,000 Scottish fans are expected to attend the 2026 World Cup.Kin Cheung/The Associated Press",
+    "summary": "England could play elimination games in Canada, but officials insist perception of fans as hooligans is outdated",
+    "image_url": "https://www.theglobeandmail.com/resizer/v2/NRRKND36O5J3PFIB243EFYTDTM.jpg?auth=114c7a59f15b991c9fc9cac1d465c46061ca69f07f33892db172c570be4b4e86&smart=true&width=8640&height=5760",
+    "timestamp": "2026-05-21T22:54:49.151746Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Building the future of AI: Helping APAC\u2019s developers turn bold ideas into real-world application",
+    "source": "The Straits Times",
+    "url": "https://www.straitstimes.com/tech/building-the-future-of-ai-helping-apac-developers-turn-bold-ideas-into-real-world-apps-openai-sea",
+    "content": "The inaugural Sea x OpenAI Codex Hackathon in Asia-Pacific kicks off in Singapore on June 6 and will see participants compete to develop specialised industry tools",
+    "summary": "The inaugural Sea x OpenAI Codex Hackathon in Asia-Pacific kicks off in Singapore on June 6 and will see participants compete to develop specialised industry tools",
+    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/9fa53cba899915d1feee7570109f4ca11a72537894ef840d38efef002287fc6a",
+    "timestamp": "2026-05-21T22:54:24.461151Z",
+    "category": "ai"
+  },
+  {
+    "title": "Scaling creativity in the age of AI",
+    "source": "MIT Technology Review",
+    "url": "https://www.technologyreview.com/2026/05/21/1137613/scaling-creativity-in-the-age-of-ai/",
+    "content": "Storytelling is core to humanity's DNA, stemming from our impulse to express ideals, warnings, hopes, and experiences. Technology has always been woven through the medium and the distribution: from early humans' innovation of natural pigments and charcoals for cave paintings to literal representation by the camera.",
+    "summary": "Storytelling is core to humanity&#8217;s DNA, stemming from our impulse to express ideals, warnings, hopes, and experiences. Technology has always been woven through the medium and the distribution: from early humans&#8217; innovation of natural pigments and charcoals for cave paintings to literal r",
+    "image_url": "https://wp.technologyreview.com/wp-content/uploads/2026/05/Digital-paper-marble.jpeg?resize=1200,600",
+    "timestamp": "2026-05-21T22:54:04.428566Z",
+    "category": "arts"
+  },
+  {
+    "title": "Law enforcement shuts down VPN service used by two dozen ransomware gangs",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/21/law-enforcement-shuts-down-vpn-service-used-by-two-dozen-ransomware-gangs/",
+    "content": "An international coalition of law enforcement agencies announced Thursday that they took down a popular virtual private network service used by cybercriminals and arrested its administrator.",
+    "summary": "First VPN promised hackers complete anonymity for their cyberattacks. But Europol said it was able to notify the service\u2019s users that they have now been identified.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2024/09/tunnel-vpn-v6.jpg?resize=1200,675",
+    "timestamp": "2026-05-21T22:53:43.114688Z",
+    "category": "ai"
+  },
+  {
+    "title": "Spotify and Universal Music strike deal allowing fan-made AI covers and remixes",
+    "source": "TechCrunch",
+    "url": "https://techcrunch.com/2026/05/21/spotify-and-universal-music-strike-deal-allowing-fan-made-ai-covers-and-remixes/",
+    "content": "Watch out, Suno. Spotify on Thursday announced it has partnered with Universal Music Group (UMG) to allow fans to use generative AI technology to create covers and remixes of their favorite songs. The tool will launch as a paid add-on available only to Spotify\u2019s Premium subscribers and will offer a revenue share with participating artists for the AI-generated music based on their work.",
+    "summary": "Spotify is partnering with  Universal Music Group\ufffc to let Premium subscribers create AI-generated song covers and remixes, with participating artists receiving a share of the revenue.",
+    "image_url": "https://techcrunch.com/wp-content/uploads/2023/10/spotify-app-GettyImages-1689920063-e1702479483636.jpeg?resize=1200,676",
+    "timestamp": "2026-05-21T22:53:30.945617Z",
+    "category": "ai"
+  },
+  {
+    "title": "JWST sees partly cloudy skies on a distant, giant exoplanet",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/jwst-sees-partly-cloudy-skies-on-a-distant-giant-exoplanet/",
+    "content": "An out-of-this-world weather report from NASA\u2019s James Webb Space Telescope reveals how clouds move across a giant planet hundreds of light-years from Earth",
+    "summary": "<p>An out-of-this-world weather report from NASA&rsquo;s James Webb Space Telescope reveals how clouds move across a giant planet hundreds of light-years from Earth</p>",
+    "image_url": "https://static.scientificamerican.com/dam/asset/aa9d210d-5b9a-4032-b158-631c60cef79c/Mukherjee-adx5903-image.png?m=1779386669.353&w=1200",
+    "timestamp": "2026-05-21T22:53:12.407283Z",
+    "category": "ai"
+  },
+  {
+    "title": "Hidden structural features inside Egypt\u2019s Great Pyramid may have helped it withstand earthquakes, new study finds",
+    "source": "Scientific American",
+    "url": "https://www.scientificamerican.com/article/hidden-structural-features-inside-egypts-great-pyramid-may-have-helped-it-withstand-earthquakes-new-study-finds/",
+    "content": "Hidden structural features inside Egypt\u2019s Great Pyramid may have helped it withstand earthquakes, new study finds",
+    "summary": "<p>Constructed by ancient Egyptians, the Great Pyramid has survived multiple earthquakes through the ages&mdash;now researchers think they know why</p>",
+    "image_url": "https://static.scientificamerican.com/dam/asset/4bc70ba6-62e2-4dff-ab0d-5824ea56b1df/Khufu-Pyramid.jpg?m=1779394660.666&w=1200",
+    "timestamp": "2026-05-21T22:52:59.092944Z",
+    "category": "world"
+  },
+  {
+    "title": "Meta, Broadcom and others to launch $125 million semiconductor research hub at UCLA",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/21/meta-broadcom-others-to-launch-125-million-semiconductor-research-hub-at-ucla.html",
+    "content": "Broadcom, Meta, Applied Materials, GlobalFoundries and Synopsys are joining forces to launch a $125 million \"Semiconductor Hub\" at the UCLA Samueli School of Engineering.",
+    "summary": "Broadcom, Meta, Applied Materials, GlobalFoundries and Synopsys are joining forces to launch a $125 million \"Semiconductor Hub\" at UCLA.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108184652-17549988642025-08-11t234131z_185728733_rc295gapn755_rtrmadp_0_usa-trump-universities-ucla.jpeg?v=1779394835&w=1920&h=1080",
+    "timestamp": "2026-05-21T22:52:42.830761Z",
+    "category": "ai"
+  },
+  {
+    "title": "SpaceX readies 12th test flight of massive Starship rocket as IPO looms",
+    "source": "CNBC",
+    "url": "https://www.cnbc.com/2026/05/21/spacex-plans-12th-test-flight-of-massive-starship-rocket-as-ipo-looms.html",
+    "content": "SpaceX is readying for the 12th test flight of its massive Starship rocket on Thursday, a landmark launch ahead of the company's IPO that's expected next month.",
+    "summary": "SpaceX's planned Starship launch follows the company's release of its IPO prospectus, which set the stage for what's likely to be a record offering.",
+    "image_url": "https://image.cnbcfm.com/api/v1/image/108310652-1779378831449-gettyimages-2276895736-AFP_B3MF8WV.jpeg?v=1779378877&w=1920&h=1080",
+    "timestamp": "2026-05-21T22:52:31.747033Z",
+    "category": "business"
+  },
+  {
+    "title": "NYC launches lottery for $50 World Cup football tickets",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/newsfeed/2026/5/21/nyc-launches-lottery-for-50-world-cup-football-tickets?traffic_source=rss",
+    "content": "New York City is launching a lottery for 1,000 discounted World Cup tickets priced at $50. The city\u2019s Mayor, Zohran Mamdani said match prices had soared into the thousands of dollars. The scheme is intended to give working-class New Yorkers access to matches.",
+    "summary": "New York City is launching a lottery for 1,000 discounted World Cup tickets priced at $50.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/image-1779395973.jpg?resize=1920%2C1080&quality=80",
+    "timestamp": "2026-05-21T22:51:56.646700Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Ronaldo scores twice to seal Saudi Pro League at last with Al-Nassr",
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/sports/2026/5/21/ronaldo-scores-twice-to-seal-saudi-pro-league-at-last-with-al-nassr?traffic_source=rss",
+    "content": "Portugal forward Cristiano Ronaldo leads Al-Nassr to Saudi Pro League title in last game before World Cup 2026.",
+    "summary": "Portugal forward Cristiano Ronaldo leads Al-Nassr to Saudi Pro League title in last game before World Cup 2026.",
+    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/GettyImages-2277551901-1779397791.jpg?resize=1200%2C675",
+    "timestamp": "2026-05-21T22:51:45.603024Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Race Across the World series six winners crowned",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/cp3p7yzgq4no?at_medium=RSS&at_campaign=rss",
+    "content": "Childhood best friends Jo Diop and Kush Burman, from Liverpool, have crossed the finish line first to become the series six winners of Race Across The World.",
+    "summary": "The latest series culminated on Thursday with a dash through snow-covered Hatgal in northern Mongolia.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/6eaf/live/44f283d0-545a-11f1-a996-23a66636b2cc.jpg",
+    "timestamp": "2026-05-21T22:51:22.523735Z",
+    "category": "entertainment"
+  },
+  {
+    "title": "Thousands welcome home triumphant Villa as heroes",
+    "source": "BBC News",
+    "url": "https://www.bbc.com/news/articles/cx21gnxm7p5o?at_medium=RSS&at_campaign=rss",
+    "content": "A sea of claret and blue flooded Birmingham as thousands of Aston Villa fans welcomed home the team as heroes after their Europa League cup triumph.",
+    "summary": "A sea of claret and blue floods Birmingham as fans celebrate the team's Europa League win.",
+    "image_url": "https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/ff56/live/0508cc00-5560-11f1-b682-cf91850925ea.jpg",
+    "timestamp": "2026-05-21T22:51:12.101605Z",
+    "category": "entertainment"
+  },
+  {
     "title": "Student Financial Aid: Trump Admin Making Major Change to Pell Grants",
     "source": "Newsweek",
     "url": "https://www.newsweek.com/student-financial-aid-trump-admin-making-major-change-to-pell-grants-11978743",
     "content": "The Trump administration is making a major change to federal student aid that could reshape how millions of Americans use Pell Grants.",
     "summary": "Under a new final rule from the U.S. Department of Education, Pell Grants will be expanded to cover short-term job training.",
     "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2274662204-1.jpg?w=1200&crop=1",
-    "timestamp": "2026-05-21T18:31:43.251091Z",
-    "category": "politics"
+    "timestamp": "2026-05-21 18:31:43",
+    "category": "politics",
+    "rally_originals": 0
   },
   {
     "title": "Brooks Koepka Finds Form in Opening Round at CJ Cup Byron Nelson",
@@ -16,8 +177,9 @@
     "content": "Brooks Koepka entered the clubhouse at TPC Craig Ranch with an opening-round lead at the CJ Cup Byron Nelson, carding an 8-under 63 on Thursday.",
     "summary": "Brooks Koepka entered the clubhouse at TPC Craig Ranch with an opening-round lead at the CJ Cup Byron Nelson.",
     "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2277524599.jpg?w=1200&crop=1",
-    "timestamp": "2026-05-21T18:31:31.873890Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-21 18:31:31",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "All-in-one chocolate cake",
@@ -26,8 +188,9 @@
     "content": "Diana Henry is the Telegraph\u2019s much-loved cookery writer. She shares recipes each week, for everything from speedy family dinners to special menus that friends will remember for months. She is also a regular broadcaster on BBC Radio 4, and her journalism and recipe books, including Simple and How to Eat a Peach, are multi-award-winning. A mother of two sons, Diana can satisfy even the fussiest of eaters.",
     "summary": "A buttercream filling and chocolate glaze turn this simple sponge into something special",
     "image_url": "https://www.telegraph.co.uk/content/dam/recipes/2021/07/06/HH-Stella-Novice-All-in-one-chocolate-cake-003.jpg",
-    "timestamp": "2026-05-21T18:31:17.263832Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-21 18:31:17",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "These clever active beam headlights are finally coming to America",
@@ -36,8 +199,9 @@
     "content": "MUNICH\u2014Headlight technology in the US is about to get smarter. When Audi\u2019s Q9 SUV goes on sale here later this year, it will feature the automaker\u2019s latest adaptive beam headlights, which manage the nifty trick of providing better, brighter illumination while minimizing glare for both the driver and other road users. Such technology is old hat to our European readers, but it\u2019s finally debuting on our roads after years of lobbying and intensive, lengthy testing to satisfy the new federal regulati",
     "summary": "The 2027 Audi Q9's digital matrix lights satisfy new NHTSA rules on minimizing glare.",
     "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/A251728_large-1152x648.jpg",
-    "timestamp": "2026-05-21T18:30:35.251788Z",
-    "category": "transportation"
+    "timestamp": "2026-05-21 18:30:35",
+    "category": "transportation",
+    "rally_originals": 0
   },
   {
     "title": "Top Gun turns 40",
@@ -46,8 +210,9 @@
     "content": "Tony Scott\u2019s 1986 blockbuster and the 2022 sequel are the best recruitment tools the US Navy could hope for.",
     "summary": "Tony Scott's 1986 blockbuster and the 2022 sequel are the best recruitment tools the US Navy could hope for.",
     "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/topgun-LIST-1152x648.jpg",
-    "timestamp": "2026-05-21T18:30:23.456388Z",
-    "category": "entertainment"
+    "timestamp": "2026-05-21 18:30:23",
+    "category": "entertainment",
+    "rally_originals": 0
   },
   {
     "title": "This young startup is taking on a fragrance industry that hasn\u2019t changed in almost half a century",
@@ -56,8 +221,9 @@
     "content": "Fragrance tech company Patina says it has raised $2 million in funding investors, including Betaworks and True Ventures.",
     "summary": "Fragrance tech company Patina announced Thursday a $2 million raise from investors, including Betaworks and True Ventures.",
     "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/Sean-Raspet-and-Laura-Sission.png?w=640",
-    "timestamp": "2026-05-21T18:30:04.380630Z",
-    "category": "business"
+    "timestamp": "2026-05-21 18:30:04",
+    "category": "business",
+    "rally_originals": 0
   },
   {
     "title": "Convective Capital raises an $85 million fund to build disaster resilience",
@@ -66,8 +232,9 @@
     "content": "Fire season kicked off early in California this year, with flames already approaching a former nuclear test site outside of Los Angeles. The rising number of natural disasters in California, and around the world, demand our attention \u2014 and, in Silicon Valley, venture investment.",
     "summary": "After launching to invest in fire tech, Convective is broadening its mandate to disaster resilience.",
     "image_url": "https://techcrunch.com/wp-content/uploads/2026/05/Convective-Team.webp?w=1067",
-    "timestamp": "2026-05-21T18:29:51.326125Z",
-    "category": "business"
+    "timestamp": "2026-05-21 18:29:51",
+    "category": "business",
+    "rally_originals": 0
   },
   {
     "title": "Why the 2026 Hurricane Season Might Not Be That Bad",
@@ -76,8 +243,9 @@
     "content": "Atlantic hurricane season is almost upon us, and the early signs indicate it might be less active than usual. But that\u2019s no reason to delete your weather app and ignore the forecast.",
     "summary": "The impending arrival of El Ni\u00f1o will help keep the number of storms low. But it only takes one landfall to create a catastrophe.",
     "image_url": "https://media.wired.com/photos/6a0f1e8766610aa7774367c9/master/pass/GettyImages-2231055494.jpg",
-    "timestamp": "2026-05-21T18:29:41.905693Z",
-    "category": "climate"
+    "timestamp": "2026-05-21 18:29:41",
+    "category": "climate",
+    "rally_originals": 0
   },
   {
     "title": "Mustard Made Storage Lockers Are on a Rare Sale Through May 31",
@@ -86,8 +254,9 @@
     "content": "Storage furniture is too often drab and functional, intended to blend into the background of your home. Mustard Made is an exception. The company's storage lockers come in a variety of loud colors that announce themselves in a room.",
     "summary": "We love this brand\u2019s stylish storage lockers, and there's a big sale on eight colors through the end of the month.",
     "image_url": "https://media.wired.com/photos/6a0f2dd449ad09d6fc2535b1/master/pass/Mustard%20Made%20deals%20post%20top%20art%20052026%20SOURCE%20Mustard%20Made.jpg",
-    "timestamp": "2026-05-21T18:29:28.424019Z",
-    "category": "business"
+    "timestamp": "2026-05-21 18:29:28",
+    "category": "business",
+    "rally_originals": 0
   },
   {
     "title": "New tools may help diagnose Parkinson\u2019s earlier than ever",
@@ -96,8 +265,9 @@
     "content": "Neurologist David Standaert can often tell if someone has Parkinson\u2019s disease in a matter of minutes. Maybe their hand trembles and one of their arms doesn\u2019t swing as much as the other when they walk. Maybe their voice sounds softer than usual, and they have a stillness to their body and a masklike look on their face, with little expressivity or blinking. \u201cI always tell patients, \u2018It\u2019s not any one thing that tells me you have Parkinson\u2019s. It\u2019s all of these things together,\u2019\u2009\u201d he says.",
     "summary": "From special pens to earwax evaluations, a plethora of emerging diagnostics could one day be a major boon for people with the debilitating disease.",
     "image_url": "https://www.sciencenews.org/wp-content/uploads/sites/2/2026/05/0626_parkinsons-opener.jpg?w=800",
-    "timestamp": "2026-05-21T18:29:13.614116Z",
-    "category": "ai"
+    "timestamp": "2026-05-21 18:29:13",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "AI just solved an 80-year-old \u2018Erd\u0151s problem,\u2019 and mathematicians are amazed",
@@ -106,8 +276,9 @@
     "content": "A chatbot\u2019s result for the 80-year-old \u201cunit distance\u201d conjecture is the first AI proof that would likely be published in math\u2019s top journal if humans had done it alone",
     "summary": "<p>A chatbot&rsquo;s result for the 80-year-old &ldquo;unit distance&rdquo; conjecture is the first AI proof that would likely be published in math&rsquo;s top journal if humans had done it alone</p>",
     "image_url": "https://static.scientificamerican.com/dam/asset/dfbbb93b-a7c7-40f3-b930-0f02f06e4693/GettyImages-2259697316.jpg?m=1779377306.136&w=1200",
-    "timestamp": "2026-05-21T18:29:01.537849Z",
-    "category": "ai"
+    "timestamp": "2026-05-21 18:29:01",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "Trial of next-gen weight-loss drug retatrutide brings it one step closer to FDA approval",
@@ -116,8 +287,9 @@
     "content": "While drugs such as Wegovy target a single gut hormone, retatrutide is among a new class of GLP-1 drugs that aims at three hormone receptors",
     "summary": "<p>While drugs such as Wegovy target a single gut hormone, retatrutide is among a new class of GLP-1 drugs that aims at three hormone receptors</p>",
     "image_url": "https://static.scientificamerican.com/dam/asset/78b17ffe-df29-4424-afe0-fb72fdcffa0f/GLP-1.jpg?m=1779381490.829&w=1200",
-    "timestamp": "2026-05-21T18:28:48.526963Z",
-    "category": "ai"
+    "timestamp": "2026-05-21 18:28:48",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "An AI trade involving energy and infrastructure that's doubled your money, topping Nvidia",
@@ -126,8 +298,9 @@
     "content": "(This is CNBC's \"Power Insider\" newsletter, your inside look at the investments, people and companies powering the global energy industry. Click\u00a0here\u00a0to subscribe.)",
     "summary": "If you put the same money into a basket of companies that are building out AI infrastructure and energy sources, you\u2019ve done much better than stocks like Nvidia.",
     "image_url": "https://image.cnbcfm.com/api/v1/image/108307291-1778796055735-gettyimages-2229666196-server10.jpeg?v=1778796089&w=1920&h=1080",
-    "timestamp": "2026-05-21T18:28:36.376149Z",
-    "category": "business"
+    "timestamp": "2026-05-21 18:28:36",
+    "category": "business",
+    "rally_originals": 0
   },
   {
     "title": "Anthropic, Microsoft in talks for AI chip deal after $5 billion investment",
@@ -136,8 +309,9 @@
     "content": "Microsoft is in talks to supply its custom artificial intelligence chips to Anthropic, CNBC confirmed on Thursday.",
     "summary": "Microsoft has not made the Maia 200 chips available to customers, but it is used in the company's data centers, offering better efficiency than other silicon.",
     "image_url": "https://image.cnbcfm.com/api/v1/image/108269270-1771956501559-gettyimages-2261854833-AFP_98666EE.jpeg?v=1779385068&w=1920&h=1080",
-    "timestamp": "2026-05-21T18:28:23.773038Z",
-    "category": "ai"
+    "timestamp": "2026-05-21 18:28:23",
+    "category": "ai",
+    "rally_originals": 0
   },
   {
     "title": "Displaced Lebanese woman bakes 3,000 loaves daily for war-hit community",
@@ -146,8 +320,9 @@
     "content": "Soubhiye Zeiter vowed to feed people affected by war even after being displaced from her home. She started by baking 200 mana\u2019eesh every day \u2013 but that was just the start.",
     "summary": "Soubhiye Zeiter vowed to feed people affected by war even after being displaced from her home.",
     "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/image-1779386508.jpg?resize=1920%2C1080&quality=80",
-    "timestamp": "2026-05-21T18:27:43.871653Z",
-    "category": "world"
+    "timestamp": "2026-05-21 18:27:43",
+    "category": "world",
+    "rally_originals": 0
   },
   {
     "title": "Victor Wembanyama Earns Incredible Endorsement From LeBron James",
@@ -2006,182 +2181,6 @@
     "image_url": "https://static.scientificamerican.com/dam/asset/50146758-dcef-42e0-a4a8-c787f696a464/sa0626-FromTheEditor-IssueCover.jpg?m=1778255203.425&w=1200",
     "timestamp": "2026-05-19 10:50:17",
     "category": "ai",
-    "rally_originals": 0
-  },
-  {
-    "title": "New high\u2011resolution map transforms what we know about Roman roads and the Roman Empire",
-    "source": "Scientific American",
-    "url": "https://www.scientificamerican.com/article/new-high-resolution-map-transforms-what-we-know-about-roman-roads-and-the-roman-empire/",
-    "content": "A massive digitization project has nearly doubled the known extent of the first continent-scale road network",
-    "summary": "<p>A massive digitization project has nearly doubled the known extent of the first continent-scale road network</p>",
-    "image_url": "https://static.scientificamerican.com/dam/asset/bcce9619-01d3-4048-83c9-41a63d7554bb/sa0626Brug01.jpg?m=1778851821.765&w=1200",
-    "timestamp": "2026-05-19 10:50:03",
-    "category": "transportation",
-    "rally_originals": 0
-  },
-  {
-    "title": "The AI economy is rewriting the American Dream \u2014 and blue-collar workers are poised to win",
-    "source": "CNBC",
-    "url": "https://www.cnbc.com/2026/05/19/ai-hiring-slowdown-skilled-trade-workers.html",
-    "content": "From the Dayton, Ohio, suburbs to boardrooms in Dallas, the employees fueling AT&T's next wave of growth aren't fresh-faced college graduates with expensive four-year degrees. They're skilled, blue-collar workers ready to get their hands dirty \u2014 and AT&T can't find enough of them.",
-    "summary": "AI-driven hiring slowdowns are hitting some entry-level jobs for college graduates as companies like Ford and AT&T ramp up recruiting for skilled trade workers.",
-    "image_url": "https://image.cnbcfm.com/api/v1/image/108306333-1778681217040-kyson-looking-up.png?v=1778681350&w=1920&h=1080",
-    "timestamp": "2026-05-19 10:49:49",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Home Depot says core shopper is resilient in the face of higher gas prices, sales rise 5%",
-    "source": "CNBC",
-    "url": "https://www.cnbc.com/2026/05/19/home-depot-hd-q1-2026-earnings.html",
-    "content": "Home Depot said Tuesday its core homeowner shopper remains resilient in the face of higher gas prices and plummeting consumer confidence, leading the retailer to reaffirm its full-year guidance after beating fiscal first-quarter expectations.",
-    "summary": "Home Depot beat Wall Street's expectations on the top and bottom lines, even as some shoppers pulled back on larger projects.",
-    "image_url": "https://image.cnbcfm.com/api/v1/image/108305557-1778590911098-gettyimages-2267652248-260318_hd_signs_147.jpeg?v=1779125458&w=1920&h=1080",
-    "timestamp": "2026-05-19 10:49:35",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Ofer Bronchtein, 'Israeli dreamer' of peace who had a Palestinian passport, has died",
-    "source": "Le Monde",
-    "url": "https://www.lemonde.fr/en/obituaries/article/2026/05/19/ofer-bronchtein-israeli-dreamer-of-peace-who-had-a-palestinian-passport-has-died_6753594_15.html",
-    "content": "The French-Israeli dual citizen, who had the ear of President Emmanuel Macron, died on Monday. He spent much of his life fighting for the coexistence of a Palestinian state and Israel, despite the attacks he endured.",
-    "summary": "The French-Israeli dual citizen, who had the ear of President Emmanuel Macron, died on Monday. He spent much of his life fighting for the coexistence of a Palestinian state and Israel, despite the attacks he endured.",
-    "image_url": "https://img.lemde.fr/2026/05/10/1854/0/3667/1833/644/322/60/0/9f5bd4d_upload-1-lien0jtdxzze-ad003-ofer-bronchtein-dsc07338.jpg",
-    "timestamp": "2026-05-19 08:56:43",
-    "category": "world",
-    "rally_originals": 0
-  },
-  {
-    "title": "Amplia takes aim at billion-dollar pancreatic cancer drug market",
-    "source": "The Sydney Morning Herald",
-    "url": "https://www.smh.com.au/business/companies/amplia-takes-aim-at-billion-dollar-pancreatic-cancer-drug-market-20260519-p5zytl.html?ref=rss&utm_medium=rss&utm_source=rss_feed",
-    "content": "For everyday punters looking at medical technology companies, the best opportunities often come from identifying a drug that makes other multi-billion-dollar treatments work better. That is the main idea behind Melbourne-based medical company Amplia Therapeutics.",
-    "summary": "Amplia Therapeutics has launched a pivotal registration-enabling trial of narmafotinib for pancreatic cancer, testing better efficacy with daily dosing.",
-    "image_url": "https://static.ffx.io/images/$zoom_0.7354%2C$multiply_0.7554%2C$ratio_1.777778%2C$width_1059%2C$x_0%2C$y_0/t_crop_custom/q_86%2Cf_auto/be5c33c3dae4e3f948fcf6eb7733608be16583ce606726441822c0187fdbd491",
-    "timestamp": "2026-05-19 08:56:21",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Singapore to contribute $19.2m to global facility to spur international carbon trading",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/environment/singapore-to-contribute-19-2-million-to-spur-international-carbon-trading",
-    "content": "Singapore is the first country in Asia to contribute to intergovernmental organisation Green Growth Institute\u2019s facility, which supports and funds carbon credit projects that meet UN standards.",
-    "summary": "<p>The ongoing conflict in the Middle East has compounded challenges that delay action to combat climate change.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/4dcc58ef21b5eafa7af0e834da3b2e348ef225610f968213a342741ef8df64df",
-    "timestamp": "2026-05-19 08:56:01",
-    "category": "climate",
-    "rally_originals": 0
-  },
-  {
-    "title": "Public servants should actively seek solutions, are not just \u2018cogs\u2019 in machine: Chee Hong Tat",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/singapore/public-servants-should-actively-seek-solutions-are-not-just-cogs-in-machine-chee-hong-tat",
-    "content": "Chee Hong Tat, Minister for National Development, gives his opening address at STE:Fest 2026, held at the University Cultural Centre on May 19.",
-    "summary": "<p>He was speaking to about 1,200 government employees and students at a science and tech festival.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/e6a8b95311237bfd028025dca061fd4f8d1fecaf536923a643e7cdd8be9fb617",
-    "timestamp": "2026-05-19 08:55:44",
-    "category": "politics",
-    "rally_originals": 0
-  },
-  {
-    "title": "iRobot Promo Code: 15% Off",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/irobot-promo-code/",
-    "content": "The brand iRobot launched the first Roomba robot vacuum back in 2002, and popularity for the handy devices skyrocketed from there. Countless competitors have emerged, but Roomba is still going strong. Its latest models have all the new features we love, from doubling as a vacuum and a mop to fantastic navigation and suction. The Roomba Max 705 is currently keeping my house clean as I test it for our robot vacuum guide, and it\u2019s doing a great job both mopping and vacuuming the floors in my massiv",
-    "summary": "Save on iRobot products, including robot vacuums and mops designed to handle pet hair, daily messes, and hands-free cleaning with smart home integration.",
-    "image_url": "https://media.wired.com/photos/67b63b917d355db73b38e0c0/master/pass/WIRED-Coupons-R2_1.png",
-    "timestamp": "2026-05-19 08:55:12",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Lenovo Coupon Codes and Deals in May 2026",
-    "source": "Wired",
-    "url": "https://www.wired.com/story/lenovo-coupon-code/",
-    "content": "Lenovo is currently the biggest PC and laptop company in the world, and they just so happen to make some of our favorite laptops and PC peripherals. In fact, our list of the Best Laptops you can buy include a number of Lenovo devices that we\u2019ve tested and fully recommend, ranging from high-end premium laptops to options for budget-minded shoppers. If you are looking to save a few bucks while shopping for a new Lenovo product, here are the Lenovo coupon codes and special offers you need to know a",
-    "summary": "Whether you\u2019re shopping for a ThinkPad, Yoga laptop, or Legion gaming PC, these Lenovo discount codes and promotions can help you save big on your next tech upgrade.",
-    "image_url": "https://media.wired.com/photos/67b63b909468ebbf8f0cbc77/master/pass/WIRED-Coupons-R2_8.png",
-    "timestamp": "2026-05-19 08:54:56",
-    "category": "business",
-    "rally_originals": 0
-  },
-  {
-    "title": "Wembanyama scores 41 as Spurs upset Thunder in Game 1 thriller",
-    "source": "Al Jazeera",
-    "url": "https://www.aljazeera.com/sports/2026/5/19/wembanyama-scores-41-as-spurs-upset-thunder-in-game-1-thriller?traffic_source=rss",
-    "content": "French centre dominates as San Antonio steal a crucial 122\u2013115 road win against defending NBA champions.",
-    "summary": "French centre dominates as San Antonio steal a crucial 122\u2013115 road win against defending NBA champions.",
-    "image_url": "https://www.aljazeera.com/wp-content/uploads/2026/05/AP26139165010661-1779168663.jpg?resize=1920%2C1440",
-    "timestamp": "2026-05-19 08:54:05",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "\u2018Huge milestone\u2019 as Libyan militia commander accused of torture to appear at ICC",
-    "source": "The Guardian",
-    "url": "https://www.theguardian.com/world/2026/may/19/libya-militia-commander-refugees-international-criminal-court",
-    "content": "Prosecution is seen as landmark step towards justice over abuses of refugees trying to reach Europe from Africa",
-    "summary": "<p>Prosecution is seen as landmark step towards justice over abuses of refugees trying to reach Europe from Africa</p><p>A former militia commander accused of overseeing murder, rape, enslavement and torture in Libyan detention centres will appear at the international criminal court on Tuesday for a",
-    "image_url": "https://i.guim.co.uk/img/media/a5f3ce2be2d4d44dbc19c79ce98d8171a1b445b9/260_323_3075_2461/master/3075.jpg?width=140&quality=85&auto=format&fit=max&s=ad236fe4d7c7bb3a5c9f9243517e7a7c",
-    "timestamp": "2026-05-19 08:53:34",
-    "category": "world",
-    "rally_originals": 0
-  },
-  {
-    "title": "49ers in Position to Add Star&#039;s Brother to Boost Pass Rush",
-    "source": "Newsweek",
-    "url": "https://www.newsweek.com/sports/nfl/49ers-position-add-joey-bosa-11964940",
-    "content": "The San Francisco 49ers added former Texas Tech defensive end Romello Height to boost the pass rush for the upcoming season.",
-    "summary": "The San Francisco 49ers could add star DE Joey Bosa to the defense this offseason and pair him with his brother, Nick Bosa.",
-    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2252398029.jpg?w=1200&crop=1",
-    "timestamp": "2026-05-19 01:27:17",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "Kelsey Plum Makes WNBA History Despite Sparks&#039; Skid",
-    "source": "Newsweek",
-    "url": "https://www.newsweek.com/sports/kelsey-plum-makes-wnba-history-despite-sparks-skid-11965067",
-    "content": "The Los Angeles Sparks have started this season in an eerily similar fashion to last season, with the team 1-3 but four-time All-Star guard Kelsey Plum playing out of her mind.",
-    "summary": "The Los Angeles Sparks have not started the season the way they wanted, but Kelsey Plum is on fire. Read more here.",
-    "image_url": "https://assets.newsweek.com/wp-content/uploads/2026/05/GettyImages-2274501143_9da0e5.jpg?w=1200&crop=1",
-    "timestamp": "2026-05-19 01:26:57",
-    "category": "entertainment",
-    "rally_originals": 0
-  },
-  {
-    "title": "Apple readies AI writing help, app shortcuts and wallpapers for iOS 27",
-    "source": "The Straits Times",
-    "url": "https://www.straitstimes.com/tech/apple-readies-ai-writing-help-app-shortcuts-and-wallpapers-for-ios-27",
-    "content": "Apple will introduce the new operating systems at its Worldwide Developers Conference in June, ahead of the software\u2019s release to the public in September.",
-    "summary": "<p>The software will be released to the public in September.</p>",
-    "image_url": "https://cassette.sphdigital.com.sg/image/straitstimes/ee79192cf44ea00d836cd02f2eac4f94c154f7749eb4bb4331d1871e480ac9f5",
-    "timestamp": "2026-05-19 01:25:53",
-    "category": "ai",
-    "rally_originals": 0
-  },
-  {
-    "title": "Australian Aboriginals cared for a dingo's grave for decades",
-    "source": "Ars Technica",
-    "url": "https://arstechnica.com/science/2026/05/1000-year-old-burial-reveals-close-bonds-between-people-and-dingoes/",
-    "content": "A thousand years ago, the ancestors of today\u2019s Barkindji people carefully buried a dingo (or garli, in the Barkindji language) in a mound of shells.",
-    "summary": "For some ancient Aboriginal Australian communities, dingoes were part of the family.",
-    "image_url": "https://cdn.arstechnica.net/wp-content/uploads/2026/05/Excavation.-Photo-BQ-1131x648.jpg",
-    "timestamp": "2026-05-19 01:25:20",
-    "category": "arts",
-    "rally_originals": 0
-  },
-  {
-    "title": "Asia markets open broadly higher as oil eases after Trump delays planned Iran strike",
-    "source": "CNBC",
-    "url": "https://www.cnbc.com/2026/05/19/asia-markets-today-asx-sensex-nikkei-kospi-hang-seng-csi-300-nifty.html",
-    "content": "Asia-Pacific markets opened broadly higher Tuesday as oil prices, while elevated, eased slightly following news that President\u00a0Donald Trump\u00a0was postponing a scheduled attack on Iran.",
-    "summary": "Asia-Pacific markets opened broadly higher on Tuesday, amid lower oil prices after President Donald Trump said he is postponing a scheduled attack on Iran",
-    "image_url": "https://image.cnbcfm.com/api/v1/image/108281467-1774268073708-gettyimages-2267504802-AFP_A4C33KG.jpeg?v=1774268096&w=1920&h=1080",
-    "timestamp": "2026-05-19 01:24:43",
-    "category": "business",
     "rally_originals": 0
   }
 ]
