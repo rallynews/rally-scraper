@@ -354,8 +354,8 @@ Write ONE sentence only. Be specific, conversational, and uplifting. Do not use 
 
     return call_ai_long(prompt, max_tokens=200, timeout=30)
 
-def generate_rallying_cry_rss(entries):
-    """Write rallyingcries.rss from a list of {date, timestamp, content} entries."""
+def generate_rallying_cry_rss(entry):
+    """Write rallyingcries.rss containing only the single most recent rallying cry."""
     site_url = ''
     if RALLYING_API_URL:
         parts = RALLYING_API_URL.split('/api/')
@@ -383,18 +383,7 @@ def generate_rallying_cry_rss(entries):
             .replace('"', '&quot;'))
 
     now_rfc = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
-
-    items_xml = ''
-    for entry in entries[:50]:
-        title = f"Rallying Cry – {format_title_date(entry.get('date', ''))}"
-        items_xml += (
-            f"    <item>\n"
-            f"      <title>{xml_escape(title)}</title>\n"
-            f"      <description>{xml_escape(entry.get('content', ''))}</description>\n"
-            f"      <pubDate>{to_rfc2822(entry.get('timestamp', ''))}</pubDate>\n"
-            f"      <guid isPermaLink=\"false\">rallying-cry-{xml_escape(entry.get('timestamp', entry.get('date', '')))}</guid>\n"
-            f"    </item>\n"
-        )
+    title = f"Rallying Cry – {format_title_date(entry.get('date', ''))}"
 
     rss = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -402,10 +391,15 @@ def generate_rallying_cry_rss(entries):
         '  <channel>\n'
         '    <title>Rallying Cries – Rally News</title>\n'
         f'    <link>{xml_escape(site_url)}</link>\n'
-        '    <description>Daily uplifting one-sentence summaries of the day\'s positive news.</description>\n'
+        '    <description>The most recent uplifting one-sentence summary of the day\'s positive news.</description>\n'
         '    <language>en-us</language>\n'
         f'    <lastBuildDate>{now_rfc}</lastBuildDate>\n'
-        f'{items_xml}'
+        '    <item>\n'
+        f'      <title>{xml_escape(title)}</title>\n'
+        f'      <description>{xml_escape(entry.get("content", ""))}</description>\n'
+        f'      <pubDate>{to_rfc2822(entry.get("timestamp", ""))}</pubDate>\n'
+        f'      <guid isPermaLink="false">rallying-cry-{xml_escape(entry.get("timestamp", entry.get("date", "")))}</guid>\n'
+        '    </item>\n'
         '  </channel>\n'
         '</rss>\n'
     )
@@ -895,8 +889,7 @@ def scrape_news():
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
-        all_entries = api_get_entries(RALLYING_API_URL) if api_available else None
-        generate_rallying_cry_rss(all_entries if all_entries is not None else [entry])
+        generate_rallying_cry_rss(entry)
     else:
         print("✗ rallying cry skipped (no approved articles or AI failure)")
 
