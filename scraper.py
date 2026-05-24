@@ -354,6 +354,66 @@ Write ONE sentence only. Be specific, conversational, and uplifting. Do not use 
 
     return call_ai_long(prompt, max_tokens=200, timeout=30)
 
+def generate_rallying_cry_rss(entries):
+    """Write rallyingcries.rss from a list of {date, timestamp, content} entries."""
+    site_url = ''
+    if RALLYING_API_URL:
+        parts = RALLYING_API_URL.split('/api/')
+        site_url = parts[0] if len(parts) > 1 else RALLYING_API_URL
+
+    def to_rfc2822(ts_str):
+        try:
+            dt = datetime.strptime(ts_str.rstrip('Z'), '%Y-%m-%dT%H:%M:%S')
+            return dt.strftime('%a, %d %b %Y %H:%M:%S +0000')
+        except Exception:
+            return datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
+
+    def format_title_date(date_str):
+        try:
+            dt = datetime.strptime(date_str, '%Y-%m-%d')
+            return dt.strftime('%B %-d, %Y')
+        except Exception:
+            return date_str
+
+    def xml_escape(text):
+        return (str(text)
+            .replace('&', '&amp;')
+            .replace('<', '&lt;')
+            .replace('>', '&gt;')
+            .replace('"', '&quot;'))
+
+    now_rfc = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
+
+    items_xml = ''
+    for entry in entries[:50]:
+        title = f"Rallying Cry – {format_title_date(entry.get('date', ''))}"
+        items_xml += (
+            f"    <item>\n"
+            f"      <title>{xml_escape(title)}</title>\n"
+            f"      <description>{xml_escape(entry.get('content', ''))}</description>\n"
+            f"      <pubDate>{to_rfc2822(entry.get('timestamp', ''))}</pubDate>\n"
+            f"      <guid isPermaLink=\"false\">rallying-cry-{xml_escape(entry.get('timestamp', entry.get('date', '')))}</guid>\n"
+            f"    </item>\n"
+        )
+
+    rss = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0">\n'
+        '  <channel>\n'
+        '    <title>Rallying Cries – Rally News</title>\n'
+        f'    <link>{xml_escape(site_url)}</link>\n'
+        '    <description>Daily uplifting one-sentence summaries of the day\'s positive news.</description>\n'
+        '    <language>en-us</language>\n'
+        f'    <lastBuildDate>{now_rfc}</lastBuildDate>\n'
+        f'{items_xml}'
+        '  </channel>\n'
+        '</rss>\n'
+    )
+
+    with open('rallyingcries.rss', 'w', encoding='utf-8') as f:
+        f.write(rss)
+    print("✓ rallyingcries.rss updated")
+
 def is_positive_news(title, summary):
     """Use AI to determine if article is genuinely positive news"""
     prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing prog[...]
@@ -576,6 +636,18 @@ def api_post_entry(url, entry):
     except Exception as e:
         print(f"Warning: POST to {url} failed ({type(e).__name__}): {e}")
         return False
+
+def api_get_entries(url, limit=50):
+    """GET entries from a sidecar endpoint. Returns list or None on failure."""
+    if not url:
+        return None
+    try:
+        resp = requests.get(url, params={'limit': limit}, timeout=15)
+        if resp.ok:
+            return resp.json()
+    except Exception as e:
+        print(f"Warning: GET {url} failed ({type(e).__name__}): {e}")
+    return None
 
 def migrate_json_entries_via_api(json_path, endpoint_url):
     """One-time migration: POST all entries from a JSON file if the table is empty."""
@@ -803,19 +875,6 @@ def scrape_news():
         saved = api_post(new_articles)
         print(f"\nSaved {saved} new articles to database")
 
-    # Always write news.json (merge new + existing)
-    all_articles = new_articles + existing_articles
-    seen_urls = set()
-    unique_articles = []
-    for article in all_articles:
-        if article['url'] not in seen_urls:
-            seen_urls.add(article['url'])
-            unique_articles.append(article)
-    unique_articles.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
-    with open('news.json', 'w') as f:
-        json.dump(unique_articles[:200], f, indent=2)
-    print("✓ news.json updated")
-
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
 
@@ -826,15 +885,6 @@ def scrape_news():
         if api_available:
             ok = api_post_entry(BALANCE_API_URL, entry)
             print("✓ balance saved to database" if ok else "✗ balance database write failed")
-        try:
-            with open('balance.json', 'r') as f:
-                balance_entries = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            balance_entries = []
-        balance_entries.insert(0, entry)
-        with open('balance.json', 'w') as f:
-            json.dump(balance_entries, f, indent=2)
-        print("✓ balance.json updated")
     else:
         print("✗ balance skipped (no rejected articles or AI failure)")
 
@@ -845,15 +895,8 @@ def scrape_news():
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
-        try:
-            with open('rallyingcry.json', 'r') as f:
-                rallying_entries = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            rallying_entries = []
-        rallying_entries.insert(0, entry)
-        with open('rallyingcry.json', 'w') as f:
-            json.dump(rallying_entries, f, indent=2)
-        print("✓ rallyingcry.json updated")
+        all_entries = api_get_entries(RALLYING_API_URL) if api_available else None
+        generate_rallying_cry_rss(all_entries if all_entries is not None else [entry])
     else:
         print("✗ rallying cry skipped (no approved articles or AI failure)")
 
