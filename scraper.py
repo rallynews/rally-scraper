@@ -869,8 +869,14 @@ def scrape_news():
         saved = api_post(new_articles)
         print(f"\nSaved {saved} new articles to database")
 
-    run_timestamp = datetime.now().isoformat() + 'Z'
-    run_date = datetime.now().strftime('%Y-%m-%d')
+    run_timestamp = datetime.utcnow().isoformat() + 'Z'
+    now_utc = datetime.utcnow()
+    # If running at night (20:00+ UTC) the content will be read the next morning,
+    # so publish it under tomorrow's date so the feed always looks current.
+    if now_utc.hour >= 20:
+        run_date = (now_utc + timedelta(days=1)).strftime('%Y-%m-%d')
+    else:
+        run_date = now_utc.strftime('%Y-%m-%d')
 
     print("\nGenerating balance entry...")
     balance_text = generate_balance(rejected_articles)
