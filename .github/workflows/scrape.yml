@@ -2,8 +2,12 @@ name: Run Rally News Scraper
 
 on:
   schedule:
-    # Runs every 10 minutes
-    - cron: '*/10 * * * *'
+    # Runs at midnight, 6am, 11am, 4pm, and 9pm UTC
+    - cron: '0 0 * * *'
+    - cron: '0 6 * * *'
+    - cron: '0 11 * * *'
+    - cron: '0 16 * * *'
+    - cron: '0 21 * * *'
   
   # Allows manual trigger from Actions tab
   workflow_dispatch:
