@@ -1,13 +1,9 @@
 name: Run Rally News Scraper
 
 on:
-  schedule:
-    # Runs every 10 minutes
-    - cron: '*/10 * * * *'
-  
-  # Allows manual trigger from Actions tab
+  # Triggered externally every hour by cron-jobs.org via GitHub API
   workflow_dispatch:
-  
+
   # Runs on push to main (for testing)
   push:
     branches:
