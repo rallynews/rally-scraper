@@ -4,6 +4,7 @@ Rally News Scraper - Completely Rebuilt
 Only scrapes positive news from whitelisted sources within last 48 hours
 """
 
+import re
 import requests
 import json
 import xml.etree.ElementTree as ET
@@ -173,8 +174,12 @@ def parse_feed(url, timeout=15):
 
         entry.setdefault('link', '')
 
-        media_content = [{'url': el.get('url')} for el in item
-                         if el.tag == f'{{{MEDIA_NS}}}content' and el.get('url')]
+        media_content = [
+            {'url': el.get('url'), 'width': int(el.get('width', 0) or 0)}
+            for el in item
+            if el.tag == f'{{{MEDIA_NS}}}content' and el.get('url')
+        ]
+        media_content.sort(key=lambda x: x['width'], reverse=True)
         if media_content:
             entry['media_content'] = media_content
 
@@ -534,19 +539,39 @@ def extract_first_paragraph(url):
     except:
         return None
 
+def upscale_image_url(url):
+    """Try to swap known low-res CDN parameters for higher-res equivalents.
+    Falls back to the original URL if anything goes wrong."""
+    if not url:
+        return url
+    try:
+        # BBC: ichef.bbci.co.uk/ace/standard/{n}/ — replace any width with 1024
+        url = re.sub(
+            r'(ichef\.bbci\.co\.uk/ace/standard/)\d+/',
+            r'\g<1>1024/',
+            url
+        )
+        # SMH/FFX: $width_NNN and $height_NNN URL params
+        url = re.sub(r'\$width_\d+', '$width_1200', url)
+        url = re.sub(r'\$height_\d+', '$height_675', url)
+        return url
+    except Exception:
+        return url
+
+
 def get_article_image(entry, used_images):
     """Extract unique image URL from article"""
     # Try media content
     if entry.get('media_content'):
         img = entry['media_content'][0].get('url')
         if img and img not in used_images:
-            return img
+            return upscale_image_url(img)
 
     # Try media thumbnail
     if entry.get('media_thumbnail'):
         img = entry['media_thumbnail'][0].get('url')
         if img and img not in used_images:
-            return img
+            return upscale_image_url(img)
 
     # Try enclosures
     if entry.get('enclosures'):
@@ -554,14 +579,14 @@ def get_article_image(entry, used_images):
             if 'image' in enc.get('type', ''):
                 img = enc.get('href')
                 if img and img not in used_images:
-                    return img
-    
+                    return upscale_image_url(img)
+
     # Fallback: fetch from page
     try:
         article_url = entry.get('link', '')
         if not article_url:
             return None
-            
+
         response = requests.get(article_url, timeout=10, headers={
             'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
         })
@@ -572,17 +597,17 @@ def get_article_image(entry, used_images):
         if og_image and og_image.get('content'):
             img = og_image['content']
             if img not in used_images:
-                return img
+                return upscale_image_url(img)
 
         # Try first img tag
         img_tag = soup.find('img', src=True)
         if img_tag:
             img = urljoin(article_url, img_tag['src'])
             if img not in used_images:
-                return img
+                return upscale_image_url(img)
     except:
         pass
-    
+
     return None
 
 # ═══════════════════════════════════════════════════════════════
