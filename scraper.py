@@ -415,7 +415,7 @@ def generate_rallying_cry_rss(entry):
 
 def is_positive_news(title, summary):
     """Use AI to determine if article is genuinely positive news"""
-    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing prog[...]
+    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing progress. It is also not focused on the acquisition of wealth by large corporations or corporations making deals with each other which do not benefit humanity [...]
 
 Examples of positive news stories:
 - A Single Infusion Could Suppress H.I.V. for Years, Study Suggests
@@ -441,6 +441,7 @@ Summary: {summary}
 
 Rules:
 - YES only if it's genuinely positive/uplifting
+- NO if it's primarily about big companies or corporate interests making deals with each other. 
 - NO if it's neutral, negative, explanatory, or just informational
 - NO if it's about problems, conflicts, crises, or disasters
 - NO if it's an explainer or educational content
