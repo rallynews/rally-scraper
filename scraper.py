@@ -38,7 +38,7 @@ WHITELISTED_SOURCES = {
     'Los Angeles Times', 'The Japan Times', 'The Straits Times',
     'The Sydney Morning Herald', 'The Globe and Mail',
     'Le Monde', 'DW (Deutsche Welle)', 'The Telegraph',
-    'Grist', 'Science', 'New Scientist', 'Newsweek'
+    'Grist', 'Science', 'New Scientist'
 }
 
 # RSS feeds for whitelisted sources
@@ -70,8 +70,7 @@ RSS_FEEDS = {
     'DW (Deutsche Welle)': 'https://rss.dw.com/rdf/rss-en-all',
     'The Telegraph': 'https://www.telegraph.co.uk/rss.xml',
     'Grist': 'https://grist.org/feed/',
-    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/',
-    'Newsweek': 'https://www.newsweek.com/rss'
+    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/'
 }
 
 # Valid categories (AI will categorize into these)
