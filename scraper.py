@@ -330,9 +330,23 @@ def generate_balance(rejected_articles):
 Articles:
 {articles_text}
 
-Write ONE paragraph only. No headers, no bullet points. Be factual and direct."""
+Respond with valid JSON only, in this exact format:
+{{
+  "content": "Your single paragraph here.",
+  "stories": ["Exact title of a story you referenced", "Another title you referenced"]
+}}
 
-    return call_ai_long(prompt, max_tokens=400, timeout=30)
+The "stories" array must contain only the titles (copied exactly from the list above) of articles you actually mentioned or referenced in the paragraph. No headers, no bullet points in the paragraph. Be factual and direct."""
+
+    result = call_ai_long(prompt, max_tokens=600, timeout=30)
+    if not result:
+        return None
+    try:
+        data = json.loads(result)
+        stories = [{'title': t} for t in data.get('stories', []) if isinstance(t, str)]
+        return {'content': data.get('content', ''), 'stories': stories}
+    except (json.JSONDecodeError, AttributeError):
+        return {'content': result, 'stories': []}
 
 def generate_rallying_cry(approved_articles):
     """Create a one-sentence upbeat summary of today's positive articles."""
@@ -340,7 +354,7 @@ def generate_rallying_cry(approved_articles):
         return None
 
     articles_text = '\n'.join(
-        f"- {a['title']}"
+        f"- {a['title']} | {a['url']}"
         for a in approved_articles[:20]
     )
 
@@ -351,12 +365,29 @@ Style examples (do not copy these, they are just to show the tone and structure)
 - "A new, reform-minded Prime Minister promises change in India, and global child hunger drops to its lowest ever."
 - "Remembering the life and works of Alan Rickman, and a new airport opens its doors in Rio."
 
-Headlines:
+Headlines (title | url):
 {articles_text}
 
-Write ONE sentence only. Be specific, conversational, and uplifting. Do not use quotation marks around the sentence."""
+Respond with valid JSON only, in this exact format:
+{{
+  "content": "Your single sentence here.",
+  "stories": [
+    {{"title": "Exact title of a story you mentioned", "url": "its url from the list above"}},
+    {{"title": "Another title", "url": "its url"}}
+  ]
+}}
 
-    return call_ai_long(prompt, max_tokens=200, timeout=30)
+The "stories" array must contain only the 2–4 articles you actually referenced in your sentence, with titles and URLs copied exactly from the list above. Be specific, conversational, and uplifting. Do not use quotation marks around the sentence."""
+
+    result = call_ai_long(prompt, max_tokens=400, timeout=30)
+    if not result:
+        return None
+    try:
+        data = json.loads(result)
+        stories = [s for s in data.get('stories', []) if isinstance(s, dict) and 'title' in s]
+        return {'content': data.get('content', ''), 'stories': stories}
+    except (json.JSONDecodeError, AttributeError):
+        return {'content': result, 'stories': []}
 
 def generate_rallying_cry_rss(entry):
     """Write rallyingcries.rss containing only the single most recent rallying cry."""
@@ -898,10 +929,9 @@ def scrape_news():
     run_date = datetime.now().strftime('%Y-%m-%d')
 
     print("\nGenerating balance entry...")
-    balance_text = generate_balance(rejected_articles)
-    if balance_text:
-        balance_stories = [{'title': a['title']} for a in rejected_articles[:50]]
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text, 'stories': balance_stories}
+    balance_result = generate_balance(rejected_articles)
+    if balance_result:
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_result['content'], 'stories': balance_result['stories']}
         if api_available:
             ok = api_post_entry(BALANCE_API_URL, entry)
             print("✓ balance saved to database" if ok else "✗ balance database write failed")
@@ -909,10 +939,9 @@ def scrape_news():
         print("✗ balance skipped (no rejected articles or AI failure)")
 
     print("\nGenerating rallying cry entry...")
-    rallying_text = generate_rallying_cry(new_articles)
-    if rallying_text:
-        rallying_stories = [{'title': a['title'], 'url': a['url']} for a in new_articles[:20]]
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text, 'stories': rallying_stories}
+    rallying_result = generate_rallying_cry(new_articles)
+    if rallying_result:
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_result['content'], 'stories': rallying_result['stories']}
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
