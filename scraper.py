@@ -900,7 +900,8 @@ def scrape_news():
     print("\nGenerating balance entry...")
     balance_text = generate_balance(rejected_articles)
     if balance_text:
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text}
+        balance_stories = [{'title': a['title']} for a in rejected_articles[:50]]
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_text, 'stories': balance_stories}
         if api_available:
             ok = api_post_entry(BALANCE_API_URL, entry)
             print("✓ balance saved to database" if ok else "✗ balance database write failed")
@@ -910,7 +911,8 @@ def scrape_news():
     print("\nGenerating rallying cry entry...")
     rallying_text = generate_rallying_cry(new_articles)
     if rallying_text:
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text}
+        rallying_stories = [{'title': a['title'], 'url': a['url']} for a in new_articles[:20]]
+        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_text, 'stories': rallying_stories}
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
