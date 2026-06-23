@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2026 18:05:49 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 23 Jun 2026 22:07:12 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 23, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Europe is getting creative with heat relief, ships in the Persian Gulf are getting a safe evacuation plan, and a new brain study reveals surprising benefits for aging minds.&quot;,
+  &quot;content&quot;: &quot;The House is poised to pass a major affordable housing bill, while scientists uncover fascinating new insights about early land animals and Emmy Noether's groundbreaking work in physics.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;From cool-down spots to chalk on windows - how Europe is coping with the heat&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cz0j87vpz79o?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;Strait of Hormuz evacuation plan to begin for ships stranded in Persian Gulf, maritime organization says&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/23/strait-hormuz-persian-gulf-ship-tanker-evacuation.html&quot;},
-    {&quot;title&quot;: &quot;The ‘little brain’ may give the aging mind a big boost&quot;, &quot;url&quot;: &quot;https://www.sciencenews.org/article/cerebellum-brain-aging-boost&quot;}
+    {&quot;title&quot;: &quot;House expected to pass affordable housing bill, send it to Trump's desk&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/23/house-affordable-housing-bill-trump.html&quot;},
+    {&quot;title&quot;: &quot;How underappreciated mathematician Emmy Noether helped prove physics' most fundamental theories&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/how-underappreciated-mathematician-emmy-noether-helped-prove-physics-most-fundamental-theories/&quot;},
+    {&quot;title&quot;: &quot;Early land animals skipped the tadpole phase&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/early-land-animals-skipped-the-tadpole-phase/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Tue, 23 Jun 2026 18:05:49 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-23T18:05:35.230405Z</guid>
+      <pubDate>Tue, 23 Jun 2026 22:07:12 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-23T22:06:57.084520Z</guid>
     </item>
   </channel>
 </rss>
