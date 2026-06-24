@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 02:06:49 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 06:07:43 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Ghana fans celebrated a hard-fought draw with England, a nonprofit revived the US climate site, and a robot hand learned to mimic human skills with ultrasound imaging.&quot;,
+  &quot;content&quot;: &quot;Cristiano Ronaldo makes history as the first player to score in six World Cups, while Scotland fans bring kilts and bagpipes to Miami for their big match, and Congress passes a major housing bill with rare bipartisan support.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Watch: Football fans celebrate in Ghana after draw with England&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/videos/cg74djdk510o?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;US's climate.gov site, taken down by Trump, relaunched by nonprofit&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/uss-climate-gov-site-taken-down-by-trump-relaunched-by-nonprofit/&quot;},
-    {&quot;title&quot;: &quot;Ultrasound imaging turns a robot hand into a skillful mimic&quot;, &quot;url&quot;: &quot;https://www.technologyreview.com/2026/06/23/1138279/ultrasound-imaging-turns-a-robot-hand-into-a-skillful-mimic/&quot;}
+    {&quot;title&quot;: &quot;Cristiano Ronaldo becomes first player to score in six World Cups&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/24/cristiano-ronaldo-becomes-first-player-to-score-in-six-world-cups?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Kilts and bagpipes flood Miami streets as Scotland prepare to face Brazil&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/24/kilts-and-bagpipes-flood-miami-streets-as-scotland-prepare-to-face-brazil?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Congress passes landmark housing bill with overwhelming bipartisan votes&quot;, &quot;url&quot;: &quot;https://www.latimes.com/politics/story/2026-06-23/landmark-housing-bill-advances-in-congress-with-bipartisan-support&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 02:06:49 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T02:06:37.105122Z</guid>
+      <pubDate>Wed, 24 Jun 2026 06:07:43 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T06:07:23.672831Z</guid>
     </item>
   </channel>
 </rss>
