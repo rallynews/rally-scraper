@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 14:08:03 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 16:19:12 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Ukrainian amputees are finding strength in wakeboarding and jujitsu, the U.S. economy is on track for a 3% GDP boost, and an INXS ballet is set to premiere on the Gold Coast!&quot;,
+  &quot;content&quot;: &quot;Colombia’s traditional midwives continue their vital work in rural communities, while a breakthrough in fusion power could accelerate clean energy, and Figma’s latest update makes design even more powerful with AI and animation tools.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;The Ukraine War Amputees Embracing Wake Boarding and Jujitsu&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/24/world/europe/ukraine-war-amputees-sports.html&quot;},
-    {&quot;title&quot;: &quot;Treasury Secretary Bessent says U.S. GDP growth can return to 3% before end of the year&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/24/treasury-secretary-bessent-says-us-gdp-growth-can-return-to-3percent-before-end-of-the-year.html&quot;},
-    {&quot;title&quot;: &quot;A new sensation: INXS ballet to premiere on the Gold Coast&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/national/queensland/a-new-sensation-inxs-ballet-to-premiere-on-the-gold-coast-20260623-p609c4.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
+    {&quot;title&quot;: &quot;How Colombia’s traditional midwives serve as lifelines to rural communities&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/features/longform/2026/6/24/how-colombias-traditional-midwives-serve-as-lifelines-to-rural-communities?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;A potential hindrance to fusion power may help instead&quot;, &quot;url&quot;: &quot;https://www.sciencenews.org/article/nuclear-fusion-alpha-particles-reactor&quot;},
+    {&quot;title&quot;: &quot;Figma adds code layers, support for animations, more AI features in new update&quot;, &quot;url&quot;: &quot;https://techcrunch.com/2026/06/24/figma-adds-code-layers-support-for-animations-more-ai-features-in-new-update/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 14:08:03 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T14:07:37.616462Z</guid>
+      <pubDate>Wed, 24 Jun 2026 16:19:12 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T16:18:52.485325Z</guid>
     </item>
   </channel>
 </rss>
