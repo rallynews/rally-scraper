@@ -387,7 +387,11 @@ The "stories" array must contain only the 2–4 articles you actually referenced
         stories = [s for s in data.get('stories', []) if isinstance(s, dict) and 'title' in s]
         return {'content': data.get('content', ''), 'stories': stories}
     except (json.JSONDecodeError, AttributeError):
-        return {'content': result, 'stories': []}
+        # AI returned plain text instead of JSON — use it as content directly
+        content = result.strip()
+        if content.startswith('{') or content.startswith('['):
+            return None  # Malformed JSON, skip rather than surface garbage
+        return {'content': content, 'stories': []}
 
 def generate_rallying_cry_rss(entry):
     """Write rallyingcries.rss containing only the single most recent rallying cry."""
@@ -945,7 +949,7 @@ def scrape_news():
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
-        generate_rallying_cry_rss(entry)
+        generate_rallying_cry_rss({'date': run_date, 'timestamp': run_timestamp, 'content': rallying_result['content']})
     else:
         print("✗ rallying cry skipped (no approved articles or AI failure)")
 
