@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2026 22:07:12 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 02:06:49 +0000</lastBuildDate>
     <item>
-      <title>Rallying Cry – June 23, 2026</title>
+      <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;The House is poised to pass a major affordable housing bill, while scientists uncover fascinating new insights about early land animals and Emmy Noether's groundbreaking work in physics.&quot;,
+  &quot;content&quot;: &quot;Ghana fans celebrated a hard-fought draw with England, a nonprofit revived the US climate site, and a robot hand learned to mimic human skills with ultrasound imaging.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;House expected to pass affordable housing bill, send it to Trump's desk&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/23/house-affordable-housing-bill-trump.html&quot;},
-    {&quot;title&quot;: &quot;How underappreciated mathematician Emmy Noether helped prove physics' most fundamental theories&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/how-underappreciated-mathematician-emmy-noether-helped-prove-physics-most-fundamental-theories/&quot;},
-    {&quot;title&quot;: &quot;Early land animals skipped the tadpole phase&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/early-land-animals-skipped-the-tadpole-phase/&quot;}
+    {&quot;title&quot;: &quot;Watch: Football fans celebrate in Ghana after draw with England&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/videos/cg74djdk510o?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;US's climate.gov site, taken down by Trump, relaunched by nonprofit&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/uss-climate-gov-site-taken-down-by-trump-relaunched-by-nonprofit/&quot;},
+    {&quot;title&quot;: &quot;Ultrasound imaging turns a robot hand into a skillful mimic&quot;, &quot;url&quot;: &quot;https://www.technologyreview.com/2026/06/23/1138279/ultrasound-imaging-turns-a-robot-hand-into-a-skillful-mimic/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Tue, 23 Jun 2026 22:07:12 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-23T22:06:57.084520Z</guid>
+      <pubDate>Wed, 24 Jun 2026 02:06:49 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T02:06:37.105122Z</guid>
     </item>
   </channel>
 </rss>
