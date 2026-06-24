@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 16:19:12 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 18:08:17 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Colombia’s traditional midwives continue their vital work in rural communities, while a breakthrough in fusion power could accelerate clean energy, and Figma’s latest update makes design even more powerful with AI and animation tools.&quot;,
+  &quot;content&quot;: &quot;From fusion energy breakthroughs to Mars rovers uncovering organic carbon, plus creative new ways to enjoy strawberries in red wine and Formula E’s exciting GEN4 racing calendar, today’s news is full of innovation and delight.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;How Colombia’s traditional midwives serve as lifelines to rural communities&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/features/longform/2026/6/24/how-colombias-traditional-midwives-serve-as-lifelines-to-rural-communities?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;A potential hindrance to fusion power may help instead&quot;, &quot;url&quot;: &quot;https://www.sciencenews.org/article/nuclear-fusion-alpha-particles-reactor&quot;},
-    {&quot;title&quot;: &quot;Figma adds code layers, support for animations, more AI features in new update&quot;, &quot;url&quot;: &quot;https://techcrunch.com/2026/06/24/figma-adds-code-layers-support-for-animations-more-ai-features-in-new-update/&quot;}
+    {&quot;title&quot;: &quot;Photos: Building the World’s Largest Fusion Reactor&quot;, &quot;url&quot;: &quot;https://www.theatlantic.com/photography/2026/06/photos-building-the-worlds-largest-fusion-reactor/687667/?utm_source=feed&quot;},
+    {&quot;title&quot;: &quot;A Mars rover found organic carbon just sitting on a rock&quot;, &quot;url&quot;: &quot;https://www.sciencenews.org/article/mars-carbon-complex-organic-rock&quot;},
+    {&quot;title&quot;: &quot;Strawberries in red wine&quot;, &quot;url&quot;: &quot;https://www.telegraph.co.uk/recipes/baking-and-desserts/desserts/strawberries-red-wine-recipe/&quot;},
+    {&quot;title&quot;: &quot;Formula E reveals first calendar for GEN4 with lots of real race tracks&quot;, &quot;url&quot;: &quot;https://arstechnica.com/cars/2026/06/formula-e-reveals-first-calendar-for-gen4-with-lots-of-real-race-tracks/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 16:19:12 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T16:18:52.485325Z</guid>
+      <pubDate>Wed, 24 Jun 2026 18:08:17 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T18:07:59.415560Z</guid>
     </item>
   </channel>
 </rss>
