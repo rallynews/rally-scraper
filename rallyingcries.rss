@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 10:06:53 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 14:08:03 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Progress abounds today with progressive candidates sweeping New York primaries, a solar-powered platform promising better internet access, and Indigenous cultural practices emerging as a climate solution.&quot;,
+  &quot;content&quot;: &quot;Ukrainian amputees are finding strength in wakeboarding and jujitsu, the U.S. economy is on track for a 3% GDP boost, and an INXS ballet is set to premiere on the Gold Coast!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Mamdani-backed candidates sweep New York City Democratic primaries&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/news/2026/6/24/mamdani-backed-candidates-sweep-new-york-city-democratic-primaries?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;This flying solar-powered platform could deliver better internet from the air&quot;, &quot;url&quot;: &quot;https://www.technologyreview.com/2026/06/24/1138771/solar-powered-platform-delivers-better-internet/&quot;},
-    {&quot;title&quot;: &quot;Indigenous cultural practices are a climate solution, report finds&quot;, &quot;url&quot;: &quot;https://grist.org/indigenous/indigenous-cultural-practices-are-a-climate-solution-report-finds/&quot;}
+    {&quot;title&quot;: &quot;The Ukraine War Amputees Embracing Wake Boarding and Jujitsu&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/24/world/europe/ukraine-war-amputees-sports.html&quot;},
+    {&quot;title&quot;: &quot;Treasury Secretary Bessent says U.S. GDP growth can return to 3% before end of the year&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/24/treasury-secretary-bessent-says-us-gdp-growth-can-return-to-3percent-before-end-of-the-year.html&quot;},
+    {&quot;title&quot;: &quot;A new sensation: INXS ballet to premiere on the Gold Coast&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/national/queensland/a-new-sensation-inxs-ballet-to-premiere-on-the-gold-coast-20260623-p609c4.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 10:06:53 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T10:06:41.821965Z</guid>
+      <pubDate>Wed, 24 Jun 2026 14:08:03 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T14:07:37.616462Z</guid>
     </item>
   </channel>
 </rss>
