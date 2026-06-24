@@ -5,22 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 18:08:17 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 24 Jun 2026 22:05:26 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 24, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;From fusion energy breakthroughs to Mars rovers uncovering organic carbon, plus creative new ways to enjoy strawberries in red wine and Formula E’s exciting GEN4 racing calendar, today’s news is full of innovation and delight.&quot;,
+  &quot;content&quot;: &quot;Bosnia keeps their World Cup dreams alive with a thrilling 3-2 win, Scotland fans bring the party to Miami, and a global crackdown disrupts cybercrime networks.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Photos: Building the World’s Largest Fusion Reactor&quot;, &quot;url&quot;: &quot;https://www.theatlantic.com/photography/2026/06/photos-building-the-worlds-largest-fusion-reactor/687667/?utm_source=feed&quot;},
-    {&quot;title&quot;: &quot;A Mars rover found organic carbon just sitting on a rock&quot;, &quot;url&quot;: &quot;https://www.sciencenews.org/article/mars-carbon-complex-organic-rock&quot;},
-    {&quot;title&quot;: &quot;Strawberries in red wine&quot;, &quot;url&quot;: &quot;https://www.telegraph.co.uk/recipes/baking-and-desserts/desserts/strawberries-red-wine-recipe/&quot;},
-    {&quot;title&quot;: &quot;Formula E reveals first calendar for GEN4 with lots of real race tracks&quot;, &quot;url&quot;: &quot;https://arstechnica.com/cars/2026/06/formula-e-reveals-first-calendar-for-gen4-with-lots-of-real-race-tracks/&quot;}
+    {&quot;title&quot;: &quot;Bosnia win 3-2, knock out Qatar to keep alive hopes of World Cup round of 32&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/24/bosnia-win-3-2-knock-out-qatar-to-keep-alive-hopes-of-world-cup-round-of-32?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Scotland fans take over Miami ahead of Brazil World Cup clash&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/24/scotland-fans-take-over-miami-ahead-of-brazil-world-cup-clash?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;One-two punch delivered in global operation disrupts cybercrime 'assembly line'&quot;, &quot;url&quot;: &quot;https://arstechnica.com/security/2026/06/one-two-punch-delivered-in-global-operation-disrupts-cybercrime-assembly-line/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 18:08:17 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T18:07:59.415560Z</guid>
+      <pubDate>Wed, 24 Jun 2026 22:05:26 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-24T22:05:12.071212Z</guid>
     </item>
   </channel>
 </rss>
