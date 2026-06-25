@@ -5,22 +5,20 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 18:09:46 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 22:06:49 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;From breakthroughs in cancer prevention with the HPV vaccine to quantum tech checking bridges for safety, plus a win for endangered species and even Ryanair’s kinder family seating policy, today’s news is full of progress and good vibes!&quot;,
+  &quot;content&quot;: &quot;Global unity shines as the US, Cuba, and Iran team up for Venezuela earthquake relief, while Dutch fans bring the party to Kansas City ahead of their World Cup match!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;How the HPV vaccine changes how we think about cancer&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/how-the-hpv-vaccine-changes-how-we-think-about-cancer?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;How quantum sensing could reveal hidden faults in thousands of U.S. bridges&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/how-quantum-sensing-could-reveal-hidden-faults-in-thousands-of-u-s-bridges/&quot;},
-    {&quot;title&quot;: &quot;New effort will get genome sequences for entire Endangered Species list&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/new-effort-will-get-genome-sequences-for-entire-endangered-species-list/&quot;},
-    {&quot;title&quot;: &quot;Ryanair ‘reluctantly’ changes family seating policy, allows parents to sit with children for free&quot;, &quot;url&quot;: &quot;https://www.theglobeandmail.com/world/article-ryanair-free-seating-parents-children-families/&quot;}
+    {&quot;title&quot;: &quot;US, Cuba and Iran join global rescue effort after Venezuela earthquakes&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/global-development/2026/jun/25/us-cuba-iran-global-rescue-effort-venezuela-earthquakes&quot;},
+    {&quot;title&quot;: &quot;Dutch fans party in Kansas City ahead of World Cup clash with Tunisia&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/aje-onl-nf_dutch-fans-party-in-kansas-ahead-of-tunisia-match-250626?traffic_source=rss&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 18:09:46 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T18:09:29.275235Z</guid>
+      <pubDate>Thu, 25 Jun 2026 22:06:49 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T22:05:40.627622Z</guid>
     </item>
   </channel>
 </rss>
