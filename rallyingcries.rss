@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 06:05:51 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 10:08:05 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Mexico is on a World Cup roll with a 3-0 win, while Singapore keeps its top seaport title and three wise sisters share their secrets to a long, happy life!&quot;,
+  &quot;content&quot;: &quot;South Africa makes history with their first-ever World Cup knockout win, while Singapore’s NDP 2026 will feature a groundbreaking civilian contingent of persons with disabilities, and Chicago just launched the nation’s largest air monitoring network.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Mexico triumph 3-0 to eliminate Czechia and win all three World Cup matches&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/mexico-win-3-0-to-eliminate-czechia-and-win-all-three-world-cup?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Three sisters with combined age of 316 discuss the secrets to life&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/three-sisters-with-combined-age-of-316-discuss-the-secrets-to-life?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Singapore retains Best Global Seaport title at Asian awards&quot;, &quot;url&quot;: &quot;https://www.straitstimes.com/singapore/singapore-retains-best-global-seaport-title-at-asian-awards&quot;}
+    {&quot;title&quot;: &quot;South Africa fans hail historic World Cup knockout entry after Korea win&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/south-africa-fans-hail-historic-world-cup-knockout-entry-after-korea-win?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;NDP 2026 to feature first-ever persons with disabilities civilian contingent&quot;, &quot;url&quot;: &quot;https://www.straitstimes.com/singapore/community/ndp-2026-to-feature-first-ever-persons-with-disabilities-civilian-contingent&quot;},
+    {&quot;title&quot;: &quot;After a civil rights complaint, Chicago built the nation’s largest air monitoring network&quot;, &quot;url&quot;: &quot;https://grist.org/equity/after-a-civil-rights-complaint-chicago-built-the-nations-largest-air-monitoring-network/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 06:05:51 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T06:05:35.330166Z</guid>
+      <pubDate>Thu, 25 Jun 2026 10:08:05 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T10:07:50.054136Z</guid>
     </item>
   </channel>
 </rss>
