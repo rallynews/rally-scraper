@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 10:08:05 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 14:09:06 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;South Africa makes history with their first-ever World Cup knockout win, while Singapore’s NDP 2026 will feature a groundbreaking civilian contingent of persons with disabilities, and Chicago just launched the nation’s largest air monitoring network.&quot;,
+  &quot;content&quot;: &quot;King Charles III is breaking royal tradition by sharing his tax details, Haiti is celebrating its first World Cup in 52 years, and IBM just unveiled groundbreaking sub-1 nanometer chip tech!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;South Africa fans hail historic World Cup knockout entry after Korea win&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/south-africa-fans-hail-historic-world-cup-knockout-entry-after-korea-win?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;NDP 2026 to feature first-ever persons with disabilities civilian contingent&quot;, &quot;url&quot;: &quot;https://www.straitstimes.com/singapore/community/ndp-2026-to-feature-first-ever-persons-with-disabilities-civilian-contingent&quot;},
-    {&quot;title&quot;: &quot;After a civil rights complaint, Chicago built the nation’s largest air monitoring network&quot;, &quot;url&quot;: &quot;https://grist.org/equity/after-a-civil-rights-complaint-chicago-built-the-nations-largest-air-monitoring-network/&quot;}
+    {&quot;title&quot;: &quot;King Charles III to Release Tax Details, a First for Any British Monarch&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/25/world/europe/king-charles-taxes-uk.html&quot;},
+    {&quot;title&quot;: &quot;Haitians reflect on first World Cup experience in 52 years&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/haitians-reflect-on-first-world-cup-experience-in-52-years?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;IBM claims world’s first sub-1 nanometer chip technology&quot;, &quot;url&quot;: &quot;https://arstechnica.com/gadgets/2026/06/ibm-claims-worlds-first-sub-1-nanometer-chip-technology/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 10:08:05 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T10:07:50.054136Z</guid>
+      <pubDate>Thu, 25 Jun 2026 14:09:06 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T14:07:59.293547Z</guid>
     </item>
   </channel>
 </rss>
