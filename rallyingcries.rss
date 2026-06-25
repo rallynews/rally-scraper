@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 02:05:58 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 06:05:51 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Morocco makes history at the World Cup, Brazil dominates with Neymar’s return, and families save with a VAT cut on kids' meals and theme parks.&quot;,
+  &quot;content&quot;: &quot;Mexico is on a World Cup roll with a 3-0 win, while Singapore keeps its top seaport title and three wise sisters share their secrets to a long, happy life!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Morocco come back after historic Haiti goals to reach World Cup last 32&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/morocco-come-back-against-historic-haiti-goals-to-reach-world-cup-last-32?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Vinicius nets twice and Neymar returns as Brazil ease by Scotland&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/vinicius-nets-twice-and-neymar-returns-as-brazil-ease-by-scotland?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;VAT cut on theme parks and kids' meals comes into force&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cwy05rnlpe9o?at_medium=RSS&amp;at_campaign=rss&quot;}
+    {&quot;title&quot;: &quot;Mexico triumph 3-0 to eliminate Czechia and win all three World Cup matches&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/mexico-win-3-0-to-eliminate-czechia-and-win-all-three-world-cup?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Three sisters with combined age of 316 discuss the secrets to life&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/three-sisters-with-combined-age-of-316-discuss-the-secrets-to-life?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Singapore retains Best Global Seaport title at Asian awards&quot;, &quot;url&quot;: &quot;https://www.straitstimes.com/singapore/singapore-retains-best-global-seaport-title-at-asian-awards&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 02:05:58 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T02:05:40.288174Z</guid>
+      <pubDate>Thu, 25 Jun 2026 06:05:51 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T06:05:35.330166Z</guid>
     </item>
   </channel>
 </rss>
