@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 22:05:26 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 02:05:58 +0000</lastBuildDate>
     <item>
-      <title>Rallying Cry – June 24, 2026</title>
+      <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Bosnia keeps their World Cup dreams alive with a thrilling 3-2 win, Scotland fans bring the party to Miami, and a global crackdown disrupts cybercrime networks.&quot;,
+  &quot;content&quot;: &quot;Morocco makes history at the World Cup, Brazil dominates with Neymar’s return, and families save with a VAT cut on kids' meals and theme parks.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Bosnia win 3-2, knock out Qatar to keep alive hopes of World Cup round of 32&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/24/bosnia-win-3-2-knock-out-qatar-to-keep-alive-hopes-of-world-cup-round-of-32?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Scotland fans take over Miami ahead of Brazil World Cup clash&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/24/scotland-fans-take-over-miami-ahead-of-brazil-world-cup-clash?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;One-two punch delivered in global operation disrupts cybercrime 'assembly line'&quot;, &quot;url&quot;: &quot;https://arstechnica.com/security/2026/06/one-two-punch-delivered-in-global-operation-disrupts-cybercrime-assembly-line/&quot;}
+    {&quot;title&quot;: &quot;Morocco come back after historic Haiti goals to reach World Cup last 32&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/morocco-come-back-against-historic-haiti-goals-to-reach-world-cup-last-32?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Vinicius nets twice and Neymar returns as Brazil ease by Scotland&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/vinicius-nets-twice-and-neymar-returns-as-brazil-ease-by-scotland?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;VAT cut on theme parks and kids' meals comes into force&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cwy05rnlpe9o?at_medium=RSS&amp;at_campaign=rss&quot;}
   ]
 }
 ```</description>
-      <pubDate>Wed, 24 Jun 2026 22:05:26 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-24T22:05:12.071212Z</guid>
+      <pubDate>Thu, 25 Jun 2026 02:05:58 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T02:05:40.288174Z</guid>
     </item>
   </channel>
 </rss>
