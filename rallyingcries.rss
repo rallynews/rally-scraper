@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 14:09:06 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 25 Jun 2026 18:09:46 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 25, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;King Charles III is breaking royal tradition by sharing his tax details, Haiti is celebrating its first World Cup in 52 years, and IBM just unveiled groundbreaking sub-1 nanometer chip tech!&quot;,
+  &quot;content&quot;: &quot;From breakthroughs in cancer prevention with the HPV vaccine to quantum tech checking bridges for safety, plus a win for endangered species and even Ryanair’s kinder family seating policy, today’s news is full of progress and good vibes!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;King Charles III to Release Tax Details, a First for Any British Monarch&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/25/world/europe/king-charles-taxes-uk.html&quot;},
-    {&quot;title&quot;: &quot;Haitians reflect on first World Cup experience in 52 years&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/haitians-reflect-on-first-world-cup-experience-in-52-years?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;IBM claims world’s first sub-1 nanometer chip technology&quot;, &quot;url&quot;: &quot;https://arstechnica.com/gadgets/2026/06/ibm-claims-worlds-first-sub-1-nanometer-chip-technology/&quot;}
+    {&quot;title&quot;: &quot;How the HPV vaccine changes how we think about cancer&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/how-the-hpv-vaccine-changes-how-we-think-about-cancer?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;How quantum sensing could reveal hidden faults in thousands of U.S. bridges&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/how-quantum-sensing-could-reveal-hidden-faults-in-thousands-of-u-s-bridges/&quot;},
+    {&quot;title&quot;: &quot;New effort will get genome sequences for entire Endangered Species list&quot;, &quot;url&quot;: &quot;https://arstechnica.com/science/2026/06/new-effort-will-get-genome-sequences-for-entire-endangered-species-list/&quot;},
+    {&quot;title&quot;: &quot;Ryanair ‘reluctantly’ changes family seating policy, allows parents to sit with children for free&quot;, &quot;url&quot;: &quot;https://www.theglobeandmail.com/world/article-ryanair-free-seating-parents-children-families/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 14:09:06 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T14:07:59.293547Z</guid>
+      <pubDate>Thu, 25 Jun 2026 18:09:46 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-25T18:09:29.275235Z</guid>
     </item>
   </channel>
 </rss>
