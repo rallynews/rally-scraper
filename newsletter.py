@@ -4,9 +4,9 @@ Bright Spots — daily newsletter compiler & sender for Rally News.
 
 Philosophy: AI-compiled, NOT AI-generated. Real, human-written journalism that
 the scraper surfaced is poured into a fixed template. An LLM writes only three
-small things: the one-paragraph intro, the three category lead-in labels, and
-the closing line. Everything else is real article titles, summaries, and the
-scraper's Rallying Cry / On Balance text.
+small pieces of copy: the one-paragraph intro, the three category lead-in labels,
+and the closing sign-off line. Everything else is real article titles, summaries,
+and the scraper's Rallying Cry / On Balance text.
 
 Data source: the LIVE rally.news API (news.php / rallying-cry.php / balance.php),
 NOT the committed JSON files in the repo (those are frozen snapshots).
@@ -16,7 +16,7 @@ BrightSpot list (ID 2).
 
 Required environment variables (GitHub Actions secrets):
   NEWS_API_URL        e.g. https://rally.news/api/news.php  (base is derived from this)
-  OPENROUTER_API_KEY  for the 3 small AI text pieces (Mistral Small, like the scraper)
+  OPENROUTER_API_KEY  for the AI micro-copy (Mistral Small, same as the scraper)
   BREVO_API_KEY       for sending
 
 Optional:
@@ -50,7 +50,9 @@ DRY_RUN = os.environ.get("DRY_RUN", "").strip() not in ("", "0", "false", "False
 SENDER = {"name": "Bright Spots", "email": "brightspots@rally.news"}
 LIST_ID = 2  # BrightSpot
 
-# Brand / design (the ONLY background colour anywhere is the Rallying Cry box)
+# Brand / design
+# The ONLY background colour in the email is the Rallying Cry box (BOX_BG).
+# Everything else is transparent so the reader's email client theme shows through.
 RALLY_GREEN = "#5A775E"
 TEXT = "#1A1A1A"
 MUTED = "#777777"
@@ -61,6 +63,13 @@ HOME_URL = "https://rally.news/"
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 SERIF = "Georgia,'Times New Roman',serif"
 INCLUDE_FEATURED_IMAGE = False   # flip to True if you ever want the lead image
+
+# Dark-mode equivalents (used in the @media CSS block only)
+DM_TEXT = "#E8E8E8"
+DM_MUTED = "#AAAAAA"
+DM_GREEN = "#90C296"         # lighter green, legible on dark backgrounds
+DM_BOX   = "#1E3020"         # dark green for the Rallying Cry box
+DM_RULE  = "#3A3A3A"
 
 OR_MODEL = "mistralai/mistral-small-3.2-24b-instruct"
 
@@ -85,8 +94,9 @@ def esc(s: str) -> str:
 
 def reader_url(category: str, raw_title: str) -> str:
     """Build a rally.news Reader View URL. Mirrors EXACTLY how the live site
-    encodes titles: decode entities, replace spaces with '+', then percent-encode
-    the whole thing (so a space becomes %2B). Verified against live homepage links."""
+    encodes titles: decode entities once, replace spaces with '+', then
+    percent-encode the whole thing (so a space becomes %2B).
+    Verified against live homepage links."""
     title = html.unescape(raw_title or "")
     enc = urllib.parse.quote(title.replace(" ", "+"), safe="")
     return f"https://rally.news/categories/{category}/?article={enc}"
@@ -123,6 +133,29 @@ def ai(prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
     return r.json()["choices"][0]["message"]["content"].strip()
 
 
+def parse_api_entry(entry):
+    """The PHP backend may store the entire POSTed JSON payload as a single
+    text string in the `content` column.  When that happens, `content` looks
+    like '{"content":"...","stories":[...]}' instead of plain text.  Detect
+    that and unpack transparently so the newsletter always gets clean text."""
+    if not entry:
+        return entry
+    raw = entry.get("content", "")
+    if raw.strip().startswith("{"):
+        try:
+            inner = json.loads(raw)
+            if isinstance(inner, dict) and "content" in inner:
+                return {
+                    "date": entry.get("date"),
+                    "timestamp": entry.get("timestamp"),
+                    "content": inner.get("content", ""),
+                    "stories": inner.get("stories") or entry.get("stories") or [],
+                }
+        except (json.JSONDecodeError, ValueError):
+            pass
+    return entry
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Data selection
 # ─────────────────────────────────────────────────────────────────────────────
@@ -154,7 +187,7 @@ def _ai_pick_featured(candidates):
             "Prioritise worldwide or international significance — climate, business, "
             "science, AI, or celebrity news. Avoid personal interest stories, local "
             "sports, recipes, or stories with only regional appeal. "
-            "Reply with ONLY the number (e.g. '3'), nothing else.\n\n" + lines,
+            "Reply with ONLY the number (e.g. ‘3’), nothing else.\n\n" + lines,
             max_tokens=10,
             temperature=0.2,
         )
@@ -256,8 +289,8 @@ def make_intro(items):
         return ai(
             "Write a single warm paragraph (2–3 sentences) that briefly previews "
             "the four good-news stories below for the top of a positive-news email. "
-            "Flow them together naturally; do NOT use a list. Do not write 'newsletter' "
-            "or 'in this edition'.\n\n" + lines,
+            "Flow them together naturally; do NOT use a list. Do not write ‘newsletter’ "
+            "or ‘in this edition’.\n\n" + lines,
             max_tokens=180,
         )
     except Exception as e:
@@ -275,8 +308,8 @@ def make_labels(more):
         raw = ai(
             "For each story below write a short, friendly lead-in phrase (2–5 words) "
             "that would sit just before the headline in a good-news email, matched to "
-            "the story's category and tone. Style examples: 'For sports fans:', "
-            "'Foodies will love', 'Good climate news:'. "
+            "the story’s category and tone. Style examples: ‘For sports fans:’, "
+            "‘Foodies will love’, ‘Good climate news:’. "
             "Return ONLY a JSON array of strings, in order, nothing else.\n\n" + items,
             max_tokens=120, temperature=0.8,
         )
@@ -306,6 +339,12 @@ def make_signoff():
 # ─────────────────────────────────────────────────────────────────────────────
 # HTML assembly (pure function — easy to preview/test)
 # ─────────────────────────────────────────────────────────────────────────────
+# Dark-mode CSS class legend (applied alongside inline styles):
+#   dm-t  → main text colour        light: #1A1A1A  dark: #E8E8E8
+#   dm-m  → muted text colour       light: #777777  dark: #AAAAAA
+#   dm-g  → green accent colour     light: #5A775E  dark: #90C296
+#   dm-b  → Rallying Cry box bg     light: #EDF1ED  dark: #1E3020
+#   dm-r  → horizontal rule border  light: #E5E5E5  dark: #3A3A3A
 def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls=None):
     today = datetime.date.today().strftime("%A, %B %-d, %Y")
 
@@ -330,9 +369,9 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
         t = clean(a.get("title", ""))
         u = reader_url(a.get("category", ""), a.get("title", ""))
         more_rows += (
-            f'<tr><td style="padding:7px 0;font:16px/1.5 {FONT};color:{TEXT};">'
-            f'<strong style="color:{RALLY_GREEN};">{esc(label)}</strong> '
-            f'<a href="{esc(u)}" style="color:{TEXT};text-decoration:underline;">{esc(t)}</a>'
+            f'<tr><td class="dm-t" style="padding:7px 0;font:16px/1.5 {FONT};color:{TEXT};">'
+            f'<strong class="dm-g" style="color:{RALLY_GREEN};">{esc(label)}</strong> '
+            f'<a href="{esc(u)}" class="dm-t" style="color:{TEXT};text-decoration:underline;">{esc(t)}</a>'
             f'</td></tr>'
         )
 
@@ -348,22 +387,22 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
                 continue
             stories_li += (
                 f'<li style="margin:4px 0;">'
-                f'<a href="{esc(href)}" style="color:{RALLY_GREEN};text-decoration:underline;">{esc(title)}</a>'
+                f'<a href="{esc(href)}" class="dm-g" style="color:{RALLY_GREEN};text-decoration:underline;">{esc(title)}</a>'
                 f'</li>'
             )
         stories_ul = (
-            f'<ul style="margin:12px 0 0;padding-left:20px;font:15px/1.5 {FONT};color:{TEXT};">{stories_li}</ul>'
+            f'<ul class="dm-t" style="margin:12px 0 0;padding-left:20px;font:15px/1.5 {FONT};color:{TEXT};">{stories_li}</ul>'
             if stories_li else ""
         )
         cry_block = (
             f'<tr><td style="padding:8px 0 28px;">'
             f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" '
-            f'style="background:{BOX_BG};border-radius:8px;">'
+            f'class="dm-b" style="background:{BOX_BG};border-radius:8px;">'
             f'<tr><td style="padding:22px 24px;">'
-            f'<p style="margin:0 0 10px;font:16px/1.5 {FONT};color:{TEXT};">'
-            f'<strong style="color:{RALLY_GREEN};">Today’s Rallying Cry:</strong> '
-            f"Here’s an AI-generated overview of recent good news stories from the last 24 hours.</p>"
-            f'<p style="margin:0;font:17px/1.6 {SERIF};color:{TEXT};">{esc(clean(cry["content"]))}</p>'
+            f'<p class="dm-t" style="margin:0 0 10px;font:16px/1.5 {FONT};color:{TEXT};">'
+            f'<strong class="dm-g" style="color:{RALLY_GREEN};">Today’s Rallying Cry:</strong> '
+            f'Here’s an AI-generated overview of recent good news stories from the last 24 hours.</p>'
+            f'<p class="dm-t" style="margin:0;font:17px/1.6 {SERIF};color:{TEXT};">{esc(clean(cry["content"]))}</p>'
             f'{stories_ul}'
             f'</td></tr></table></td></tr>'
         )
@@ -372,10 +411,10 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
     balance_block = ""
     if balance and clean(balance.get("content", "")):
         balance_block = (
-            f'<tr><td style="padding:0 0 8px;font:bold 18px/1.3 {SERIF};color:{TEXT};">On Balance</td></tr>'
-            f'<tr><td style="padding:0 0 8px;font:14px/1.4 {FONT};color:{MUTED};">'
-            f"Here’s the not-so-good news happening in the world today.</td></tr>"
-            f'<tr><td style="padding:0 0 28px;font:16px/1.6 {FONT};color:{TEXT};">'
+            f'<tr><td class="dm-t" style="padding:0 0 8px;font:bold 18px/1.3 {SERIF};color:{TEXT};">On Balance</td></tr>'
+            f'<tr><td class="dm-m" style="padding:0 0 8px;font:14px/1.4 {FONT};color:{MUTED};">'
+            f'Here’s the not-so-good news happening in the world today.</td></tr>'
+            f'<tr><td class="dm-t" style="padding:0 0 28px;font:16px/1.6 {FONT};color:{TEXT};">'
             f'{esc(clean(balance["content"]))}</td></tr>'
         )
 
@@ -384,7 +423,17 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
-<title>Bright Spots</title></head>
+<title>Bright Spots</title>
+<style type="text/css">
+@media (prefers-color-scheme:dark){{
+  .dm-t{{color:{DM_TEXT} !important}}
+  .dm-m{{color:{DM_MUTED} !important}}
+  .dm-g{{color:{DM_GREEN} !important}}
+  .dm-b{{background-color:{DM_BOX} !important}}
+  .dm-r{{border-color:{DM_RULE} !important}}
+}}
+</style>
+</head>
 <body style="margin:0;padding:0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td align="center" style="padding:24px 12px;">
@@ -395,27 +444,27 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
     <img src="{LOGO_URL}" alt="Bright Spots" width="180"
          style="display:block;width:180px;max-width:60%;height:auto;border:0;">
   </td></tr>
-  <tr><td align="center" style="padding:0 0 22px;font:13px/1.4 {FONT};color:{MUTED};letter-spacing:.3px;">{today}</td></tr>
+  <tr><td align="center" class="dm-m" style="padding:0 0 22px;font:13px/1.4 {FONT};color:{MUTED};letter-spacing:.3px;">{today}</td></tr>
 
   <!-- Intro paragraph -->
-  <tr><td style="padding:0 0 26px;font:17px/1.6 {FONT};color:{TEXT};">{esc(intro)}</td></tr>
+  <tr><td class="dm-t" style="padding:0 0 26px;font:17px/1.6 {FONT};color:{TEXT};">{esc(intro)}</td></tr>
 
   <!-- Featured -->
   {img_block}
-  <tr><td style="padding:0 0 8px;font:bold 23px/1.3 {SERIF};color:{TEXT};">
-    <a href="{esc(f_url)}" style="color:{TEXT};text-decoration:none;">{esc(f_head)}</a>
+  <tr><td class="dm-t" style="padding:0 0 8px;font:bold 23px/1.3 {SERIF};color:{TEXT};">
+    <a href="{esc(f_url)}" class="dm-t" style="color:{TEXT};text-decoration:none;">{esc(f_head)}</a>
   </td></tr>
-  <tr><td style="padding:0 0 12px;font:16px/1.6 {FONT};color:{TEXT};">{esc(f_summary)}</td></tr>
+  <tr><td class="dm-t" style="padding:0 0 12px;font:16px/1.6 {FONT};color:{TEXT};">{esc(f_summary)}</td></tr>
   <tr><td style="padding:0 0 30px;">
-    <a href="{esc(f_url)}" style="font:bold 15px/1 {FONT};color:{RALLY_GREEN};text-decoration:none;">Continue Reading &rarr;</a>
+    <a href="{esc(f_url)}" class="dm-g" style="font:bold 15px/1 {FONT};color:{RALLY_GREEN};text-decoration:none;">Continue Reading &rarr;</a>
   </td></tr>
 
   <!-- More Good News Today -->
-  <tr><td style="padding:0 0 6px;border-top:1px solid {RULE};"></td></tr>
-  <tr><td style="padding:14px 0 6px;font:bold 18px/1.3 {SERIF};color:{TEXT};">More Good News Today</td></tr>
+  <tr><td class="dm-r" style="padding:0 0 6px;border-top:1px solid {RULE};"></td></tr>
+  <tr><td class="dm-t" style="padding:14px 0 6px;font:bold 18px/1.3 {SERIF};color:{TEXT};">More Good News Today</td></tr>
   <tr><td><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{more_rows}</table></td></tr>
   <tr><td style="padding:14px 0 30px;">
-    <a href="{HOME_URL}" style="font:bold 15px/1 {FONT};color:{RALLY_GREEN};text-decoration:none;">Continue reading good news &rarr;</a>
+    <a href="{HOME_URL}" class="dm-g" style="font:bold 15px/1 {FONT};color:{RALLY_GREEN};text-decoration:none;">Continue reading good news &rarr;</a>
   </td></tr>
 
   <!-- Rallying Cry (only coloured box) -->
@@ -425,11 +474,11 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
   {balance_block}
 
   <!-- Sign-off -->
-  <tr><td style="padding:8px 0 0;border-top:1px solid {RULE};"></td></tr>
-  <tr><td align="center" style="padding:22px 0 6px;font:italic 16px/1.5 {SERIF};color:{TEXT};">{esc(signoff)}</td></tr>
+  <tr><td class="dm-r" style="padding:8px 0 0;border-top:1px solid {RULE};"></td></tr>
+  <tr><td align="center" class="dm-t" style="padding:22px 0 6px;font:italic 16px/1.5 {SERIF};color:{TEXT};">{esc(signoff)}</td></tr>
 
   <!-- AI transparency note -->
-  <tr><td style="padding:20px 0 0;border-top:1px solid {RULE};font:13px/1.6 {FONT};color:{MUTED};">
+  <tr><td class="dm-m dm-r" style="padding:20px 0 0;border-top:1px solid {RULE};font:13px/1.6 {FONT};color:{MUTED};">
     <b>The news in this email was made by people, but the newsletter was compiled by AI.</b>
     We&#8217;re a very small team at Rally with limited resources. We aim to hire full time editors
     in the future, but for now, our newsletters are put together by AI. The actual news, however,
@@ -437,10 +486,10 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
   </td></tr>
 
   <!-- Footer -->
-  <tr><td align="center" style="padding:24px 0 8px;font:12px/1.6 {FONT};color:{MUTED};">
-    You’re receiving this because you subscribed to Bright Spots from Rally News.<br>
-    <a href="{{{{ unsubscribe }}}}" style="color:{MUTED};text-decoration:underline;">Unsubscribe</a>
-    &nbsp;&middot;&nbsp; <a href="{HOME_URL}" style="color:{MUTED};text-decoration:underline;">rally.news</a>
+  <tr><td align="center" class="dm-m" style="padding:24px 0 8px;font:12px/1.6 {FONT};color:{MUTED};">
+    You&#8217;re receiving this because you subscribed to Bright Spots from Rally News.<br>
+    <a href="{{{{ unsubscribe }}}}" class="dm-m" style="color:{MUTED};text-decoration:underline;">Unsubscribe</a>
+    &nbsp;&middot;&nbsp; <a href="{HOME_URL}" class="dm-m" style="color:{MUTED};text-decoration:underline;">rally.news</a>
   </td></tr>
 
 </table></td></tr></table>
@@ -494,11 +543,11 @@ def main():
     url_to_article = {a.get("url"): a for a in news if a.get("url")}
 
     try:
-        cry = (get_json(RALLYING_URL, limit=1) or [None])[0]
+        cry = parse_api_entry((get_json(RALLYING_URL, limit=1) or [None])[0])
     except Exception as e:
         print(f"[warn] rallying cry fetch failed: {e}", file=sys.stderr); cry = None
     try:
-        balance = (get_json(BALANCE_URL, limit=1) or [None])[0]
+        balance = parse_api_entry((get_json(BALANCE_URL, limit=1) or [None])[0])
     except Exception as e:
         print(f"[warn] balance fetch failed: {e}", file=sys.stderr); balance = None
 
