@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 02:04:28 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 06:06:41 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 26, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;India's women's cricket team keeps their World Cup dreams alive, while cities in Africa innovate to combat extreme heat and pilgrims gather in Karbala for a meaningful Ashura celebration.&quot;,
+  &quot;content&quot;: &quot;Australia advances in the World Cup, Egypt shows solidarity with Iran ahead of their match, and New York freezes rents for nearly a million homes—plus, human waste might soon power schools and pools!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;India defeat Bangladesh to maintain Women’s T20 World Cup semifinal bid&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/india-defeat-bangladesh-to-maintain-womens-t20-world-cup-semifinal-bid?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;How cities in Africa are adapting to intense and deadly heat&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/le-monde-africa/article/2026/06/26/how-cities-in-africa-are-adapting-to-intense-and-deadly-heat_6754886_124.html&quot;},
-    {&quot;title&quot;: &quot;Shia pilgrims gather in Iraq’s holy city of Karbala to mark Ashura&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/26/shia-pilgrims-gather-in-iraqs-holy-city-of-karbala-to-mark-ashura?traffic_source=rss&quot;}
+    {&quot;title&quot;: &quot;Australia reach World Cup knockouts after gritty 0-0 draw with Paraguay&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/26/australia-paraguay-fifa-world-cup-2026-score-report-socceroos?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Egypt coach offers support for Iranian team before crucial World Cup match&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/news/2026/6/26/egypt-coach-offers-support-for-iranian-team-before-crucial-world-cup-match?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;New York freezes rents for almost one million homes in political success for Mayor Mamdani&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/economy/article/2026/06/26/new-york-freezes-rents-for-almost-one-million-homes-in-political-success-for-mayor-mamdani_6754892_19.html&quot;},
+    {&quot;title&quot;: &quot;How human waste could one day power your pools and schools&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/environment/sustainability/how-human-waste-could-one-day-power-your-pools-and-schools-20260626-p60aa0.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Fri, 26 Jun 2026 02:04:28 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-26T02:04:21.326924Z</guid>
+      <pubDate>Fri, 26 Jun 2026 06:06:41 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-26T06:06:17.263948Z</guid>
     </item>
   </channel>
 </rss>
