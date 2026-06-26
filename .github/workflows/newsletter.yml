@@ -1,0 +1,44 @@
+name: Send Bright Spots Newsletter
+
+# Triggered externally (e.g. once a day by cron-jobs.org via the GitHub API),
+# exactly like your scraper. No internal schedule on purpose.
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build a preview only (do NOT send to subscribers)"
+        type: boolean
+        default: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests --break-system-packages
+
+      - name: Compile and send Bright Spots
+        env:
+          NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+        run: python newsletter.py
+
+      # When you run a dry run from the Actions tab, the preview is saved here so
+      # you can download and open it in a browser before going live.
+      - name: Upload preview (dry run only)
+        if: ${{ inputs.dry_run }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: newsletter-preview
+          path: newsletter_preview.html
+          if-no-files-found: ignore

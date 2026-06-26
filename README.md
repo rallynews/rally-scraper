@@ -24,7 +24,6 @@ Automatically scrapes positive news from 150+ trusted sources every 6 hours usin
 **IMPORTANT:** The API key is stored securely in GitHub Secrets, not in the code.
 
 1. Get your Hugging Face API key from: https://huggingface.co/settings/tokens
-   - Or use this one: `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`
 2. Go to your repo's **Settings** → **Secrets and variables** → **Actions**
 3. Click **"New repository secret"**
 4. Name: `HUGGINGFACE_API_KEY`
