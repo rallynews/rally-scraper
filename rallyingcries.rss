@@ -5,20 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 25 Jun 2026 22:06:49 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 02:04:28 +0000</lastBuildDate>
     <item>
-      <title>Rallying Cry – June 25, 2026</title>
+      <title>Rallying Cry – June 26, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Global unity shines as the US, Cuba, and Iran team up for Venezuela earthquake relief, while Dutch fans bring the party to Kansas City ahead of their World Cup match!&quot;,
+  &quot;content&quot;: &quot;India's women's cricket team keeps their World Cup dreams alive, while cities in Africa innovate to combat extreme heat and pilgrims gather in Karbala for a meaningful Ashura celebration.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;US, Cuba and Iran join global rescue effort after Venezuela earthquakes&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/global-development/2026/jun/25/us-cuba-iran-global-rescue-effort-venezuela-earthquakes&quot;},
-    {&quot;title&quot;: &quot;Dutch fans party in Kansas City ahead of World Cup clash with Tunisia&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/25/aje-onl-nf_dutch-fans-party-in-kansas-ahead-of-tunisia-match-250626?traffic_source=rss&quot;}
+    {&quot;title&quot;: &quot;India defeat Bangladesh to maintain Women’s T20 World Cup semifinal bid&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/25/india-defeat-bangladesh-to-maintain-womens-t20-world-cup-semifinal-bid?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;How cities in Africa are adapting to intense and deadly heat&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/le-monde-africa/article/2026/06/26/how-cities-in-africa-are-adapting-to-intense-and-deadly-heat_6754886_124.html&quot;},
+    {&quot;title&quot;: &quot;Shia pilgrims gather in Iraq’s holy city of Karbala to mark Ashura&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/video/newsfeed/2026/6/26/shia-pilgrims-gather-in-iraqs-holy-city-of-karbala-to-mark-ashura?traffic_source=rss&quot;}
   ]
 }
 ```</description>
-      <pubDate>Thu, 25 Jun 2026 22:06:49 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-25T22:05:40.627622Z</guid>
+      <pubDate>Fri, 26 Jun 2026 02:04:28 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-26T02:04:21.326924Z</guid>
     </item>
   </channel>
 </rss>
