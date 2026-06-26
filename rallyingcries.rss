@@ -5,22 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 22:07:33 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 22:29:03 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 26, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;France dominates at the World Cup with Dembele’s hat-trick, Europe embraces air conditioning, scientists inch closer to talking with animals, and Israel and Lebanon take a historic step toward peace!&quot;,
+  &quot;content&quot;: &quot;California is cracking down on loud streaming ads, koalas just got 12,000 acres of new protected habitat, and there’s a fascinating deep dive into the science of belly button bacteria.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Dembele scores hat-trick as France beat Norway 4-1 at World Cup 2026&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/26/dembele-scores-hat-trick-as-france-beat-norway-4-1-at-world-cup-2026?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Europe’s Come-to-AC Moment&quot;, &quot;url&quot;: &quot;https://www.theatlantic.com/health/2026/06/europe-air-conditioning/687711/?utm_source=feed&quot;},
-    {&quot;title&quot;: &quot;Will humans one day talk to animals? This scientist is bringing us closer&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/will-humans-one-day-talk-to-animals-this-scientist-is-bringing-us-closer/&quot;},
-    {&quot;title&quot;: &quot;Israel and Lebanon sign framework agreement with U.S. in ‘first step’ toward peace&quot;, &quot;url&quot;: &quot;https://www.theglobeandmail.com/world/article-israel-and-lebanon-sign-framework-agreement-with-us-in-first-step/&quot;}
+    {&quot;title&quot;: &quot;Streaming services’ obnoxiously loud ads become illegal on July 1 in California&quot;, &quot;url&quot;: &quot;https://arstechnica.com/gadgets/2026/06/streaming-services-obnoxiously-loud-ads-become-illegal-on-july-1-in-california/&quot;},
+    {&quot;title&quot;: &quot;Park to protect 12,000 koalas to go ahead via contentious carbon credit deal by Albanese government&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/australia-news/2026/jun/26/great-koala-national-park-nsw-carbon-credit-deal&quot;},
+    {&quot;title&quot;: &quot;The most remarkable substance on Earth? It’s right there in your belly button&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/lifestyle/health-and-wellness/the-most-remarkable-substance-on-earth-it-s-right-there-in-your-belly-button-20260621-p608t1.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Fri, 26 Jun 2026 22:07:33 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-26T22:07:18.182103Z</guid>
+      <pubDate>Fri, 26 Jun 2026 22:29:03 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-26T22:28:17.947031Z</guid>
     </item>
   </channel>
 </rss>
