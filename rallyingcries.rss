@@ -5,22 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 06:06:41 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 10:06:36 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 26, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Australia advances in the World Cup, Egypt shows solidarity with Iran ahead of their match, and New York freezes rents for nearly a million homes—plus, human waste might soon power schools and pools!&quot;,
+  &quot;content&quot;: &quot;A driver helped an officer chase a suspect, Serena Williams makes her Wimbledon comeback, the NBA boosts its presence in Asia, and a new initiative supports seniors with scam awareness and health care.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Australia reach World Cup knockouts after gritty 0-0 draw with Paraguay&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/26/australia-paraguay-fifa-world-cup-2026-score-report-socceroos?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Egypt coach offers support for Iranian team before crucial World Cup match&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/news/2026/6/26/egypt-coach-offers-support-for-iranian-team-before-crucial-world-cup-match?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;New York freezes rents for almost one million homes in political success for Mayor Mamdani&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/economy/article/2026/06/26/new-york-freezes-rents-for-almost-one-million-homes-in-political-success-for-mayor-mamdani_6754892_19.html&quot;},
-    {&quot;title&quot;: &quot;How human waste could one day power your pools and schools&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/environment/sustainability/how-human-waste-could-one-day-power-your-pools-and-schools-20260626-p60aa0.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
+    {&quot;title&quot;: &quot;Watch: Driver gives lift to armed officer chasing suspect&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/clyxg76527po?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;Serena Williams to start Wimbledon comeback against Maya Joint&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/sport/tennis/articles/c621072x6l2o?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;NBA targets Asian resurgence with technology and talent push&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/26/nba-targets-asian-resurgence-with-technology-and-talent-push-.html&quot;},
+    {&quot;title&quot;: &quot;Scheme launched to help 250 beneficiaries improve scam awareness, health and provide home support&quot;, &quot;url&quot;: &quot;https://www.straitstimes.com/singapore/community/250-seniors-vulnerable-residents-to-benefit-from-scam-awareness-health-and-home-support-initiative&quot;}
   ]
 }
 ```</description>
-      <pubDate>Fri, 26 Jun 2026 06:06:41 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-26T06:06:17.263948Z</guid>
+      <pubDate>Fri, 26 Jun 2026 10:06:36 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-26T10:06:22.704844Z</guid>
     </item>
   </channel>
 </rss>
