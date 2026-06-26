@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 14:09:51 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 26 Jun 2026 18:07:24 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 26, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;A miraculous rescue in rubble, Cape Verde’s World Cup run is uniting communities, and scientists just discovered 31 new marine species in Brazil!&quot;,
+  &quot;content&quot;: &quot;Canada’s Eurovision debut is on the horizon, New Yorkers get rent relief for a million apartments, and scientists unravel the mysteries of black holes while ancient Roman scrolls come back to life!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Watch: Moment woman pulled from rubble alive&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/videos/clyxgxr2672o?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;‘Everyone is talking about Cape Verde’: World Cup run delights diaspora community in UK&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/world/2026/jun/26/cape-verde-world-cup-run-delights-diaspora-community-uk&quot;},
-    {&quot;title&quot;: &quot;‘Chock full of incredible animals’: marine expedition uncovers 31 new species in two weeks&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/environment/2026/jun/26/marine-expedition-uncovers-31-new-species-two-weeks-brazil&quot;}
+    {&quot;title&quot;: &quot;Canada eligible to join Eurovision competition&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cy06yzp4r0eo?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;New York City freezes rents for one million regulated apartments&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/economy/2026/6/26/new-york-city-freezes-rents-for-one-million-regulated-apartments?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;What happens at the edge of a black hole? Astronomers may be close to finding out&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/what-happens-at-the-edge-of-a-black-hole-astronomers-may-be-close-to-finding-out/&quot;},
+    {&quot;title&quot;: &quot;Ancient Roman scrolls destroyed by Mount Vesuvius digitally unrolled in full for first time&quot;, &quot;url&quot;: &quot;https://www.scientificamerican.com/article/ancient-roman-scrolls-destroyed-by-mount-vesuvius-digitally-unrolled-in-full-for-first-time/&quot;}
   ]
 }
 ```</description>
-      <pubDate>Fri, 26 Jun 2026 14:09:51 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-26T14:09:43.756983Z</guid>
+      <pubDate>Fri, 26 Jun 2026 18:07:24 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-26T18:07:17.399226Z</guid>
     </item>
   </channel>
 </rss>
