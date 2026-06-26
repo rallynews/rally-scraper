@@ -126,34 +126,113 @@ def ai(prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 # Data selection
 # ─────────────────────────────────────────────────────────────────────────────
+
+# Category tiers used as a fallback when AI selection fails.
+_FEATURED_TIER1 = {"world", "climate", "business", "ai"}
+_FEATURED_TIER2 = {"politics", "transportation", "arts", "religion"}
+# entertainment (sports lives here) is lowest priority for featured
+
+# Broad interest clusters used to maximise diversity in the three "more" picks.
+_MORE_CLUSTERS = [
+    {"world", "climate", "politics"},
+    {"business", "ai", "transportation"},
+    {"entertainment", "arts", "religion"},
+]
+
+
+def _ai_pick_featured(candidates):
+    """Ask the LLM to choose the best featured story from a shortlist.
+    Returns the chosen article dict, or None on any failure."""
+    lines = "\n".join(
+        f"{i+1}. [{a.get('category', '')}] {clean(a.get('title', ''))}"
+        for i, a in enumerate(candidates)
+    )
+    try:
+        raw = ai(
+            "From the numbered stories below choose the ONE that best fits as the "
+            "featured story for an international positive-news email. "
+            "Prioritise worldwide or international significance — climate, business, "
+            "science, AI, or celebrity news. Avoid personal interest stories, local "
+            "sports, recipes, or stories with only regional appeal. "
+            "Reply with ONLY the number (e.g. '3'), nothing else.\n\n" + lines,
+            max_tokens=10,
+            temperature=0.2,
+        )
+        m = re.search(r"\d+", raw)
+        if m:
+            idx = int(m.group()) - 1
+            if 0 <= idx < len(candidates):
+                return candidates[idx]
+    except Exception as e:
+        print(f"[warn] featured AI selection failed: {e}", file=sys.stderr)
+    return None
+
+
+def _fallback_featured(candidates):
+    """Rule-based featured pick when AI is unavailable: tier-1 categories first."""
+    for tier in (_FEATURED_TIER1, _FEATURED_TIER2):
+        for a in candidates:
+            if a.get("category") in tier:
+                return a
+    return candidates[0]
+
+
 def pick_articles(news):
-    """Featured = newest article with a usable summary. Then up to 3 more, each
-    from a DIFFERENT category (and different from the featured's category)."""
+    """
+    Featured: AI picks the most internationally significant story from up to 15
+    candidates (prioritising climate, business, world, science/AI, celebrity);
+    falls back to category-tier rules if the AI call fails.
+
+    More: 3 additional articles chosen to span a wide range of reader interests.
+    A cluster-based pass ensures one pick per broad theme (global affairs /
+    economy+tech / culture+lifestyle), with fallback passes to top up to 3.
+    """
     if not news:
         return None, []
 
-    featured = next((a for a in news if clean(a.get("summary") or a.get("content"))), news[0])
+    candidates = [a for a in news if clean(a.get("summary") or a.get("content"))]
+    if not candidates:
+        candidates = list(news)
 
-    used = {featured.get("category")}
+    featured = _ai_pick_featured(candidates[:15]) or _fallback_featured(candidates)
+
+    used_cats = {featured.get("category")}
+    pool = [a for a in news if a is not featured]
     more = []
-    for a in news:
-        if a is featured:
-            continue
-        c = a.get("category")
-        if c and c not in used:
-            more.append(a)
-            used.add(c)
+
+    # First pass: one article per broad interest cluster
+    for cluster in _MORE_CLUSTERS:
         if len(more) == 3:
             break
-    # Fallback: if there weren't 3 distinct categories, top up with any other
-    # distinct articles so the section is never short.
-    if len(more) < 3:
-        for a in news:
-            if a is featured or a in more:
+        for a in pool:
+            if a in more:
                 continue
-            more.append(a)
+            c = a.get("category")
+            if c and c in cluster and c not in used_cats:
+                more.append(a)
+                used_cats.add(c)
+                break
+
+    # Second pass: any remaining unused category
+    if len(more) < 3:
+        for a in pool:
+            if a in more:
+                continue
+            c = a.get("category")
+            if c and c not in used_cats:
+                more.append(a)
+                used_cats.add(c)
             if len(more) == 3:
                 break
+
+    # Final fallback: any distinct article so the section is never short
+    if len(more) < 3:
+        for a in pool:
+            if a not in more:
+                more.append(a)
+            if len(more) == 3:
+                break
+
     return featured, more
 
 
@@ -227,7 +306,7 @@ def make_signoff():
 # ─────────────────────────────────────────────────────────────────────────────
 # HTML assembly (pure function — easy to preview/test)
 # ─────────────────────────────────────────────────────────────────────────────
-def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article):
+def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls=None):
     today = datetime.date.today().strftime("%A, %B %-d, %Y")
 
     f_title = clean(featured.get("title", ""))
@@ -262,6 +341,8 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
     if cry and clean(cry.get("content", "")):
         stories_li = ""
         for s in cry.get("stories", []) or []:
+            if used_urls and s.get("url") in used_urls:
+                continue  # already featured in the main content
             href, title = cry_story_link(s, url_to_article)
             if not title:
                 continue
@@ -347,6 +428,14 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
   <tr><td style="padding:8px 0 0;border-top:1px solid {RULE};"></td></tr>
   <tr><td align="center" style="padding:22px 0 6px;font:italic 16px/1.5 {SERIF};color:{TEXT};">{esc(signoff)}</td></tr>
 
+  <!-- AI transparency note -->
+  <tr><td style="padding:20px 0 0;border-top:1px solid {RULE};font:13px/1.6 {FONT};color:{MUTED};">
+    <b>The news in this email was made by people, but the newsletter was compiled by AI.</b>
+    We&#8217;re a very small team at Rally with limited resources. We aim to hire full time editors
+    in the future, but for now, our newsletters are put together by AI. The actual news, however,
+    is always made by humans.
+  </td></tr>
+
   <!-- Footer -->
   <tr><td align="center" style="padding:24px 0 8px;font:12px/1.6 {FONT};color:{MUTED};">
     You’re receiving this because you subscribed to Bright Spots from Rally News.<br>
@@ -417,8 +506,10 @@ def main():
     labels = make_labels(more)
     signoff = make_signoff()
 
+    used_urls = {a.get("url") for a in [featured] + more if a.get("url")}
+
     subject = build_subject(featured)
-    html_out = build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article)
+    html_out = build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls)
 
     if DRY_RUN:
         with open("newsletter_preview.html", "w", encoding="utf-8") as f:
