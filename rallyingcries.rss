@@ -5,22 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 10:06:36 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 14:07:37 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 27, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Belgium advances in the World Cup, a sculptor races to finish a Messi statue, and rescuers find survivors in Venezuela’s earthquake rubble—plus, Lebanon and Israel take a historic step toward peace!&quot;,
+  &quot;content&quot;: &quot;From Jordan’s Prince Ali making a positive impact to Berkshire’s CEO becoming a U.S. citizen at a baseball game, and *The Bear* wrapping up with heartfelt warmth, today’s good news is full of inspiring moments.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Belgium reach World Cup knockouts as New Zealand exit tournament&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/news/2026/6/27/belgium-new-zealand-fifa-world-cup-2026-trossard-lukaku-de-bruyne-saelemaekers?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;A Sculptor Rushes to Finish a Lionel Messi Statue During the World Cup&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/americas/lionel-messi-argentina-statue.html&quot;},
-    {&quot;title&quot;: &quot;Rescuers find people alive in rubble days on from Venezuela earthquakes&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/national/rescuers-find-people-alive-in-rubble-days-on-from-venezuela-earthquakes-20260627-p60am0.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;},
-    {&quot;title&quot;: &quot;Lebanon and Israel sign framework agreement in Washington for 'lasting peace and security'&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/international/article/2026/06/27/lebanon-and-israel-sign-framework-agreement-in-washington-for-lasting-peace-and-security_6754926_4.html&quot;}
+    {&quot;title&quot;: &quot;Once He Wanted to Lead FIFA. This Is Much Better.&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/middleeast/jordan-prince-ali-al-hussein-world-cup.html&quot;},
+    {&quot;title&quot;: &quot;Berkshire CEO Greg Abel sworn in as U.S. citizen at baseball game&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/27/berkshire-ceo-greg-abel-sworn-in-as-us-citizen-at-baseball-game.html&quot;},
+    {&quot;title&quot;: &quot;&lt;em&gt;The Bear&lt;/em&gt; Bids a Profoundly Warm Farewell&quot;, &quot;url&quot;: &quot;https://www.theatlantic.com/culture/2026/06/the-bear-season-5-series-finale-ending/687727/?utm_source=feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Sat, 27 Jun 2026 10:06:36 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-27T10:06:26.038859Z</guid>
+      <pubDate>Sat, 27 Jun 2026 14:07:37 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T14:07:24.229512Z</guid>
     </item>
   </channel>
 </rss>
