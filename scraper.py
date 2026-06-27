@@ -938,7 +938,13 @@ def scrape_news():
     print("\nGenerating balance entry...")
     balance_result = generate_balance(rejected_articles)
     if balance_result:
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': balance_result['content'], 'stories': balance_result['stories']}
+        # Embed stories inside content as clean JSON so the single `content`
+        # column in the PHP backend preserves them (no separate stories column).
+        entry = {
+            'date': run_date,
+            'timestamp': run_timestamp,
+            'content': json.dumps({'content': balance_result['content'], 'stories': balance_result['stories']}),
+        }
         if api_available:
             ok = api_post_entry(BALANCE_API_URL, entry)
             print("✓ balance saved to database" if ok else "✗ balance database write failed")
@@ -948,7 +954,12 @@ def scrape_news():
     print("\nGenerating rallying cry entry...")
     rallying_result = generate_rallying_cry(new_articles)
     if rallying_result:
-        entry = {'date': run_date, 'timestamp': run_timestamp, 'content': rallying_result['content'], 'stories': rallying_result['stories']}
+        # Same pattern: clean JSON in content so stories survive the PHP backend.
+        entry = {
+            'date': run_date,
+            'timestamp': run_timestamp,
+            'content': json.dumps({'content': rallying_result['content'], 'stories': rallying_result['stories']}),
+        }
         if api_available:
             ok = api_post_entry(RALLYING_API_URL, entry)
             print("✓ rallying cry saved to database" if ok else "✗ rallying cry database write failed")
