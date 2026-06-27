@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Jun 2026 22:29:03 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 02:04:03 +0000</lastBuildDate>
     <item>
-      <title>Rallying Cry – June 26, 2026</title>
+      <title>Rallying Cry – June 27, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;California is cracking down on loud streaming ads, koalas just got 12,000 acres of new protected habitat, and there’s a fascinating deep dive into the science of belly button bacteria.&quot;,
+  &quot;content&quot;: &quot;From dads exposing an NHS scandal to France’s Dembele silencing critics with a hat-trick, plus Harry and Meghan’s royal visit and brain-training breakthroughs, today’s news is full of inspiring wins.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Streaming services’ obnoxiously loud ads become illegal on July 1 in California&quot;, &quot;url&quot;: &quot;https://arstechnica.com/gadgets/2026/06/streaming-services-obnoxiously-loud-ads-become-illegal-on-july-1-in-california/&quot;},
-    {&quot;title&quot;: &quot;Park to protect 12,000 koalas to go ahead via contentious carbon credit deal by Albanese government&quot;, &quot;url&quot;: &quot;https://www.theguardian.com/australia-news/2026/jun/26/great-koala-national-park-nsw-carbon-credit-deal&quot;},
-    {&quot;title&quot;: &quot;The most remarkable substance on Earth? It’s right there in your belly button&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/lifestyle/health-and-wellness/the-most-remarkable-substance-on-earth-it-s-right-there-in-your-belly-button-20260621-p608t1.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
+    {&quot;title&quot;: &quot;How messages between two dads helped expose the largest NHS maternity scandal&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cd7pqqzznevo?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;Dembele silences critics with stunning 25-minute hat-trick to sink Norway&quot;, &quot;url&quot;: &quot;https://www.telegraph.co.uk/football/2026/06/26/norway-vs-france-live-score-2026-world-cup-updates-group-i/&quot;},
+    {&quot;title&quot;: &quot;Harry and Meghan accept offer to stay at royal estate during UK visit&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cdjk8gggnndo?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;Most brain-training hacks don’t work, but a 20-year study found one that does&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/lifestyle/health-and-wellness/most-brain-training-hacks-don-t-work-but-a-20-year-study-found-one-that-does-20260625-p60a54.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Fri, 26 Jun 2026 22:29:03 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-26T22:28:17.947031Z</guid>
+      <pubDate>Sat, 27 Jun 2026 02:04:03 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T02:03:49.663878Z</guid>
     </item>
   </channel>
 </rss>
