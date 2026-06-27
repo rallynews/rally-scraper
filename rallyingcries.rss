@@ -5,22 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 02:04:03 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 06:04:12 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 27, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;From dads exposing an NHS scandal to France’s Dembele silencing critics with a hat-trick, plus Harry and Meghan’s royal visit and brain-training breakthroughs, today’s news is full of inspiring wins.&quot;,
+  &quot;content&quot;: &quot;Cape Verde made history by stunning the World Cup, Spain secured their group top spot, and exiled Burmese chefs are bringing their cuisine to the global stage.&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;How messages between two dads helped expose the largest NHS maternity scandal&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cd7pqqzznevo?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;Dembele silences critics with stunning 25-minute hat-trick to sink Norway&quot;, &quot;url&quot;: &quot;https://www.telegraph.co.uk/football/2026/06/26/norway-vs-france-live-score-2026-world-cup-updates-group-i/&quot;},
-    {&quot;title&quot;: &quot;Harry and Meghan accept offer to stay at royal estate during UK visit&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/news/articles/cdjk8gggnndo?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;Most brain-training hacks don’t work, but a 20-year study found one that does&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/lifestyle/health-and-wellness/most-brain-training-hacks-don-t-work-but-a-20-year-study-found-one-that-does-20260625-p60a54.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
+    {&quot;title&quot;: &quot;How Cape Verde stunned World Cup to set up Argentina tie&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/sport/football/articles/c0mypzl7v2xo?at_medium=RSS&amp;at_campaign=rss&quot;},
+    {&quot;title&quot;: &quot;Spain beat Uruguay 1-0 to clinch World Cup Group H top spot&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/27/spain-beat-uruguay-1-0-to-clinch-world-cup-group-h-top-spot?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Exiled Chefs From Myanmar Give Burmese Food Chance to Shine on International Stage&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/asia/burmese-food-myanmar.html&quot;}
   ]
 }
 ```</description>
-      <pubDate>Sat, 27 Jun 2026 02:04:03 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-27T02:03:49.663878Z</guid>
+      <pubDate>Sat, 27 Jun 2026 06:04:12 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T06:04:05.899962Z</guid>
     </item>
   </channel>
 </rss>
