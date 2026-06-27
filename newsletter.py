@@ -135,15 +135,17 @@ def ai(prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
 
 def parse_api_entry(entry):
     """The PHP backend may store the entire POSTed JSON payload as a single
-    text string in the `content` column.  When that happens, `content` looks
-    like '{"content":"...","stories":[...]}' instead of plain text.  Detect
-    that and unpack transparently so the newsletter always gets clean text."""
+    text string in the `content` column.  The AI model may also wrap the JSON
+    in markdown code fences (```json ... ```).  Strip fences first, then detect
+    whether the result is a JSON blob and unpack it transparently."""
     if not entry:
         return entry
     raw = entry.get("content", "")
-    if raw.strip().startswith("{"):
+    # Strip markdown code fences that some models add around JSON responses
+    stripped = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip())
+    if stripped.startswith("{"):
         try:
-            inner = json.loads(raw)
+            inner = json.loads(stripped)
             if isinstance(inner, dict) and "content" in inner:
                 return {
                     "date": entry.get("date"),

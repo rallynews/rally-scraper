@@ -341,12 +341,14 @@ The "stories" array must contain only the titles (copied exactly from the list a
     result = call_ai_long(prompt, max_tokens=600, timeout=30)
     if not result:
         return None
+    # Some models wrap JSON in markdown code fences — strip them before parsing
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", result.strip())
     try:
-        data = json.loads(result)
+        data = json.loads(cleaned)
         stories = [{'title': t} for t in data.get('stories', []) if isinstance(t, str)]
         return {'content': data.get('content', ''), 'stories': stories}
     except (json.JSONDecodeError, AttributeError):
-        return {'content': result, 'stories': []}
+        return {'content': cleaned, 'stories': []}
 
 def generate_rallying_cry(approved_articles):
     """Create a one-sentence upbeat summary of today's positive articles."""
@@ -382,16 +384,17 @@ The "stories" array must contain only the 2–4 articles you actually referenced
     result = call_ai_long(prompt, max_tokens=400, timeout=30)
     if not result:
         return None
+    # Some models wrap JSON in markdown code fences — strip them before parsing
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", result.strip())
     try:
-        data = json.loads(result)
+        data = json.loads(cleaned)
         stories = [s for s in data.get('stories', []) if isinstance(s, dict) and 'title' in s]
         return {'content': data.get('content', ''), 'stories': stories}
     except (json.JSONDecodeError, AttributeError):
         # AI returned plain text instead of JSON — use it as content directly
-        content = result.strip()
-        if content.startswith('{') or content.startswith('['):
-            return None  # Malformed JSON, skip rather than surface garbage
-        return {'content': content, 'stories': []}
+        if cleaned.startswith('{') or cleaned.startswith('['):
+            return None  # Still malformed JSON, skip rather than surface garbage
+        return {'content': cleaned, 'stories': []}
 
 def generate_rallying_cry_rss(entry):
     """Write rallyingcries.rss containing only the single most recent rallying cry."""
