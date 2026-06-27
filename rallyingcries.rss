@@ -5,21 +5,22 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 06:04:12 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 10:06:36 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 27, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;Cape Verde made history by stunning the World Cup, Spain secured their group top spot, and exiled Burmese chefs are bringing their cuisine to the global stage.&quot;,
+  &quot;content&quot;: &quot;Belgium advances in the World Cup, a sculptor races to finish a Messi statue, and rescuers find survivors in Venezuela’s earthquake rubble—plus, Lebanon and Israel take a historic step toward peace!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;How Cape Verde stunned World Cup to set up Argentina tie&quot;, &quot;url&quot;: &quot;https://www.bbc.co.uk/sport/football/articles/c0mypzl7v2xo?at_medium=RSS&amp;at_campaign=rss&quot;},
-    {&quot;title&quot;: &quot;Spain beat Uruguay 1-0 to clinch World Cup Group H top spot&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/27/spain-beat-uruguay-1-0-to-clinch-world-cup-group-h-top-spot?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Exiled Chefs From Myanmar Give Burmese Food Chance to Shine on International Stage&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/asia/burmese-food-myanmar.html&quot;}
+    {&quot;title&quot;: &quot;Belgium reach World Cup knockouts as New Zealand exit tournament&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/news/2026/6/27/belgium-new-zealand-fifa-world-cup-2026-trossard-lukaku-de-bruyne-saelemaekers?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;A Sculptor Rushes to Finish a Lionel Messi Statue During the World Cup&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/americas/lionel-messi-argentina-statue.html&quot;},
+    {&quot;title&quot;: &quot;Rescuers find people alive in rubble days on from Venezuela earthquakes&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/national/rescuers-find-people-alive-in-rubble-days-on-from-venezuela-earthquakes-20260627-p60am0.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;},
+    {&quot;title&quot;: &quot;Lebanon and Israel sign framework agreement in Washington for 'lasting peace and security'&quot;, &quot;url&quot;: &quot;https://www.lemonde.fr/en/international/article/2026/06/27/lebanon-and-israel-sign-framework-agreement-in-washington-for-lasting-peace-and-security_6754926_4.html&quot;}
   ]
 }
 ```</description>
-      <pubDate>Sat, 27 Jun 2026 06:04:12 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-27T06:04:05.899962Z</guid>
+      <pubDate>Sat, 27 Jun 2026 10:06:36 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T10:06:26.038859Z</guid>
     </item>
   </channel>
 </rss>
