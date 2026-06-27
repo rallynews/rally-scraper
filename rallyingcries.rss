@@ -5,21 +5,12 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 15:39:48 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 15:48:46 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 27, 2026</title>
-      <description>```json
-{
-  &quot;content&quot;: &quot;Cape Verde makes history as the smallest nation to reach the World Cup knockouts, a sleek new luxury EV inspired by the moon buggy hits the scene, and the Vixens bounce back to secure a spot in the Super Netball grand final!&quot;,
-  &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Cape Verde break record as smallest nation to reach World Cup knockouts&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/27/cape-verde-break-record-as-smallest-nation-to-reach-world-cup-knockouts?traffic_source=rss&quot;},
-    {&quot;title&quot;: &quot;Apple and Audi alumni have made a luxe EV based on the moon buggy&quot;, &quot;url&quot;: &quot;https://arstechnica.com/cars/2026/06/apple-and-audi-alumni-have-made-a-luxe-ev-based-on-the-moon-buggy/&quot;},
-    {&quot;title&quot;: &quot;Vixens end their losing run to snare a Super Netball grand final berth&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/sport/netball/vixens-end-their-losing-run-to-snare-a-super-netball-grand-final-berth-20260628-p60amp.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
-  ]
-}
-```</description>
-      <pubDate>Sat, 27 Jun 2026 15:39:48 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-27T15:39:30.938681Z</guid>
+      <description>From an Amazon delivery worker turned international star to AI drones rescuing hikers in record time, plus a couple who found their dream home in Italy for just $13,000, today’s good news is full of heartwarming wins!</description>
+      <pubDate>Sat, 27 Jun 2026 15:48:46 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T15:48:39.314195Z</guid>
     </item>
   </channel>
 </rss>
