@@ -467,12 +467,12 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
 <body style="margin:0;padding:0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td align="center" style="padding:24px 12px;">
-<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
 
   <!-- Masthead: logo only, no header bar -->
   <tr><td align="center" style="padding:8px 0 4px;">
-    <img src="{LOGO_URL}" alt="Bright Spots" width="180"
-         style="display:block;width:180px;max-width:60%;height:auto;border:0;">
+    <img src="{LOGO_URL}" alt="Bright Spots" width="600"
+         style="display:block;width:100%;max-width:600px;height:auto;border:0;">
   </td></tr>
   <tr><td align="center" class="dm-m" style="padding:0 0 22px;font:13px/1.4 {FONT};color:{MUTED};letter-spacing:.3px;">{today}</td></tr>
 
