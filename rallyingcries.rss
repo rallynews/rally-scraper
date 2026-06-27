@@ -5,21 +5,21 @@
     <link>https://rally.news</link>
     <description>The most recent uplifting one-sentence summary of the day's positive news.</description>
     <language>en-us</language>
-    <lastBuildDate>Sat, 27 Jun 2026 14:07:37 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 27 Jun 2026 15:39:48 +0000</lastBuildDate>
     <item>
       <title>Rallying Cry – June 27, 2026</title>
       <description>```json
 {
-  &quot;content&quot;: &quot;From Jordan’s Prince Ali making a positive impact to Berkshire’s CEO becoming a U.S. citizen at a baseball game, and *The Bear* wrapping up with heartfelt warmth, today’s good news is full of inspiring moments.&quot;,
+  &quot;content&quot;: &quot;Cape Verde makes history as the smallest nation to reach the World Cup knockouts, a sleek new luxury EV inspired by the moon buggy hits the scene, and the Vixens bounce back to secure a spot in the Super Netball grand final!&quot;,
   &quot;stories&quot;: [
-    {&quot;title&quot;: &quot;Once He Wanted to Lead FIFA. This Is Much Better.&quot;, &quot;url&quot;: &quot;https://www.nytimes.com/2026/06/27/world/middleeast/jordan-prince-ali-al-hussein-world-cup.html&quot;},
-    {&quot;title&quot;: &quot;Berkshire CEO Greg Abel sworn in as U.S. citizen at baseball game&quot;, &quot;url&quot;: &quot;https://www.cnbc.com/2026/06/27/berkshire-ceo-greg-abel-sworn-in-as-us-citizen-at-baseball-game.html&quot;},
-    {&quot;title&quot;: &quot;&lt;em&gt;The Bear&lt;/em&gt; Bids a Profoundly Warm Farewell&quot;, &quot;url&quot;: &quot;https://www.theatlantic.com/culture/2026/06/the-bear-season-5-series-finale-ending/687727/?utm_source=feed&quot;}
+    {&quot;title&quot;: &quot;Cape Verde break record as smallest nation to reach World Cup knockouts&quot;, &quot;url&quot;: &quot;https://www.aljazeera.com/sports/2026/6/27/cape-verde-break-record-as-smallest-nation-to-reach-world-cup-knockouts?traffic_source=rss&quot;},
+    {&quot;title&quot;: &quot;Apple and Audi alumni have made a luxe EV based on the moon buggy&quot;, &quot;url&quot;: &quot;https://arstechnica.com/cars/2026/06/apple-and-audi-alumni-have-made-a-luxe-ev-based-on-the-moon-buggy/&quot;},
+    {&quot;title&quot;: &quot;Vixens end their losing run to snare a Super Netball grand final berth&quot;, &quot;url&quot;: &quot;https://www.smh.com.au/sport/netball/vixens-end-their-losing-run-to-snare-a-super-netball-grand-final-berth-20260628-p60amp.html?ref=rss&amp;utm_medium=rss&amp;utm_source=rss_feed&quot;}
   ]
 }
 ```</description>
-      <pubDate>Sat, 27 Jun 2026 14:07:37 +0000</pubDate>
-      <guid isPermaLink="false">rallying-cry-2026-06-27T14:07:24.229512Z</guid>
+      <pubDate>Sat, 27 Jun 2026 15:39:48 +0000</pubDate>
+      <guid isPermaLink="false">rallying-cry-2026-06-27T15:39:30.938681Z</guid>
     </item>
   </channel>
 </rss>
