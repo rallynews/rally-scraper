@@ -585,7 +585,11 @@ def main():
     labels = make_labels(more)
     signoff = make_signoff()
 
-    used_urls = {a.get("url") for a in [featured] + more if a.get("url")}
+    # Only exclude the featured article from the Rallying Cry bullet list —
+    # it has the most prominent placement (headline + summary + link), so
+    # repeating it below would be redundant. "More" articles are brief enough
+    # that a Rallying Cry cross-reference adds context rather than repetition.
+    used_urls = {featured.get("url")} if featured.get("url") else set()
 
     subject = build_subject(featured)
     html_out = build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls)
