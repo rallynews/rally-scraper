@@ -136,25 +136,53 @@ def ai(prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
 def parse_api_entry(entry):
     """The PHP backend may store the entire POSTed JSON payload as a single
     text string in the `content` column.  The AI model may also wrap the JSON
-    in markdown code fences (```json ... ```).  Strip fences first, then detect
-    whether the result is a JSON blob and unpack it transparently."""
+    in markdown code fences (```json ... ```), and the stored value may be
+    truncated (MySQL field length limit).  Handle all three cases:
+      1. Complete fenced JSON   → strip fences, json.loads, unpack
+      2. Truncated fenced JSON  → strip opening fence only, regex-extract content
+      3. Complete bare JSON     → json.loads, unpack
+    """
     if not entry:
         return entry
     raw = entry.get("content", "")
-    # Strip markdown code fences that some models add around JSON responses
-    stripped = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw.strip())
-    if stripped.startswith("{"):
+    # Strip opening code fence regardless of whether the closing fence exists
+    # (truncated content may be missing the closing fence)
+    stripped = re.sub(r"^```(?:json)?\s*", "", raw.strip())
+    stripped = re.sub(r"\s*```\s*$", "", stripped)  # closing fence if present
+
+    if not stripped.startswith("{"):
+        return entry
+
+    # Fast path: complete, valid JSON
+    try:
+        inner = json.loads(stripped)
+        if isinstance(inner, dict) and "content" in inner:
+            return {
+                "date": entry.get("date"),
+                "timestamp": entry.get("timestamp"),
+                "content": inner.get("content", ""),
+                "stories": inner.get("stories") or entry.get("stories") or [],
+            }
+    except (json.JSONDecodeError, ValueError):
+        pass
+
+    # Slow path: JSON is truncated — regex-extract just the "content" value.
+    # Pattern matches the string value of the "content" key, handling \" escapes.
+    m = re.search(r'"content"\s*:\s*"((?:[^"\\]|\\.)*)"', stripped)
+    if m:
+        raw_val = m.group(1)
         try:
-            inner = json.loads(stripped)
-            if isinstance(inner, dict) and "content" in inner:
-                return {
-                    "date": entry.get("date"),
-                    "timestamp": entry.get("timestamp"),
-                    "content": inner.get("content", ""),
-                    "stories": inner.get("stories") or entry.get("stories") or [],
-                }
+            # Decode JSON string escapes (\" → ", \n → newline, etc.)
+            content_text = json.loads(f'"{raw_val}"')
         except (json.JSONDecodeError, ValueError):
-            pass
+            content_text = raw_val
+        return {
+            "date": entry.get("date"),
+            "timestamp": entry.get("timestamp"),
+            "content": content_text,
+            "stories": entry.get("stories") or [],
+        }
+
     return entry
 
 
