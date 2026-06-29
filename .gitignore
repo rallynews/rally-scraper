@@ -3,3 +3,4 @@ __pycache__/
 *.pyo
 .env
 api/config.php
+*_preview.html
