@@ -254,8 +254,10 @@ def pick_articles(news):
         return None, []
 
     # Rally Originals are staff-written pieces, not scraped journalism — exclude
-    # them from the newsletter's article picks entirely.
-    news = [a for a in news if not a.get("rally_originals")]
+    # them from the newsletter's article picks entirely. The API returns this
+    # flag as a string ("0"/"1") since the PHP backend uses emulated prepares,
+    # so compare against the stringified value rather than Python truthiness.
+    news = [a for a in news if str(a.get("rally_originals", 0)).strip() not in ("1", "true", "True")]
     if not news:
         return None, []
 
