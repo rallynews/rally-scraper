@@ -330,25 +330,9 @@ def generate_balance(rejected_articles):
 Articles:
 {articles_text}
 
-Respond with valid JSON only, in this exact format:
-{{
-  "content": "Your single paragraph here.",
-  "stories": ["Exact title of a story you referenced", "Another title you referenced"]
-}}
+Write ONE paragraph only. No headers, no bullet points. Be factual and direct."""
 
-The "stories" array must contain only the titles (copied exactly from the list above) of articles you actually mentioned or referenced in the paragraph. No headers, no bullet points in the paragraph. Be factual and direct."""
-
-    result = call_ai_long(prompt, max_tokens=600, timeout=30)
-    if not result:
-        return None
-    # Some models wrap JSON in markdown code fences — strip them before parsing
-    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", result.strip())
-    try:
-        data = json.loads(cleaned)
-        stories = [{'title': t} for t in data.get('stories', []) if isinstance(t, str)]
-        return {'content': data.get('content', ''), 'stories': stories}
-    except (json.JSONDecodeError, AttributeError):
-        return {'content': cleaned, 'stories': []}
+    return call_ai_long(prompt, max_tokens=400, timeout=30)
 
 def generate_rallying_cry(approved_articles):
     """Create a one-sentence upbeat summary of today's positive articles."""
@@ -938,12 +922,10 @@ def scrape_news():
     print("\nGenerating balance entry...")
     balance_result = generate_balance(rejected_articles)
     if balance_result:
-        # Embed stories inside content as clean JSON so the single `content`
-        # column in the PHP backend preserves them (no separate stories column).
         entry = {
             'date': run_date,
             'timestamp': run_timestamp,
-            'content': json.dumps({'content': balance_result['content'], 'stories': balance_result['stories']}),
+            'content': balance_result,
         }
         if api_available:
             ok = api_post_entry(BALANCE_API_URL, entry)

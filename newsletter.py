@@ -253,6 +253,12 @@ def pick_articles(news):
     if not news:
         return None, []
 
+    # Rally Originals are staff-written pieces, not scraped journalism — exclude
+    # them from the newsletter's article picks entirely.
+    news = [a for a in news if not a.get("rally_originals")]
+    if not news:
+        return None, []
+
     candidates = [a for a in news if clean(a.get("summary") or a.get("content"))]
     if not candidates:
         candidates = list(news)
