@@ -374,11 +374,14 @@ def build_subject(content: str) -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 def send_campaign(subject, html_content):
     headers = {"api-key": BREVO_API_KEY, "Content-Type": "application/json", "accept": "application/json"}
+    # Brevo requires the campaign name to be UNIQUE — a plain date collides if the
+    # workflow is triggered more than once in a day, so include the time too.
+    name = f"Rallying Cries {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     create = requests.post(
         "https://api.brevo.com/v3/emailCampaigns",
         headers=headers,
         json={
-            "name": f"Rallying Cries {datetime.date.today().isoformat()}",
+            "name": name,
             "subject": subject,
             "sender": SENDER,
             "htmlContent": html_content,
@@ -386,7 +389,12 @@ def send_campaign(subject, html_content):
         },
         timeout=60,
     )
-    create.raise_for_status()
+    if not create.ok:
+        # Surface Brevo's actual reason (unverified sender, unknown list, etc.)
+        # instead of an opaque 400.
+        print(f"[error] Brevo campaign create failed ({create.status_code}): {create.text}",
+              file=sys.stderr)
+        create.raise_for_status()
     campaign_id = create.json()["id"]
     send = requests.post(
         f"https://api.brevo.com/v3/emailCampaigns/{campaign_id}/sendNow",
