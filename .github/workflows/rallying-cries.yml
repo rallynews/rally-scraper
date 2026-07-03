@@ -31,6 +31,8 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           RALLYING_LIST_ID: ${{ secrets.RALLYING_LIST_ID }}
+          RALLYING_SENDER_NAME: ${{ secrets.RALLYING_SENDER_NAME }}
+          RALLYING_SENDER_EMAIL: ${{ secrets.RALLYING_SENDER_EMAIL }}
           DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
         run: python rallying_cries.py
 
