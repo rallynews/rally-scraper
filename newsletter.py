@@ -47,7 +47,7 @@ BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
 DRY_RUN = os.environ.get("DRY_RUN", "").strip() not in ("", "0", "false", "False")
 
 # Brevo
-SENDER = {"name": "Bright Spots", "email": "brightspots@rally.news"}
+SENDER = {"name": "Rally News", "email": "brightspots@rally.news"}
 LIST_ID = 2  # BrightSpot
 
 # Brand / design
