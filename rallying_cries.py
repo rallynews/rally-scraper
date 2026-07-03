@@ -68,6 +68,7 @@ MUTED = "#777777"
 RULE = "#E5E5E5"
 BOX_BG = "#EDF1ED"           # light green-grey, used for the article cards
 LOGO_URL = "https://rally.news/images/icons/rally-mark.png"
+LOGO_WIDTH = 72   # rally-mark.png is a square mark, not a wide banner — render it small
 HOME_URL = "https://rally.news/"
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 SERIF = "Georgia,'Times New Roman',serif"
@@ -336,8 +337,8 @@ def build_html(content, cards):
 
   <!-- Masthead: logo only, no header bar -->
   <tr><td align="center" style="padding:8px 0 4px;">
-    <img src="{LOGO_URL}" alt="Rally News" width="600"
-         style="display:block;width:100%;max-width:600px;height:auto;border:0;">
+    <img src="{LOGO_URL}" alt="Rally News" width="{LOGO_WIDTH}"
+         style="display:block;width:{LOGO_WIDTH}px;max-width:{LOGO_WIDTH}px;height:auto;border:0;margin:0 auto;">
   </td></tr>
   <tr><td align="center" class="dm-m" style="padding:0 0 22px;font:13px/1.4 {FONT};color:{MUTED};letter-spacing:.3px;">{today}</td></tr>
 
