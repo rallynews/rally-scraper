@@ -23,7 +23,7 @@ Required environment variables (GitHub Actions secrets):
   BREVO_API_KEY       for sending
 
 Optional:
-  RALLYING_LIST_ID    Brevo list id to send to (default 3)
+  RALLYING_LIST_ID    Brevo list id to send to (default 5)
   DRY_RUN=1           build the email and write rallying_cries_preview.html, do NOT send
 """
 
@@ -51,7 +51,7 @@ DRY_RUN = os.environ.get("DRY_RUN", "").strip() not in ("", "0", "false", "False
 
 # Brevo
 SENDER = {"name": "Rallying Cries", "email": "rallyingcries@rally.news"}
-LIST_ID = int(os.environ.get("RALLYING_LIST_ID", "").strip() or "3")  # Rallying Cries
+LIST_ID = int(os.environ.get("RALLYING_LIST_ID", "").strip() or "5")  # Rallying Cries
 
 # Brand / design — mirrors Bright Spots so the two emails feel like one family.
 RALLY_GREEN = "#5A775E"
