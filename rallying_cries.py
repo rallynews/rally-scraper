@@ -23,8 +23,11 @@ Required environment variables (GitHub Actions secrets):
   BREVO_API_KEY       for sending
 
 Optional:
-  RALLYING_LIST_ID    Brevo list id to send to (default 5)
-  DRY_RUN=1           build the email and write rallying_cries_preview.html, do NOT send
+  RALLYING_LIST_ID     Brevo list id to send to (default 5)
+  RALLYING_SENDER_NAME  From-name (default "Rallying Cries")
+  RALLYING_SENDER_EMAIL From-email; MUST be a Brevo-verified sender
+                        (default brightspots@rally.news, which is already active)
+  DRY_RUN=1            build the email and write rallying_cries_preview.html, do NOT send
 """
 
 import os
@@ -50,7 +53,14 @@ BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
 DRY_RUN = os.environ.get("DRY_RUN", "").strip() not in ("", "0", "false", "False")
 
 # Brevo
-SENDER = {"name": "Rallying Cries", "email": "rallyingcries@rally.news"}
+# The sender EMAIL must be a verified/active sender in the Brevo account, else
+# the campaign create fails with "Sender is invalid / inactive". Default to the
+# known-active brightspots@rally.news; override RALLYING_SENDER_EMAIL once a
+# dedicated rallyingcries@rally.news sender is verified in Brevo.
+SENDER = {
+    "name": os.environ.get("RALLYING_SENDER_NAME", "").strip() or "Rallying Cries",
+    "email": os.environ.get("RALLYING_SENDER_EMAIL", "").strip() or "brightspots@rally.news",
+}
 LIST_ID = int(os.environ.get("RALLYING_LIST_ID", "").strip() or "5")  # Rallying Cries
 
 # Brand / design — mirrors Bright Spots so the two emails feel like one family.
