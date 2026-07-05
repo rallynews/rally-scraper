@@ -68,5 +68,18 @@
   "Canary Media": "https://www.canarymedia.com/feed",
   "Inside Climate News": "https://insideclimatenews.org/feed/",
   "Grist": "https://grist.org/feed/",
-  "Carbon Brief": "https://www.carbonbrief.org/feed/"
+  "Carbon Brief": "https://www.carbonbrief.org/feed/",
+
+  "Smithsonian Magazine": "https://www.smithsonianmag.com/rss/latest_articles/",
+  "The Narwhal": "https://thenarwhal.ca/feed/",
+  "Euronews": "https://www.euronews.com/rss",
+  "Kyiv Independent": "https://kyivindependent.com/feed/rss",
+  "The Moscow Times": "https://www.themoscowtimes.com/rss/news",
+  "El País (English)": "https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada",
+  "Dawn": "https://www.dawn.com/feeds/home",
+  "Rappler": "https://www.rappler.com/feed/",
+  "Daily Maverick": "https://www.dailymaverick.co.za/rss/",
+  "Africanews": "https://www.africanews.com/feed/rss",
+  "ScienceAlert": "https://www.sciencealert.com/feed",
+  "Aeon": "https://aeon.co/feed.rss"
 }

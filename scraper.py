@@ -38,7 +38,12 @@ WHITELISTED_SOURCES = {
     'Los Angeles Times', 'The Japan Times', 'The Straits Times',
     'The Sydney Morning Herald', 'The Globe and Mail',
     'Le Monde', 'DW (Deutsche Welle)', 'The Telegraph',
-    'Grist', 'Science', 'New Scientist'
+    'Grist', 'Science', 'New Scientist',
+    # Added 2026-07: broader global coverage
+    'Smithsonian Magazine', 'The Narwhal', 'Euronews',
+    'Kyiv Independent', 'The Moscow Times', 'El País (English)',
+    'Dawn', 'Rappler', 'Daily Maverick', 'Africanews',
+    'ScienceAlert', 'Aeon'
 }
 
 # RSS feeds for whitelisted sources
@@ -70,7 +75,20 @@ RSS_FEEDS = {
     'DW (Deutsche Welle)': 'https://rss.dw.com/rdf/rss-en-all',
     'The Telegraph': 'https://www.telegraph.co.uk/rss.xml',
     'Grist': 'https://grist.org/feed/',
-    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/'
+    'New Scientist': 'https://www.newscientist.com/subject/technology/feed/',
+    # Added 2026-07: broader global coverage
+    'Smithsonian Magazine': 'https://www.smithsonianmag.com/rss/latest_articles/',
+    'The Narwhal': 'https://thenarwhal.ca/feed/',
+    'Euronews': 'https://www.euronews.com/rss',
+    'Kyiv Independent': 'https://kyivindependent.com/feed/rss',
+    'The Moscow Times': 'https://www.themoscowtimes.com/rss/news',
+    'El País (English)': 'https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada',
+    'Dawn': 'https://www.dawn.com/feeds/home',
+    'Rappler': 'https://www.rappler.com/feed/',
+    'Daily Maverick': 'https://www.dailymaverick.co.za/rss/',
+    'Africanews': 'https://www.africanews.com/feed/rss',
+    'ScienceAlert': 'https://www.sciencealert.com/feed',
+    'Aeon': 'https://aeon.co/feed.rss'
 }
 
 # Valid categories (AI will categorize into these)
@@ -85,6 +103,40 @@ VALID_CATEGORIES = [
     'religion',      # Faith, spirituality, religious leaders
     'arts'           # Culture, literature, books, museums, theater
 ]
+
+# Continent of each whitelisted source's newsroom/origin.
+# Used to guarantee every run surfaces at least one story per continent.
+SOURCE_CONTINENTS = {
+    # North America
+    'NPR': 'North America', 'The New York Times': 'North America',
+    'The Washington Post': 'North America', 'The Atlantic': 'North America',
+    'Scientific American': 'North America', 'Science News': 'North America',
+    'Wired': 'North America', 'TechCrunch': 'North America',
+    'Ars Technica': 'North America', 'MIT Technology Review': 'North America',
+    'The Wall Street Journal': 'North America', 'Bloomberg': 'North America',
+    'CNBC': 'North America', 'Los Angeles Times': 'North America',
+    'The Globe and Mail': 'North America', 'Grist': 'North America',
+    'Science': 'North America', 'Smithsonian Magazine': 'North America',
+    'The Narwhal': 'North America',
+    # Europe
+    'BBC News': 'Europe', 'The Guardian': 'Europe', 'Reuters': 'Europe',
+    'Nature News': 'Europe', 'Le Monde': 'Europe', 'DW (Deutsche Welle)': 'Europe',
+    'The Telegraph': 'Europe', 'New Scientist': 'Europe', 'Euronews': 'Europe',
+    'Kyiv Independent': 'Europe', 'The Moscow Times': 'Europe',
+    'El País (English)': 'Europe',
+    # Asia
+    'Al Jazeera': 'Asia', 'The Japan Times': 'Asia', 'The Straits Times': 'Asia',
+    'Dawn': 'Asia', 'Rappler': 'Asia',
+    # Africa
+    'Daily Maverick': 'Africa', 'Africanews': 'Africa',
+    # Oceania
+    'The Sydney Morning Herald': 'Oceania', 'ScienceAlert': 'Oceania',
+    'Aeon': 'Oceania',
+}
+
+# Selection limits applied to each scraper run
+MIN_NEW_ARTICLES = 15      # target new positive stories per run
+MAX_PER_CATEGORY = 2       # no more than this many stories in any one category
 
 # Free Gemini first, then paid o1-mini, then stable fallbacks
 AI_MODELS = [
@@ -752,8 +804,13 @@ def scrape_news():
     print("═" * 60)
 
     SCRAPE_TIMEOUT = 45 * 60   # 45 minutes max per run
-    MIN_NEW_ARTICLES = 6        # target per run
     BATCH_SIZE = 10             # feed entries examined per pass
+
+    # Continents we expect to cover — every continent that has a live feed.
+    required_continents = {
+        SOURCE_CONTINENTS[s] for s in RSS_FEEDS
+        if s in WHITELISTED_SOURCES and s in SOURCE_CONTINENTS
+    }
 
     start_time = time.time()
 
@@ -803,8 +860,15 @@ def scrape_news():
             print(f"\nTimeout reached after {pass_num} passes ({elapsed/60:.1f} min)")
             break
 
-        if len(new_articles) >= MIN_NEW_ARTICLES:
-            print(f"\nTarget reached: {len(new_articles)} new articles found")
+        covered_continents = {
+            SOURCE_CONTINENTS.get(a['source']) for a in new_articles
+        }
+        covered_continents.discard(None)
+        missing_continents = required_continents - covered_continents
+
+        if len(new_articles) >= MIN_NEW_ARTICLES and not missing_continents:
+            print(f"\nTarget reached: {len(new_articles)} new articles found, "
+                  f"all {len(required_continents)} continents covered")
             break
 
         start_idx = pass_num * BATCH_SIZE
@@ -813,6 +877,8 @@ def scrape_news():
         print(f"\n{'─' * 60}")
         print(f"Pass {pass_num + 1}: checking feed entries {start_idx + 1}–{end_idx}")
         print(f"Articles found so far: {len(new_articles)}/{MIN_NEW_ARTICLES}")
+        if missing_continents:
+            print(f"Continents still needed: {', '.join(sorted(missing_continents))}")
         print(f"{'─' * 60}")
 
         new_candidates_this_pass = 0
@@ -856,6 +922,14 @@ def scrape_news():
                         print(f"    ✗ Already have 2 articles from {source_name} this run")
                         continue
 
+                    # Once the target is met, only keep scraping to fill in
+                    # continents we don't yet have a story from.
+                    continent = SOURCE_CONTINENTS.get(source_name)
+                    if len(new_articles) >= MIN_NEW_ARTICLES:
+                        covered_now = {SOURCE_CONTINENTS.get(a['source']) for a in new_articles}
+                        if continent is None or continent in covered_now:
+                            continue
+
                     print(f"  Checking: {title[:60]}...")
                     if not is_positive_news(title, summary):
                         print(f"    ✗ Not positive news")
@@ -870,6 +944,15 @@ def scrape_news():
 
                     print(f"    ✓ Unique topic!")
 
+                    category = categorize_article(title, summary)
+                    print(f"    ✓ Categorized as: {category}")
+
+                    # Cap: no more than MAX_PER_CATEGORY stories in any one category
+                    category_count = sum(1 for a in new_articles if a['category'] == category)
+                    if category_count >= MAX_PER_CATEGORY:
+                        print(f"    ✗ Already have {MAX_PER_CATEGORY} '{category}' stories this run")
+                        continue
+
                     image_url = get_article_image(entry, used_images)
                     if not image_url:
                         print(f"    ✗ No unique image found")
@@ -880,9 +963,6 @@ def scrape_news():
                     content = extract_first_paragraph(url)
                     if not content:
                         content = summary[:500]
-
-                    category = categorize_article(title, summary)
-                    print(f"    ✓ Categorized as: {category}")
 
                     article = {
                         'title': title,
