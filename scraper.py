@@ -138,6 +138,12 @@ SOURCE_CONTINENTS = {
 MIN_NEW_ARTICLES = 15      # target new positive stories per run
 MAX_PER_CATEGORY = 2       # no more than this many stories in any one category
 
+# Editorial metadata options (AI will assign these to every new article).
+# Decided by Mistral (mistral-small-3.2-24b-instruct is first in AI_MODELS);
+# other models only step in as a fallback if Mistral is unavailable.
+VALID_WRITING_STYLES = ['Formal', 'Casual', 'Scientific', 'Investigative', 'Funny', 'Thoughtful']
+VALID_COMPLEXITY = ['Simple', 'Moderate', 'Complex']
+
 # Free Gemini first, then paid o1-mini, then stable fallbacks
 AI_MODELS = [
     'mistralai/mistral-small-3.2-24b-instruct',  # cheap, Europe-based, hits first
@@ -593,6 +599,67 @@ Answer with ONLY the category name (one word)."""
     # Fallback to world if AI fails or returns invalid category
     return 'world'
 
+def enrich_article_metadata(title, summary, content):
+    """Use Mistral (acting as an expert content editor) to add editorial metadata
+    to a new article, based only on its headline, summary, and first paragraph."""
+    prompt = f"""You are an expert content editor for a positive news outlet. Read the headline, summary, and first paragraph below and decide five pieces of metadata about it. Base every judgment strictly on the text given — do not guess, assume, or invent anything that isn't actually stated or clearly implied.
+
+Headline: {title}
+Summary: {summary}
+First paragraph: {content}
+
+Decide:
+1. writing_style — the tone/register of THIS reporting (not the underlying event). Pick 1, or at most 2 if the piece genuinely blends two. Choose only from: Formal, Casual, Scientific, Investigative, Funny, Thoughtful.
+2. complexity — how demanding the writing is to read. Choose exactly one: Simple, Moderate, Complex.
+3. topics — the general subject area(s) this story is about, as short lowercase phrases (e.g. "sports", "space", "movies", "tv", "books", "politics", "health", "wildlife"). List only topics that are clearly central to the story, at most 4.
+4. countries — real-world countries that are directly affected by or are the setting of this story. Use full country names. Leave empty if no specific country is identifiable.
+5. people — real, specific named individuals (full names as given) who are actually mentioned in this text. Do not include organizations, generic titles, or fictional characters. Leave empty if none are named.
+
+Respond with valid JSON only, in this exact format and nothing else:
+{{
+  "writing_style": ["Thoughtful"],
+  "complexity": "Moderate",
+  "topics": ["example topic"],
+  "countries": ["Example Country"],
+  "people": ["Example Name"]
+}}"""
+
+    result = call_ai_long(prompt, max_tokens=300, timeout=20)
+    defaults = {'writing_style': [], 'complexity': 'Moderate', 'topics': [], 'countries': [], 'people': []}
+    if not result:
+        return defaults
+
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", result.strip())
+    try:
+        data = json.loads(cleaned)
+    except (json.JSONDecodeError, AttributeError):
+        return defaults
+
+    styles = data.get('writing_style', [])
+    if isinstance(styles, str):
+        styles = [styles]
+    styles = [s for s in styles if s in VALID_WRITING_STYLES][:2]
+
+    complexity = data.get('complexity', '')
+    if complexity not in VALID_COMPLEXITY:
+        complexity = 'Moderate'
+
+    def clean_list(key):
+        values = data.get(key, [])
+        if isinstance(values, str):
+            values = [values]
+        if not isinstance(values, list):
+            return []
+        return [str(v).strip() for v in values if isinstance(v, (str, int, float)) and str(v).strip()]
+
+    return {
+        'writing_style': styles,
+        'complexity': complexity,
+        'topics': clean_list('topics'),
+        'countries': clean_list('countries'),
+        'people': clean_list('people'),
+    }
+
 def extract_first_paragraph(url):
     """Extract first paragraph from article"""
     try:
@@ -964,6 +1031,10 @@ def scrape_news():
                     if not content:
                         content = summary[:500]
 
+                    metadata = enrich_article_metadata(title, summary, content)
+                    print(f"    ✓ Metadata: style={metadata['writing_style']}, "
+                          f"complexity={metadata['complexity']}, topics={metadata['topics']}")
+
                     article = {
                         'title': title,
                         'source': source_name,
@@ -972,7 +1043,12 @@ def scrape_news():
                         'summary': summary[:300] if summary else content[:300],
                         'image_url': image_url,
                         'timestamp': datetime.now().isoformat() + 'Z',
-                        'category': category
+                        'category': category,
+                        'writing_style': metadata['writing_style'],
+                        'complexity': metadata['complexity'],
+                        'topics': metadata['topics'],
+                        'countries': metadata['countries'],
+                        'people': metadata['people'],
                     }
 
                     new_articles.append(article)

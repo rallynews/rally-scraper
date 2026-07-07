@@ -33,32 +33,61 @@ $pdo->exec("
         timestamp       DATETIME,
         category        VARCHAR(50),
         rally_originals TINYINT(1) NOT NULL DEFAULT 0,
+        writing_style   JSON NULL,
+        complexity      VARCHAR(20),
+        topics          JSON NULL,
+        countries       JSON NULL,
+        people          JSON NULL,
         created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE KEY unique_url (url(767))
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ");
+
+// Backfill columns on tables created before this metadata was added.
+foreach ([
+    'writing_style' => "ALTER TABLE articles ADD COLUMN writing_style JSON NULL",
+    'complexity'    => "ALTER TABLE articles ADD COLUMN complexity VARCHAR(20)",
+    'topics'        => "ALTER TABLE articles ADD COLUMN topics JSON NULL",
+    'countries'     => "ALTER TABLE articles ADD COLUMN countries JSON NULL",
+    'people'        => "ALTER TABLE articles ADD COLUMN people JSON NULL",
+] as $sql) {
+    try {
+        $pdo->exec($sql);
+    } catch (PDOException $e) {
+        // Column already exists
+    }
+}
 
 if ($method === 'GET') {
     $limit  = min((int)($_GET['limit']  ?? 200), 500);
     $offset = (int)($_GET['offset'] ?? 0);
     $category = $_GET['category'] ?? null;
 
+    $columns = "title, source, url, content, summary, image_url, timestamp, category, rally_originals,
+                writing_style, complexity, topics, countries, people";
+
     if ($category) {
         $stmt = $pdo->prepare("
-            SELECT title, source, url, content, summary, image_url, timestamp, category, rally_originals
+            SELECT $columns
             FROM articles WHERE category = ?
             ORDER BY timestamp DESC LIMIT $limit OFFSET $offset
         ");
         $stmt->execute([$category]);
     } else {
         $stmt = $pdo->query("
-            SELECT title, source, url, content, summary, image_url, timestamp, category, rally_originals
+            SELECT $columns
             FROM articles
             ORDER BY timestamp DESC LIMIT $limit OFFSET $offset
         ");
     }
 
-    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($rows as &$row) {
+        foreach (['writing_style', 'topics', 'countries', 'people'] as $field) {
+            $row[$field] = $row[$field] !== null ? json_decode($row[$field], true) : [];
+        }
+    }
+    echo json_encode($rows);
 
 } elseif ($method === 'POST') {
     $provided_key = $_SERVER['HTTP_X_API_KEY'] ?? '';
@@ -81,8 +110,9 @@ if ($method === 'GET') {
 
     $stmt = $pdo->prepare("
         INSERT IGNORE INTO articles
-            (title, source, url, content, summary, image_url, timestamp, category, rally_originals)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+            (title, source, url, content, summary, image_url, timestamp, category, rally_originals,
+             writing_style, complexity, topics, countries, people)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?)
     ");
 
     foreach ($articles as $article) {
@@ -95,6 +125,11 @@ if ($method === 'GET') {
             $article['image_url'] ?? '',
             $article['timestamp'] ?? date('Y-m-d H:i:s'),
             $article['category']  ?? 'world',
+            json_encode($article['writing_style'] ?? []),
+            $article['complexity'] ?? 'Moderate',
+            json_encode($article['topics'] ?? []),
+            json_encode($article['countries'] ?? []),
+            json_encode($article['people'] ?? []),
         ]);
         if ($stmt->rowCount() > 0) $inserted++;
     }
