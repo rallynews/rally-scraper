@@ -660,6 +660,11 @@ Respond with valid JSON only, in this exact format and nothing else:
         'people': clean_list('people'),
     }
 
+def contains_html(text):
+    """Detect raw HTML markup in feed text (e.g. ScienceAlert's <p> summaries)."""
+    return bool(re.search(r'<[a-zA-Z][^>]*>', text or ''))
+
+
 def extract_first_paragraph(url):
     """Extract first paragraph from article"""
     try:
@@ -1035,12 +1040,21 @@ def scrape_news():
                     print(f"    ✓ Metadata: style={metadata['writing_style']}, "
                           f"complexity={metadata['complexity']}, topics={metadata['topics']}")
 
+                    display_summary = summary[:300] if summary else content[:300]
+                    if contains_html(display_summary):
+                        # Some sources (e.g. ScienceAlert) put raw HTML in their RSS
+                        # summary. Fall back to the article's first paragraph instead,
+                        # and skip the now-redundant separate content field.
+                        print(f"    ✓ Summary was HTML, using first paragraph instead")
+                        display_summary = content[:300]
+                        content = ''
+
                     article = {
                         'title': title,
                         'source': source_name,
                         'url': url,
                         'content': content,
-                        'summary': summary[:300] if summary else content[:300],
+                        'summary': display_summary,
                         'image_url': image_url,
                         'timestamp': datetime.now().isoformat() + 'Z',
                         'category': category,
