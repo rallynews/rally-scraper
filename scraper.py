@@ -43,7 +43,7 @@ WHITELISTED_SOURCES = {
     'Smithsonian Magazine', 'The Narwhal', 'Euronews',
     'Kyiv Independent', 'The Moscow Times', 'El País (English)',
     'Dawn', 'Rappler', 'Daily Maverick', 'Africanews',
-    'ScienceAlert', 'Aeon'
+    'ScienceAlert', 'Aeon', 'Financial Times'
 }
 
 # RSS feeds for whitelisted sources
@@ -88,7 +88,8 @@ RSS_FEEDS = {
     'Daily Maverick': 'https://www.dailymaverick.co.za/rss/',
     'Africanews': 'https://www.africanews.com/feed/rss',
     'ScienceAlert': 'https://www.sciencealert.com/feed',
-    'Aeon': 'https://aeon.co/feed.rss'
+    'Aeon': 'https://aeon.co/feed.rss',
+    'Financial Times': 'https://www.ft.com/?format=rss'
 }
 
 # Valid categories (AI will categorize into these)
@@ -123,7 +124,7 @@ SOURCE_CONTINENTS = {
     'Nature News': 'Europe', 'Le Monde': 'Europe', 'DW (Deutsche Welle)': 'Europe',
     'The Telegraph': 'Europe', 'New Scientist': 'Europe', 'Euronews': 'Europe',
     'Kyiv Independent': 'Europe', 'The Moscow Times': 'Europe',
-    'El País (English)': 'Europe',
+    'El País (English)': 'Europe', 'Financial Times': 'Europe',
     # Asia
     'Al Jazeera': 'Asia', 'The Japan Times': 'Asia', 'The Straits Times': 'Asia',
     'Dawn': 'Asia', 'Rappler': 'Asia',
