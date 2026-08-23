@@ -780,10 +780,41 @@ def get_article_image(entry, used_images):
     return None
 
 
-def get_fallback_image(title, summary, category, metadata, used_images):
+def article_day(timestamp):
+    """Calendar day an article belongs to. Today if the timestamp is unreadable.
+
+    Handles both what the scraper writes (ISO with a trailing Z) and what MySQL
+    hands back ('YYYY-MM-DD HH:MM:SS').
+    """
+    if timestamp:
+        text = str(timestamp).strip().rstrip('Z').replace(' ', 'T')
+        try:
+            return datetime.fromisoformat(text).date()
+        except ValueError:
+            pass
+    return datetime.now().date()
+
+
+def fallback_images_by_day(articles):
+    """Default photos already in use, grouped by the day of the article using them.
+
+    A library photo may be repeated across the archive but not twice on the same
+    day, so each day keeps its own set of taken photos.
+    """
+    by_day = {}
+    for article in articles:
+        url = article.get('image_url')
+        if url and image_library.is_fallback_url(url):
+            by_day.setdefault(article_day(article.get('timestamp')), set()).add(url)
+    return by_day
+
+
+def get_fallback_image(title, summary, category, metadata, used_today):
     """Closest-matching photo from the royalty-free library, by file name.
 
     Used when a story has no image of its own, or the one it has is broken.
+    `used_today` is the set of library photos already taken on that article's
+    day; photos used on other days are free to come round again.
     """
     return image_library.pick_image(
         title=title,
@@ -791,7 +822,7 @@ def get_fallback_image(title, summary, category, metadata, used_images):
         topics=metadata.get('topics', []),
         category=category,
         countries=metadata.get('countries', []),
-        used_images=used_images,
+        used_images=used_today,
     )
 
 # ═══════════════════════════════════════════════════════════════
@@ -985,6 +1016,12 @@ def scrape_news():
         print("Warning: default image library is empty — articles without a "
               "working image will be skipped. Run: python image_library.py --refresh")
 
+    # Default photos may repeat across days, but only once on any given day.
+    fallback_by_day = fallback_images_by_day(existing_articles)
+    used_fallbacks_today = fallback_by_day.setdefault(datetime.now().date(), set())
+    if used_fallbacks_today:
+        print(f"Default photos already used today: {len(used_fallbacks_today)}")
+
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
     checked_urls = set()     # URLs already evaluated this run (across all passes)
@@ -1104,10 +1141,11 @@ def scrape_news():
                     # fall back to the closest-matching royalty-free photo.
                     if not image_url:
                         image_url = get_fallback_image(
-                            title, summary, category, metadata, used_images)
+                            title, summary, category, metadata, used_fallbacks_today)
                         if not image_url:
                             print(f"    ✗ No unique image found (fallback library empty)")
                             continue
+                        used_fallbacks_today.add(image_url)
                         print(f"    ✓ Default image: {image_url.rsplit('/', 1)[-1]}")
 
                     used_images.add(image_url)
@@ -1227,8 +1265,9 @@ def repair_broken_images(dry_run=False):
     else:
         print(f"Checking {len(articles)} articles from the database")
 
-    # Keep every image that still works reserved, so repairs don't collide.
-    used_images = {a.get('image_url') for a in articles if a.get('image_url')}
+    # A default photo may repeat across days but not twice on the same day, so
+    # each article is matched against the photos already taken on its own day.
+    fallback_by_day = fallback_images_by_day(articles)
 
     updates = []
     for article in articles:
@@ -1236,20 +1275,23 @@ def repair_broken_images(dry_run=False):
         if current and image_library.is_reachable(current):
             continue
 
+        day = article_day(article.get('timestamp'))
+        used_that_day = fallback_by_day.setdefault(day, set())
+        used_that_day.discard(current)   # the broken one frees its slot
+
         replacement = image_library.pick_image(
             title=article.get('title', ''),
             summary=article.get('summary', '') or article.get('content', ''),
             topics=article.get('topics') or [],
             category=article.get('category', ''),
             countries=article.get('countries') or [],
-            used_images=used_images,
+            used_images=used_that_day,
             library=library,
         )
         if not replacement:
             continue
 
-        used_images.discard(current)
-        used_images.add(replacement)
+        used_that_day.add(replacement)
         article['image_url'] = replacement
         updates.append({'url': article.get('url', ''), 'image_url': replacement})
         print(f"  ✗ {article.get('title', '')[:55]}")

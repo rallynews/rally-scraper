@@ -132,8 +132,11 @@ When a story has no image of its own, or all of them are dead, the scraper
 falls back to a library of royalty-free photos in Cloudflare R2 and picks the
 one whose **file name** is closest to the story — matched against the
 headline, the AI-assigned topics, the category, the countries mentioned and
-the summary, in that order of weight. Photos already used by another article
-are avoided, so the same stock photo doesn't appear twice.
+the summary, in that order of weight.
+
+A photo may be used again on a later day, but never twice on the same day — so
+a day's stories never show the same stock photo side by side, while the library
+still gets full use over time.
 
 ### Managing the photo library
 

@@ -479,8 +479,10 @@ def pick_image(title='', summary='', topics=(), category='', countries=(),
                used_images=(), library=None):
     """Best-matching library photo for an article. Returns a URL, or None.
 
-    Photos already used by another article are avoided; if every photo is taken
-    the closest match is reused rather than leaving the article imageless.
+    Photos in `used_images` are avoided; the caller decides that scope. The
+    scraper passes the photos already used that day, so a photo is free to come
+    round again on another day. If everything is taken the closest match is
+    reused rather than leaving the article imageless.
     """
     names = list(library) if library is not None else load_library()
     if not names:
