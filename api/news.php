@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Methods: GET, POST, PATCH');
 header('Access-Control-Allow-Headers: X-API-Key, Content-Type');
 
 require_once __DIR__ . '/config.php';
@@ -135,6 +135,38 @@ if ($method === 'GET') {
     }
 
     echo json_encode(['success' => true, 'inserted' => $inserted]);
+
+} elseif ($method === 'PATCH') {
+    // Repair existing rows in place. Currently only image_url is updatable —
+    // used by the scraper to swap a dead featured image for a default one.
+    $provided_key = $_SERVER['HTTP_X_API_KEY'] ?? '';
+    if ($provided_key !== API_KEY) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!$data) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid JSON']);
+        exit;
+    }
+
+    $updates = isset($data[0]) ? $data : [$data];
+    $updated = 0;
+
+    $stmt = $pdo->prepare("UPDATE articles SET image_url = ? WHERE url = ?");
+
+    foreach ($updates as $update) {
+        $url = $update['url'] ?? '';
+        $image_url = $update['image_url'] ?? '';
+        if ($url === '' || $image_url === '') continue;
+        $stmt->execute([$image_url, $url]);
+        if ($stmt->rowCount() > 0) $updated++;
+    }
+
+    echo json_encode(['success' => true, 'updated' => $updated]);
 
 } else {
     http_response_code(405);
