@@ -42,7 +42,7 @@ jobs:
       
       - name: Commit and push changes
         run: |
-          git add rallyingcries.rss
+          git add rallyingcries.rss fallback_images.json
           if ! git diff --staged --quiet; then
             git commit -m "Update scraped data - $(date '+%Y-%m-%d %H:%M UTC')"
             for i in 1 2 3 4; do

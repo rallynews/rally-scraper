@@ -119,9 +119,73 @@ NEWS_SOURCES = {
 }
 ```
 
+## 🖼️ Featured Images
+
+Every candidate image is checked before an article is accepted — the URL from
+the feed, from `og:image`, or from the page's first `<img>` is requested and
+must actually return an image. Sources that advertise photos which no longer
+resolve (Rappler does this often, but it isn't the only one) no longer sneak a
+broken image into the database. Upscaled CDN URLs are verified too, and the
+original resolution is kept if the higher-resolution path 404s.
+
+When a story has no image of its own, or all of them are dead, the scraper
+falls back to a library of royalty-free photos in Cloudflare R2 and picks the
+one whose **file name** is closest to the story — matched against the
+headline, the AI-assigned topics, the category, the countries mentioned and
+the summary, in that order of weight.
+
+A photo may be used again on a later day, but never twice on the same day — so
+a day's stories never show the same stock photo side by side, while the library
+still gets full use over time.
+
+### Managing the photo library
+
+The file names live in `fallback_images.json` (204 photos as committed). R2's
+public `r2.dev` domain serves objects but won't list them, so the manifest is
+the source of truth — rebuild it whenever photos are added or removed:
+
+```bash
+# Option 1 — read the bucket over the S3 API (needs R2 API credentials)
+export R2_ACCOUNT_ID=... R2_ACCESS_KEY_ID=... R2_SECRET_ACCESS_KEY=... R2_BUCKET=...
+python image_library.py --refresh
+
+# Option 2 — from any directory listing you can produce
+rclone lsf r2:your-bucket/videos | python image_library.py --import -
+aws s3 ls s3://your-bucket/videos/ | python image_library.py --import -
+python image_library.py --import pasted-listing.txt   # or paste from the dashboard
+```
+
+Any format works — XML, HTML, JSON or plain text; the file names are all that
+gets read. To see what a headline would be given:
+
+```bash
+python image_library.py --match "Divers replant coral on a dying reef"
+```
+
+Descriptive file names make the matching much better: `coral-reef-divers.jpg`
+matches a reef story, `IMG_0042.jpg` can only ever be a random pick.
+
+Bucket and folder default to the values in `image_library.py` and can be
+overridden with `FALLBACK_IMAGE_BASE_URL` and `FALLBACK_IMAGE_PREFIX`.
+
+### Repairing images already in the database
+
+Articles saved before this check existed may still hold dead URLs:
+
+```bash
+python scraper.py --repair-images --dry-run   # report only
+python scraper.py --repair-images             # replace the broken ones
+```
+
+This writes through the API's `PATCH` handler (added in `api/news.php`, so
+re-upload that file to your host first), or straight to `news.json` when the
+API isn't configured.
+
 ## 📁 Files
 
 - `scraper.py` - Main scraper script
+- `image_library.py` - Default featured images: manifest, matching, link checks
+- `fallback_images.json` - File names of the royalty-free photo library
 - `.github/workflows/scrape.yml` - GitHub Action config
 - `requirements.txt` - Python dependencies
 - `news.json` - Generated article database (auto-updated)

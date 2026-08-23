@@ -14,6 +14,9 @@ from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 import time
 import os
+import sys
+
+import image_library
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -706,27 +709,46 @@ def upscale_image_url(url):
         return url
 
 
+def usable_image_url(img, used_images):
+    """Return the best working form of a candidate image URL, or None.
+
+    An upscaled URL is preferred, but only if the CDN actually serves it — some
+    sources 404 on the higher-resolution path — so the original is kept as a
+    fallback. A candidate that is already used, or simply dead, is rejected.
+    """
+    if not img:
+        return None
+
+    upscaled = upscale_image_url(img)
+    for candidate in ([upscaled, img] if upscaled != img else [img]):
+        if candidate in used_images:
+            continue
+        if image_library.is_reachable(candidate):
+            return candidate
+    return None
+
+
 def get_article_image(entry, used_images):
-    """Extract unique image URL from article"""
+    """Extract a unique, working image URL from an article. None if there isn't one."""
     # Try media content
     if entry.get('media_content'):
-        img = entry['media_content'][0].get('url')
-        if img and img not in used_images:
-            return upscale_image_url(img)
+        img = usable_image_url(entry['media_content'][0].get('url'), used_images)
+        if img:
+            return img
 
     # Try media thumbnail
     if entry.get('media_thumbnail'):
-        img = entry['media_thumbnail'][0].get('url')
-        if img and img not in used_images:
-            return upscale_image_url(img)
+        img = usable_image_url(entry['media_thumbnail'][0].get('url'), used_images)
+        if img:
+            return img
 
     # Try enclosures
     if entry.get('enclosures'):
         for enc in entry['enclosures']:
             if 'image' in enc.get('type', ''):
-                img = enc.get('href')
-                if img and img not in used_images:
-                    return upscale_image_url(img)
+                img = usable_image_url(enc.get('href'), used_images)
+                if img:
+                    return img
 
     # Fallback: fetch from page
     try:
@@ -742,20 +764,66 @@ def get_article_image(entry, used_images):
         # Try og:image
         og_image = soup.find('meta', property='og:image')
         if og_image and og_image.get('content'):
-            img = og_image['content']
-            if img not in used_images:
-                return upscale_image_url(img)
+            img = usable_image_url(urljoin(article_url, og_image['content']), used_images)
+            if img:
+                return img
 
         # Try first img tag
         img_tag = soup.find('img', src=True)
         if img_tag:
-            img = urljoin(article_url, img_tag['src'])
-            if img not in used_images:
-                return upscale_image_url(img)
+            img = usable_image_url(urljoin(article_url, img_tag['src']), used_images)
+            if img:
+                return img
     except:
         pass
 
     return None
+
+
+def article_day(timestamp):
+    """Calendar day an article belongs to. Today if the timestamp is unreadable.
+
+    Handles both what the scraper writes (ISO with a trailing Z) and what MySQL
+    hands back ('YYYY-MM-DD HH:MM:SS').
+    """
+    if timestamp:
+        text = str(timestamp).strip().rstrip('Z').replace(' ', 'T')
+        try:
+            return datetime.fromisoformat(text).date()
+        except ValueError:
+            pass
+    return datetime.now().date()
+
+
+def fallback_images_by_day(articles):
+    """Default photos already in use, grouped by the day of the article using them.
+
+    A library photo may be repeated across the archive but not twice on the same
+    day, so each day keeps its own set of taken photos.
+    """
+    by_day = {}
+    for article in articles:
+        url = article.get('image_url')
+        if url and image_library.is_fallback_url(url):
+            by_day.setdefault(article_day(article.get('timestamp')), set()).add(url)
+    return by_day
+
+
+def get_fallback_image(title, summary, category, metadata, used_today):
+    """Closest-matching photo from the royalty-free library, by file name.
+
+    Used when a story has no image of its own, or the one it has is broken.
+    `used_today` is the set of library photos already taken on that article's
+    day; photos used on other days are free to come round again.
+    """
+    return image_library.pick_image(
+        title=title,
+        summary=summary,
+        topics=metadata.get('topics', []),
+        category=category,
+        countries=metadata.get('countries', []),
+        used_images=used_today,
+    )
 
 # ═══════════════════════════════════════════════════════════════
 # DATABASE API
@@ -785,6 +853,22 @@ def api_post(articles):
         print(f"Warning: API POST returned {resp.status_code}: {resp.text[:200]}")
     except Exception as e:
         print(f"Warning: API POST failed ({type(e).__name__}): {e}")
+    return 0
+
+def api_patch(updates):
+    """PATCH existing articles (matched on url). Returns number updated."""
+    try:
+        resp = requests.patch(
+            NEWS_API_URL,
+            json=updates,
+            headers={'X-API-Key': NEWS_API_KEY, 'Content-Type': 'application/json'},
+            timeout=60,
+        )
+        if resp.ok:
+            return resp.json().get('updated', 0)
+        print(f"Warning: API PATCH returned {resp.status_code}: {resp.text[:200]}")
+    except Exception as e:
+        print(f"Warning: API PATCH failed ({type(e).__name__}): {e}")
     return 0
 
 def api_post_entry(url, entry):
@@ -921,6 +1005,23 @@ def scrape_news():
         except FileNotFoundError:
             print("No news.json found — starting fresh")
 
+    # Royalty-free photo library used when an article has no usable image.
+    # If the manifest is empty, try to rebuild it from the bucket once.
+    fallback_library = image_library.load_library()
+    if not fallback_library:
+        fallback_library = image_library.refresh_library()
+    if fallback_library:
+        print(f"Default image library: {len(fallback_library)} photos")
+    else:
+        print("Warning: default image library is empty — articles without a "
+              "working image will be skipped. Run: python image_library.py --refresh")
+
+    # Default photos may repeat across days, but only once on any given day.
+    fallback_by_day = fallback_images_by_day(existing_articles)
+    used_fallbacks_today = fallback_by_day.setdefault(datetime.now().date(), set())
+    if used_fallbacks_today:
+        print(f"Default photos already used today: {len(used_fallbacks_today)}")
+
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
     checked_urls = set()     # URLs already evaluated this run (across all passes)
@@ -1027,11 +1128,6 @@ def scrape_news():
                         continue
 
                     image_url = get_article_image(entry, used_images)
-                    if not image_url:
-                        print(f"    ✗ No unique image found")
-                        continue
-
-                    used_images.add(image_url)
 
                     content = extract_first_paragraph(url)
                     if not content:
@@ -1040,6 +1136,19 @@ def scrape_news():
                     metadata = enrich_article_metadata(title, summary, content)
                     print(f"    ✓ Metadata: style={metadata['writing_style']}, "
                           f"complexity={metadata['complexity']}, topics={metadata['topics']}")
+
+                    # No image of its own, or the only ones on offer were broken:
+                    # fall back to the closest-matching royalty-free photo.
+                    if not image_url:
+                        image_url = get_fallback_image(
+                            title, summary, category, metadata, used_fallbacks_today)
+                        if not image_url:
+                            print(f"    ✗ No unique image found (fallback library empty)")
+                            continue
+                        used_fallbacks_today.add(image_url)
+                        print(f"    ✓ Default image: {image_url.rsplit('/', 1)[-1]}")
+
+                    used_images.add(image_url)
 
                     display_summary = summary[:300] if summary else content[:300]
                     if contains_html(display_summary):
@@ -1124,5 +1233,92 @@ def scrape_news():
     print(f"COMPLETE: {len(new_articles)} new articles added")
     print("═" * 60)
 
+def repair_broken_images(dry_run=False):
+    """Re-check the featured image of every stored article and fix the dead ones.
+
+    Existing stories were approved before image URLs were verified, so some of
+    them (Rappler in particular) point at photos that no longer resolve. Each
+    broken one is swapped for the closest-matching default photo.
+    """
+    print("═" * 60)
+    print("REPAIRING BROKEN FEATURED IMAGES")
+    print("═" * 60)
+
+    library = image_library.load_library() or image_library.refresh_library()
+    if not library:
+        print("Default image library is empty — nothing to repair with.")
+        print("Run: python image_library.py --refresh")
+        return 0
+
+    api_available = bool(NEWS_API_URL and NEWS_API_KEY)
+    articles = api_get({'limit': 500}) if api_available else None
+
+    if articles is None:
+        api_available = False
+        try:
+            with open('news.json', 'r') as f:
+                articles = json.load(f)
+            print(f"Checking {len(articles)} articles from news.json")
+        except (OSError, ValueError):
+            print("No articles available to check.")
+            return 0
+    else:
+        print(f"Checking {len(articles)} articles from the database")
+
+    # A default photo may repeat across days but not twice on the same day, so
+    # each article is matched against the photos already taken on its own day.
+    fallback_by_day = fallback_images_by_day(articles)
+
+    updates = []
+    for article in articles:
+        current = article.get('image_url')
+        if current and image_library.is_reachable(current):
+            continue
+
+        day = article_day(article.get('timestamp'))
+        used_that_day = fallback_by_day.setdefault(day, set())
+        used_that_day.discard(current)   # the broken one frees its slot
+
+        replacement = image_library.pick_image(
+            title=article.get('title', ''),
+            summary=article.get('summary', '') or article.get('content', ''),
+            topics=article.get('topics') or [],
+            category=article.get('category', ''),
+            countries=article.get('countries') or [],
+            used_images=used_that_day,
+            library=library,
+        )
+        if not replacement:
+            continue
+
+        used_that_day.add(replacement)
+        article['image_url'] = replacement
+        updates.append({'url': article.get('url', ''), 'image_url': replacement})
+        print(f"  ✗ {article.get('title', '')[:55]}")
+        print(f"    → {replacement.rsplit('/', 1)[-1]}")
+
+    if not updates:
+        print("\nAll featured images resolve. Nothing to repair.")
+        return 0
+
+    if dry_run:
+        print(f"\nDry run: {len(updates)} images would be replaced.")
+        return len(updates)
+
+    if api_available:
+        updated = api_patch(updates)
+        print(f"\nRepaired {updated} of {len(updates)} images in the database")
+        return updated
+
+    with open('news.json', 'w') as f:
+        json.dump(articles, f, indent=2, ensure_ascii=False)
+    print(f"\nRepaired {len(updates)} images in news.json")
+    return len(updates)
+
+
 if __name__ == '__main__':
-    scrape_news()
+    args = sys.argv[1:]
+    if '--repair-images' in args:
+        repair_broken_images(dry_run='--dry-run' in args)
+    else:
+        scrape_news()
