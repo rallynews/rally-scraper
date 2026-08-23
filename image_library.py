@@ -127,35 +127,43 @@ def filename_tokens(filename):
     return tokens
 
 
-# Each article category implies a visual subject; these expand a one-word
-# category into terms that actually appear in photo file names.
+# Each article category implies a visual subject. These are the photos in the
+# library that suit each category, used when the story's own words match
+# nothing — so a politics piece lands on a parliament or a ballot box rather
+# than an arbitrary photo. Keyed to the current library; unknown names simply
+# never match and cost nothing.
 CATEGORY_TERMS = {
-    'climate': ['climate', 'environment', 'nature', 'forest', 'tree', 'ocean', 'sea',
-                'solar', 'wind', 'energy', 'green', 'earth', 'wildlife', 'river',
-                'mountain', 'farm', 'garden', 'recycling'],
-    'transportation': ['transport', 'train', 'rail', 'railway', 'bus', 'bike', 'bicycle',
-                       'road', 'traffic', 'subway', 'metro', 'tram', 'car', 'airport',
-                       'bridge', 'highway', 'ferry', 'harbour'],
-    'ai': ['technology', 'computer', 'laptop', 'robot', 'code', 'coding', 'data',
-           'science', 'laboratory', 'research', 'space', 'digital', 'circuit',
-           'server', 'engineer', 'microscope'],
-    'business': ['business', 'office', 'money', 'finance', 'market', 'work',
-                 'worker', 'startup', 'shop', 'trade', 'meeting', 'chart',
-                 'factory', 'construction', 'coin'],
-    'politics': ['politics', 'government', 'parliament', 'flag', 'vote', 'voting',
-                 'ballot',
-                 'election', 'democracy', 'law', 'court', 'justice', 'capitol',
-                 'protest', 'march', 'city'],
-    'entertainment': ['music', 'concert', 'film', 'movie', 'cinema', 'sport', 'game',
-                      'stage', 'festival', 'dance', 'guitar', 'stadium', 'crowd',
-                      'camera', 'party'],
-    'world': ['world', 'globe', 'map', 'city', 'people', 'community', 'travel',
-              'flag', 'street', 'village', 'crowd', 'family', 'peace'],
-    'religion': ['church', 'temple', 'mosque', 'faith', 'prayer', 'candle',
-                 'spiritual', 'monastery', 'cathedral', 'ritual'],
-    'arts': ['art', 'artist', 'museum', 'book', 'library', 'paint', 'painting',
-             'theatre', 'theater', 'gallery', 'sculpture', 'craft', 'pottery',
-             'mural', 'writing'],
+    'climate': ['forest', 'trees', 'seedling', 'roots', 'canopy', 'moss', 'meadow',
+                'wildflowers', 'garden', 'farm', 'farmland', 'soil', 'ocean', 'coral',
+                'river', 'lake', 'waves', 'coastline', 'wetlands', 'waterfall',
+                'glacier', 'mountains', 'snow', 'rain', 'clouds', 'sunrise', 'sunset',
+                'horizon', 'drought', 'flood', 'water',
+                'solar', 'panels', 'windfarm', 'turbine', 'wind', 'recycling', 'waste',
+                'plastic', 'sanctuary', 'birds', 'whale', 'turtle', 'elephant', 'deer',
+                'penguin', 'dolphin', 'butterfly', 'frog', 'fish', 'sheep', 'cattle'],
+    'transportation': ['railway', 'bus', 'bridge', 'road', 'street', 'cycling',
+                       'walking', 'convoy', 'harbour', 'charging', 'pipeline',
+                       'powerlines', 'city', 'construction', 'path'],
+    'ai': ['robot', 'circuit', 'laptop', 'laboratory', 'scientist', 'engineer',
+           'microscope', 'telescope', 'satelite', 'space', 'rocket', 'dna',
+           'brainscan', 'research', 'training'],
+    'business': ['market', 'factory', 'meeting', 'construction', 'workshop',
+                 'toolbox', 'cafe', 'kitchen', 'handshake', 'notebook', 'calendar',
+                 'donation', 'skyline', 'city'],
+    'politics': ['parliament', 'townhall', 'courthouse', 'gavel', 'voting',
+                 'petition', 'campaign', 'protest', 'march', 'flag', 'border',
+                 'signature', 'peace', 'olivebranch', 'crowd'],
+    'entertainment': ['music', 'guitar', 'microphone', 'dancing', 'celebration',
+                      'cheering', 'crowd', 'stadium', 'football', 'medal', 'trophy',
+                      'victory', 'finishline', 'swimming', 'climbing', 'running',
+                      'cycling', 'team', 'teamwork'],
+    'world': ['globe', 'map', 'flag', 'city', 'town', 'village', 'street', 'crowd',
+              'family', 'peace', 'refugees', 'relief', 'rescue', 'convoy', 'border',
+              'tent', 'shelter', 'harbour', 'neighbours'],
+    'religion': ['church', 'candles', 'vigil', 'wreath', 'doves', 'olivebranch',
+                 'peace', 'sanctuary'],
+    'arts': ['museum', 'painting', 'mural', 'library', 'writing', 'portrait',
+             'letter', 'notebook', 'signature', 'workshop', 'music', 'guitar'],
 }
 
 # ═══════════════════════════════════════════════════════════════
@@ -200,8 +208,10 @@ def is_fallback_url(url):
 # DISCOVERY
 # ═══════════════════════════════════════════════════════════════
 
+# Lazy up to the extension, so several names on one line stay separate entries
+# rather than being swallowed into a single match.
 _LISTING_ENTRY = re.compile(
-    r'[A-Za-z0-9%][A-Za-z0-9 _%+.()\'\-]*\.(?:' + '|'.join(IMAGE_EXTENSIONS) + r')\b',
+    r'[A-Za-z0-9%][A-Za-z0-9 _%+.()\'\-]*?\.(?:' + '|'.join(IMAGE_EXTENSIONS) + r')(?![A-Za-z0-9])',
     re.IGNORECASE,
 )
 
@@ -422,8 +432,7 @@ _WEIGHTS = {
 
 _FUZZY_THRESHOLD = 0.86   # 'reef' vs 'reefs' style near-misses
 _FUZZY_CREDIT = 0.6       # a near-miss is worth this fraction of an exact hit
-_PREFIX_CREDIT = 0.8      # 'court' opening 'courtroom'
-_CONTAINS_CREDIT = 0.6    # 'school' buried inside 'schoolchildren'
+_PREFIX_CREDIT = 0.8      # 'wind' opening 'windfarm'
 
 
 def article_terms(title='', summary='', topics=(), category='', countries=()):
@@ -459,12 +468,12 @@ def score_filename(filename, terms):
             continue
         best = 0.0
         for term, weight in terms.items():
-            # Compound file-name words: 'court' inside 'courtroom-justice'.
+            # Compound file-name words: 'wind' opening 'windfarm'. Only a real
+            # prefix counts — plain substrings match across word boundaries
+            # ('nest' inside 'honest', 'other' inside 'grandmother').
             if len(term) >= 4 and len(token) >= 4:
                 if token.startswith(term) or term.startswith(token):
                     best = max(best, weight * _PREFIX_CREDIT)
-                elif term in token or token in term:
-                    best = max(best, weight * _CONTAINS_CREDIT)
             credit = weight * _FUZZY_CREDIT
             if credit > best and difflib.SequenceMatcher(None, token, term).ratio() >= _FUZZY_THRESHOLD:
                 best = credit
@@ -491,18 +500,20 @@ def pick_image(title='', summary='', topics=(), category='', countries=(),
     used = {u for u in (used_images or ()) if u}
     terms = article_terms(title, summary, topics, category, countries)
 
+    # Photos that score the same are ordered by a per-article shuffle rather than
+    # alphabetically, so equally-good matches (and the all-zero case, where
+    # nothing in the library relates to the story) spread across the library
+    # instead of always landing on the same early-alphabet photo. The shuffle is
+    # seeded by the article, so re-running gives the same answer.
+    seed = hashlib.md5(f"{title}|{category}".encode('utf-8')).hexdigest()
+
+    def tie_break(name):
+        return hashlib.md5((seed + name).encode('utf-8')).hexdigest()
+
     scored = sorted(
         ((score_filename(name, terms), name) for name in names),
-        key=lambda pair: (-pair[0], pair[1]),
+        key=lambda pair: (-pair[0], tie_break(pair[1])),
     )
-
-    # Nothing in the library relates to the story: spread the generic photos out
-    # deterministically instead of handing every such article the same one.
-    if scored[0][0] <= 0:
-        digest = hashlib.md5(f"{title}|{category}".encode('utf-8')).hexdigest()
-        seed = int(digest[:8], 16)
-        rotated = [name for _, name in scored]
-        scored = [(0.0, rotated[(seed + i) % len(rotated)]) for i in range(len(rotated))]
 
     for _, name in scored:
         url = image_url(name)

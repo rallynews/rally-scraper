@@ -140,8 +140,9 @@ still gets full use over time.
 
 ### Managing the photo library
 
-The file names live in `fallback_images.json`. R2's public `r2.dev` domain
-serves objects but won't list them, so the manifest has to be built once:
+The file names live in `fallback_images.json` (204 photos as committed). R2's
+public `r2.dev` domain serves objects but won't list them, so the manifest is
+the source of truth — rebuild it whenever photos are added or removed:
 
 ```bash
 # Option 1 — read the bucket over the S3 API (needs R2 API credentials)
