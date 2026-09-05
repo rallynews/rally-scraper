@@ -32,6 +32,16 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          # Read-only key for the admin-managed source directory
+          # (api/sources.php). Deliberately NOT the same value as NEWS_API_KEY:
+          # that one can write articles, this one can only read the list.
+          SOURCES_API_KEY: ${{ secrets.SOURCES_API_KEY }}
+          # 'shadow' (default) fetches the dashboard's source list and reports
+          # how it differs from the maps in scraper.py, but scrapes the maps.
+          # Set the SOURCE_DIRECTORY_MODE repository variable to 'live' to
+          # scrape the dashboard's list instead — no code change needed, and it
+          # can be switched back just as quickly.
+          SOURCE_DIRECTORY_MODE: ${{ vars.SOURCE_DIRECTORY_MODE || 'shadow' }}
         run: |
           python scraper.py
       
@@ -42,7 +52,11 @@ jobs:
       
       - name: Commit and push changes
         run: |
-          git add rallyingcries.rss fallback_images.json
+          # sources.lock.json is the scraper's fallback copy of the source
+          # directory. Committing it means every change an admin makes to the
+          # list leaves a diff in git history — the audit trail that moving the
+          # list out of the code would otherwise cost.
+          git add rallyingcries.rss fallback_images.json sources.lock.json
           if ! git diff --staged --quiet; then
             git commit -m "Update scraped data - $(date '+%Y-%m-%d %H:%M UTC')"
             for i in 1 2 3 4; do

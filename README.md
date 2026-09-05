@@ -110,13 +110,41 @@ selected_sources = random.sample(list(NEWS_SOURCES.items()), 15)  # Changed from
 
 ### Add More News Sources
 
-Edit `scraper.py`, add to `NEWS_SOURCES` dict:
+Sources are moving out of this repository and into the **Sources tab of Rally
+Admin**, so a source can be added without a commit and a deploy. The move is
+happening in two steps, and right now it is on the first one.
 
-```python
-NEWS_SOURCES = {
-    ...
-    "Your Source": "https://example.com/rss",
-}
+**Shadow mode (current default).** Every run fetches the dashboard's list from
+`api/sources.php`, validates it, and prints how it differs from the
+`WHITELISTED_SOURCES` / `RSS_FEEDS` / `SOURCE_CONTINENTS` maps in `scraper.py` —
+then scrapes those maps anyway. Nothing the dashboard says can change a run.
+Read the diff in the Actions log to see whether the two agree.
+
+**Live mode.** Set the `SOURCE_DIRECTORY_MODE` repository variable to `live` and
+the dashboard's list is what gets scraped. The maps in `scraper.py` stay as the
+seed for the lockfile. Set it back to `shadow` to revert — no code change either
+way.
+
+So: to add a source **today**, edit both `WHITELISTED_SOURCES` and `RSS_FEEDS`
+(and give it a continent in `SOURCE_CONTINENTS`, or it won't count toward the
+per-run coverage check). Once live mode is on, add it in the dashboard instead.
+
+Two secrets are involved:
+
+- `SOURCES_API_KEY` — read-only key for the directory endpoint. Must match
+  `SOURCES_API_KEY` in the frontend's `api/config.php`, and must **not** be the
+  same value as `NEWS_API_KEY`: that one can write articles and signs the digest
+  removal links, and this runner should not hold a secret with that reach.
+- `NEWS_API_URL` — already set; `sources.php` is derived from it.
+
+`sources.lock.json` is the last list that was successfully read, committed by
+the workflow on every run. It is the fallback when the API is unreachable or
+answers with something implausible, and its git history is the record of what
+changed in the source list and when. Don't edit it by hand.
+
+```bash
+python source_directory.py --check       # fetch, validate, diff against the code
+python source_directory.py --print-lock  # show the cached list
 ```
 
 ## 🖼️ Featured Images
@@ -184,6 +212,8 @@ API isn't configured.
 ## 📁 Files
 
 - `scraper.py` - Main scraper script
+- `source_directory.py` - Reads the admin-managed source list; URL safety checks
+- `sources.lock.json` - Last known good source list (auto-updated, don't edit)
 - `image_library.py` - Default featured images: manifest, matching, link checks
 - `fallback_images.json` - File names of the royalty-free photo library
 - `.github/workflows/scrape.yml` - GitHub Action config
