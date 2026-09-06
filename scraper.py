@@ -18,6 +18,7 @@ import sys
 
 import image_library
 import source_directory
+import editorial_filter
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -510,44 +511,16 @@ def generate_rallying_cry_rss(entry):
         f.write(rss)
     print("✓ rallyingcries.rss updated")
 
-def is_positive_news(title, summary):
-    """Use AI to determine if article is genuinely positive news"""
-    prompt = f"""Is this article about POSITIVE news (progress, achievements, solutions, help, innovation, recovery, cooperation)? Positive news is not controversial, and is actively showing progress. It is also not focused on the acquisition of wealth by large corporations or corporations making deals with each other which do not benefit humanity [...]
+def score_article(title, summary, filter_config):
+    """Score a story 1-10 against the dashboard's editorial filter.
 
-Examples of positive news stories:
-- A Single Infusion Could Suppress H.I.V. for Years, Study Suggests
-- A Writer With a Healthy Appetite, and a Love of New York City
-- Worksite testing AI to provide early high heat alerts to keep workers safe
-- Innovation abounds in device charging
-- Sharp drop in 'forever chemicals' in seabird eggs hailed as win for regulation
-- How Japan created the ultimate take-away food
-- Macron announces €23 billion of investment at Africa summit
-- How a Hollywood star's photos inspired The Waterboys' latest album
-- A year after his death, we look back at the legacy of David Bowe.
-
-Examples of negative news stories:
-- Kennedy Is Driving a Vast Inquiry Into Vaccines, Despite His Public Silence
-- Inside the Israeli Voting Controversy That Engulfed Eurovision
-- Reflecting Pool Costs Balloon to $13.1 Million, Records Show
-- Man Charged With Assassination Attempt at Press Gala Pleads Not Guilty
-- American Passengers Exposed to Hantavirus Begin Quarantine in U.S.
-- Emissions rise by 10% over last year, according to new data
-
-Title: {title}
-Summary: {summary}
-
-Rules:
-- YES only if it's genuinely positive/uplifting
-- NO if it's primarily about big companies or corporate interests making deals with each other. 
-- NO if it's neutral, negative, explanatory, or just informational
-- NO if it's about problems, conflicts, crises, or disasters
-- NO if it's an explainer or educational content
-- NO if it's about controversy or debate
-
-Answer ONLY: YES or NO"""
-    
-    result = call_ai(prompt)
-    return result and 'YES' in result.upper()
+    Replaces the old YES/NO question rather than adding a second one, so a run
+    still makes one AI call per candidate. Returns None when the model gives no
+    usable answer — the caller treats that as a rejection, because publishing on
+    an unparseable reply would mean publishing unjudged.
+    """
+    prompt = editorial_filter.build_prompt(filter_config, title, summary)
+    return editorial_filter.parse_score(call_ai(prompt))
 
 def is_duplicate_topic(new_title, new_summary, recent_articles):
     """Check if this article is about the same topic as recent articles"""
@@ -1015,6 +988,49 @@ def load_source_directory():
     return feeds, set(feeds), continents
 
 
+def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents):
+    """Say whether the run met its per-run minimum, and what it would have taken.
+
+    The scraper has always aimed for MIN_NEW_ARTICLES stories per run and full
+    continent coverage, stopping early only when the feeds run dry or the clock
+    runs out. Now that the cutoff is adjustable, a short run is most often the
+    cutoff biting rather than the feeds being quiet — so when the target is
+    missed this reports the score that would have met it, instead of leaving
+    someone to guess which of the two it was.
+    """
+    found = len(new_articles)
+    covered = {continents.get(a['source']) for a in new_articles}
+    covered.discard(None)
+    missing = sorted(required_continents - covered)
+
+    print(f"\n{'═' * 60}")
+    if found >= MIN_NEW_ARTICLES and not missing:
+        print(f"Run met its target: {found} stories, all "
+              f"{len(required_continents)} continents covered")
+    elif found >= MIN_NEW_ARTICLES:
+        # The count was met; only coverage fell short.
+        print(f"Run met its story target ({found}/{MIN_NEW_ARTICLES}) but found "
+              f"nothing from: {', '.join(missing)}")
+    else:
+        print(f"Run finished short: {found}/{MIN_NEW_ARTICLES} stories"
+              + (f", and nothing from {', '.join(missing)}" if missing else ""))
+
+        # How many more would have qualified at each lower cutoff.
+        for lower in range(cutoff - 1, editorial_filter.CUTOFF_MIN - 1, -1):
+            extra = sum(1 for s in rejected_scores if s >= lower)
+            if extra:
+                print(f"  A cutoff of {lower} would have added up to {extra} more "
+                      f"({found + extra} total)")
+        if rejected_scores:
+            near = sum(1 for s in rejected_scores if s == cutoff - 1)
+            print(f"  {len(rejected_scores)} stories were turned away by the cutoff"
+                  + (f", {near} of them one point short" if near else ""))
+        else:
+            print("  Nothing was turned away by the cutoff — the feeds simply "
+                  "had little to offer this run")
+    print(f"{'═' * 60}")
+
+
 def scrape_news():
     """Main scraping function"""
     print("═" * 60)
@@ -1028,6 +1044,17 @@ def scrape_news():
     # hardcoded list above, and the dashboard's list is only fetched, compared
     # and reported. See load_source_directory().
     feeds, allowed_sources, continents = load_source_directory()
+
+    # The editorial judgement, also owned by the dashboard. Unlike the source
+    # list this has no shadow mode: there is no second opinion to compare
+    # against, and the built-in defaults reproduce the prompt that used to be
+    # hardcoded here, so the fallback path behaves the way this file always did.
+    print(f"\n{'-' * 60}")
+    filter_config, filter_origin = editorial_filter.load_filter()
+    cutoff = filter_config['min_score']
+    print(f"Editorial filter from {filter_origin}: publish at {cutoff}+ "
+          f"({len(filter_config.get('examples') or [])} examples)")
+    print(f"{'-' * 60}")
 
     # Continents we expect to cover — every continent that has a live feed.
     required_continents = {
@@ -1090,6 +1117,7 @@ def scrape_news():
 
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
+    rejected_scores = []     # scores of stories the cutoff turned away, for the run summary
     checked_urls = set()     # URLs already evaluated this run (across all passes)
     pass_num = 0
 
@@ -1171,12 +1199,21 @@ def scrape_news():
                             continue
 
                     print(f"  Checking: {title[:60]}...")
-                    if not is_positive_news(title, summary):
-                        print(f"    ✗ Not positive news")
+                    score = score_article(title, summary, filter_config)
+                    if score is None:
+                        # No usable answer from the model. Rejecting is the safe
+                        # direction: publishing here would mean publishing a
+                        # story nothing actually judged.
+                        print(f"    ✗ No score returned — skipping")
                         rejected_articles.append({'title': title, 'summary': summary[:300]})
                         continue
+                    if score < cutoff:
+                        print(f"    ✗ Scored {score}/10, below the {cutoff} cutoff")
+                        rejected_articles.append({'title': title, 'summary': summary[:300]})
+                        rejected_scores.append(score)
+                        continue
 
-                    print(f"    ✓ Positive news!")
+                    print(f"    ✓ Scored {score}/10")
 
                     combined_articles = new_articles + existing_articles
                     if is_duplicate_topic(title, summary, combined_articles):
@@ -1239,6 +1276,9 @@ def scrape_news():
                         'topics': metadata['topics'],
                         'countries': metadata['countries'],
                         'people': metadata['people'],
+                        # Internal only: stored for the dashboard, never served
+                        # to readers by any public endpoint.
+                        'positivity_score': score,
                     }
 
                     new_articles.append(article)
@@ -1256,6 +1296,8 @@ def scrape_news():
         if new_candidates_this_pass == 0:
             print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
             break
+
+    report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents)
 
     # Save new articles to database via API (best-effort)
     if api_available and new_articles:
