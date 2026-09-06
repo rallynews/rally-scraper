@@ -1,27 +1,25 @@
 {
-  "_comment": "Temporary: round 2 — entertainment, a cleaner Toronto Star feed, and more Mexican options.",
+  "_comment": "Temporary: round 3 — the entertainment slot is still open, so try the remaining arts/culture outlets and section feeds.",
 
-  "Toronto Star (outbound)": "https://www.thestar.com/arc/outboundfeeds/rss/?outputType=xml",
-  "Toronto Star (plain)": "https://www.thestar.com/feed/",
-  "Toronto Star (entertainment)": "https://www.thestar.com/search/?f=rss&t=article&c=entertainment*&l=50&s=start_time&sd=desc",
+  "Toronto Life": "https://torontolife.com/feed/",
+  "Maclean's": "https://macleans.ca/feed/",
+  "The Walrus": "https://thewalrus.ca/feed/",
+  "Quill & Quire": "https://quillandquire.com/feed/",
+  "Original Cin": "https://www.original-cin.ca/blog?format=rss",
 
-  "Exclaim! (root)": "https://exclaim.ca/rss",
-  "Exclaim! (music)": "https://exclaim.ca/music/feed",
-  "Exclaim! (wp)": "https://exclaim.ca/feed/",
-  "Georgia Straight": "https://www.straight.com/feeds/latest",
-  "Georgia Straight (wp)": "https://www.straight.com/feed",
-  "Playback (rss2)": "https://playbackonline.ca/feed/?type=rss2",
-  "Billboard Canada": "https://ca.billboard.com/rss.xml",
-  "That Shelf": "https://thatshelf.com/feed/",
-  "Point of View Magazine": "https://povmagazine.com/feed/",
+  "Exclaim! (rss.xml)": "https://exclaim.ca/rss.xml",
+  "Exclaim! (feeds/all)": "https://exclaim.ca/feeds/all",
+  "Exclaim! (all/feed)": "https://exclaim.ca/all/feed",
+  "Exclaim! (articles/rss)": "https://exclaim.ca/articles/rss",
+  "Exclaim! (rss/news)": "https://exclaim.ca/rss/news",
 
-  "Mexico Today": "https://mexicotoday.com/feed/",
-  "Mexico Business News": "https://mexicobusiness.news/rss/news",
-  "Mexico Daily Post (www)": "https://www.mexicodailypost.com/feed/",
-  "The Mazatlan Post": "https://themazatlanpost.com/feed/",
-  "San Miguel Times": "https://www.sanmigueltimes.com/feed/",
-  "Aztec Reports": "https://aztecreports.com/feed/",
-  "El Universal (english rss)": "https://www.eluniversal.com.mx/rss/english.xml",
-  "The Yucatan Times (no www)": "https://theyucatantimes.com/feed/",
-  "Mexico News Daily (news)": "https://mexiconewsdaily.com/news/feed/"
+  "Georgia Straight (rss.xml)": "https://www.straight.com/rss.xml",
+  "Georgia Straight (feeds/rss)": "https://www.straight.com/feeds/rss",
+
+  "Billboard Canada (feed/)": "https://ca.billboard.com/feed/",
+  "Billboard Canada (feeds/all)": "https://ca.billboard.com/feeds/all",
+
+  "National Post Entertainment": "https://nationalpost.com/category/entertainment/feed/",
+  "Global News Entertainment": "https://globalnews.ca/entertainment/feed/",
+  "Vancouver Sun Entertainment": "https://vancouversun.com/category/entertainment/feed/"
 }
