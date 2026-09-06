@@ -17,6 +17,7 @@ import os
 import sys
 
 import image_library
+import source_directory
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -164,10 +165,23 @@ AI_MODELS = [
 def parse_feed(url, timeout=15):
     """Fetch and parse an RSS or Atom feed; return list of entry dicts."""
     try:
-        resp = requests.get(url, timeout=timeout, headers={
-            'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
-        })
+        if source_directory.MODE == 'live':
+            # The URL came from the dashboard, so it is checked again here and
+            # at every redirect hop. The dashboard validates a URL when it is
+            # saved but cannot see where it redirects to, and this is the
+            # process that actually makes the request.
+            resp = source_directory.fetch_feed(url, timeout=timeout)
+        else:
+            # Shadow mode scrapes the hardcoded maps, which still hold four
+            # http:// feeds. Putting them through the https-only check would
+            # reject them, so the original fetch is kept until the flip.
+            resp = requests.get(url, timeout=timeout, headers={
+                'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
+            })
         resp.raise_for_status()
+    except source_directory.SourceDirectoryError as e:
+        print(f"  Feed refused: {e}")
+        return []
     except Exception as e:
         print(f"  Feed fetch error: {e}")
         return []
@@ -954,6 +968,53 @@ def migrate_from_json_via_api():
 # MAIN SCRAPER
 # ═══════════════════════════════════════════════════════════════
 
+def load_source_directory():
+    """Decide which sources this run scrapes, and report on the dashboard's list.
+
+    The master list is moving from the maps at the top of this file to a table
+    the Rally Admin dashboard edits. This is the transition:
+
+    * shadow mode (the default) fetches the dashboard's list, validates it and
+      prints how it differs from the maps here — then scrapes the maps anyway.
+      Deploying it cannot change a run; it only tells us whether the two agree.
+    * live mode (SOURCE_DIRECTORY_MODE=live) scrapes what the dashboard serves,
+      falling back to sources.lock.json if the API is unreachable or answers
+      with something implausible.
+
+    Returns (feeds, allowed_sources, continents) for this run.
+    """
+    code_feeds = {n: u for n, u in RSS_FEEDS.items() if n in WHITELISTED_SOURCES}
+    code_maps  = (code_feeds, set(code_feeds), dict(SOURCE_CONTINENTS))
+
+    print(f"\n{'─' * 60}")
+    print(f"Source directory ({source_directory.MODE} mode)")
+    print(f"{'─' * 60}")
+
+    sources, origin = source_directory.load_sources()
+    if origin == 'none':
+        print(f"  No directory available — scraping the {len(code_feeds)} sources in scraper.py")
+        return code_maps
+
+    source_directory.report_diff(source_directory.diff_against_code(
+        sources, RSS_FEEDS, WHITELISTED_SOURCES, SOURCE_CONTINENTS
+    ))
+
+    if source_directory.MODE != 'live':
+        print(f"  Shadow mode: scraping the {len(code_feeds)} sources in scraper.py, "
+              f"not the {len(sources)} above")
+        return code_maps
+
+    feeds      = {s['source']: s['feed_url'] for s in sources}
+    continents = {s['source']: s['continent'] for s in sources if s['continent']}
+    no_continent = [s['source'] for s in sources if not s['continent']]
+    if no_continent:
+        # A source with no continent still gets scraped; it just can't satisfy
+        # the per-run coverage check, so it is worth saying out loud.
+        print(f"  No continent for: {', '.join(sorted(no_continent))}")
+    print(f"  Live mode: scraping {len(feeds)} sources from {origin}")
+    return feeds, set(feeds), continents
+
+
 def scrape_news():
     """Main scraping function"""
     print("═" * 60)
@@ -963,10 +1024,15 @@ def scrape_news():
     SCRAPE_TIMEOUT = 45 * 60   # 45 minutes max per run
     BATCH_SIZE = 10             # feed entries examined per pass
 
+    # Which sources this run scrapes. In shadow mode — the default — this is the
+    # hardcoded list above, and the dashboard's list is only fetched, compared
+    # and reported. See load_source_directory().
+    feeds, allowed_sources, continents = load_source_directory()
+
     # Continents we expect to cover — every continent that has a live feed.
     required_continents = {
-        SOURCE_CONTINENTS[s] for s in RSS_FEEDS
-        if s in WHITELISTED_SOURCES and s in SOURCE_CONTINENTS
+        continents[s] for s in feeds
+        if s in allowed_sources and s in continents
     }
 
     start_time = time.time()
@@ -1035,7 +1101,7 @@ def scrape_news():
             break
 
         covered_continents = {
-            SOURCE_CONTINENTS.get(a['source']) for a in new_articles
+            continents.get(a['source']) for a in new_articles
         }
         covered_continents.discard(None)
         missing_continents = required_continents - covered_continents
@@ -1057,8 +1123,8 @@ def scrape_news():
 
         new_candidates_this_pass = 0
 
-        for source_name, feed_url in RSS_FEEDS.items():
-            if source_name not in WHITELISTED_SOURCES:
+        for source_name, feed_url in feeds.items():
+            if source_name not in allowed_sources:
                 continue
 
             if time.time() - start_time >= SCRAPE_TIMEOUT:
@@ -1098,9 +1164,9 @@ def scrape_news():
 
                     # Once the target is met, only keep scraping to fill in
                     # continents we don't yet have a story from.
-                    continent = SOURCE_CONTINENTS.get(source_name)
+                    continent = continents.get(source_name)
                     if len(new_articles) >= MIN_NEW_ARTICLES:
-                        covered_now = {SOURCE_CONTINENTS.get(a['source']) for a in new_articles}
+                        covered_now = {continents.get(a['source']) for a in new_articles}
                         if continent is None or continent in covered_now:
                             continue
 
