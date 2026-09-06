@@ -148,6 +148,38 @@ python source_directory.py --verify      # fetch every feed, report the dead one
 python source_directory.py --print-lock  # show the cached list
 ```
 
+### Changing what counts as good news
+
+The judgement applied to every candidate story — what used to be a prompt
+hardcoded in `scraper.py` — lives in the **Filter tab of Rally Admin**. Three
+things are editable there:
+
+- **Instructions** — what the model is asked to judge.
+- **Examples** — headlines with scores, which teach the model the scale. An
+  example's score decides whether it reads as a positive or a negative one, so
+  the two lists can never contradict each other.
+- **Cutoff** — the lowest score a story can have and still be published.
+
+Every story is scored **1–10**: 10 is the best news imaginable, 5 is moderate, 1
+is the worst. This replaced the old YES/NO question rather than adding a second
+one, so a run still makes one AI call per candidate. A story that scores below
+the cutoff is rejected, and so is one the model gives no usable answer for —
+publishing on an unparseable reply would mean publishing a story nothing judged.
+
+**Scores are internal.** They are stored against the article for the dashboard
+and appear in no public read: not `news.php`, not the digest, not `article.php`,
+not the feed. Readers never see a number attached to a story.
+
+```bash
+python editorial_filter.py --show   # print the exact prompt a run would use
+```
+
+`filter.lock.json` is the fallback, committed on every run like
+`sources.lock.json`, so changes to the filter stay visible in git history. If
+the API is unreachable and there is no lock, the built-in defaults reproduce the
+prompt that used to be hardcoded — so the fallback behaves the way the scraper
+always did.
+
 ### Checking that feeds actually work
 
 Validating a URL and validating a *feed* are different jobs. `--check` answers
@@ -232,6 +264,8 @@ API isn't configured.
 - `scraper.py` - Main scraper script
 - `source_directory.py` - Reads the admin-managed source list; URL safety checks
 - `sources.lock.json` - Last known good source list (auto-updated, don't edit)
+- `editorial_filter.py` - Reads the admin-managed filter; builds the scoring prompt
+- `filter.lock.json` - Last known good filter (auto-updated, don't edit)
 - `image_library.py` - Default featured images: manifest, matching, link checks
 - `fallback_images.json` - File names of the royalty-free photo library
 - `.github/workflows/scrape.yml` - GitHub Action config

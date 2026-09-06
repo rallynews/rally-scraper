@@ -56,7 +56,10 @@ jobs:
           # directory. Committing it means every change an admin makes to the
           # list leaves a diff in git history — the audit trail that moving the
           # list out of the code would otherwise cost.
-          git add rallyingcries.rss fallback_images.json sources.lock.json
+          # filter.lock.json is the same idea for the editorial filter: the
+          # fallback copy, and a git-visible record of every change to what
+          # Rally counts as good news.
+          git add rallyingcries.rss fallback_images.json sources.lock.json filter.lock.json
           if ! git diff --staged --quiet; then
             git commit -m "Update scraped data - $(date '+%Y-%m-%d %H:%M UTC')"
             for i in 1 2 3 4; do
