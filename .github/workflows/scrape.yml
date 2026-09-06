@@ -52,14 +52,21 @@ jobs:
       
       - name: Commit and push changes
         run: |
-          # sources.lock.json is the scraper's fallback copy of the source
-          # directory. Committing it means every change an admin makes to the
-          # list leaves a diff in git history — the audit trail that moving the
-          # list out of the code would otherwise cost.
-          # filter.lock.json is the same idea for the editorial filter: the
-          # fallback copy, and a git-visible record of every change to what
-          # Rally counts as good news.
-          git add rallyingcries.rss fallback_images.json sources.lock.json filter.lock.json
+          # The lockfiles are the scraper's fallback copies of the source list
+          # and the editorial filter. Committing them keeps every change an
+          # admin makes visible in git history — the audit trail that moving
+          # those out of the code would otherwise cost.
+          #
+          # They are only written once the scraper has successfully read the
+          # dashboard, so on a runner that has no SOURCES_API_KEY yet — or any
+          # run where the API was unreachable — they simply do not exist. Naming
+          # a missing path makes `git add` exit 128 and fails the whole job,
+          # AFTER the scrape has already succeeded: articles reach the database
+          # but rallyingcries.rss never gets committed. So add only what is
+          # actually there.
+          for f in rallyingcries.rss fallback_images.json sources.lock.json filter.lock.json; do
+            if [ -e "$f" ]; then git add "$f"; fi
+          done
           if ! git diff --staged --quiet; then
             git commit -m "Update scraped data - $(date '+%Y-%m-%d %H:%M UTC')"
             for i in 1 2 3 4; do
