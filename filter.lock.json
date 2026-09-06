@@ -1,0 +1,68 @@
+{
+  "intro": "Score this article on how POSITIVE it is as news — progress, achievements, solutions, help, innovation, recovery, cooperation.\n\nPositive news is not controversial, and actively shows progress. It is not about the acquisition of wealth by large corporations, or corporations making deals with each other that do not benefit humanity.",
+  "rules": "Scoring rules:\n- 10 is the best news imaginable; 5 is moderate; 1 is the worst.\n- Score low if it is primarily about big companies or corporate interests making deals with each other.\n- Score low if it is neutral, negative, explanatory, or just informational.\n- Score low if it is about problems, conflicts, crises, or disasters.\n- Score low if it is an explainer or educational content.\n- Score low if it is about controversy or debate.",
+  "min_score": 7,
+  "examples": [
+    {
+      "headline": "A Single Infusion Could Suppress H.I.V. for Years, Study Suggests",
+      "score": 9
+    },
+    {
+      "headline": "Sharp drop in 'forever chemicals' in seabird eggs hailed as win for regulation",
+      "score": 9
+    },
+    {
+      "headline": "Macron announces €23 billion of investment at Africa summit",
+      "score": 8
+    },
+    {
+      "headline": "Worksite testing AI to provide early high heat alerts to keep workers safe",
+      "score": 8
+    },
+    {
+      "headline": "A Writer With a Healthy Appetite, and a Love of New York City",
+      "score": 7
+    },
+    {
+      "headline": "A year after his death, we look back at the legacy of David Bowie",
+      "score": 7
+    },
+    {
+      "headline": "How a Hollywood star's photos inspired The Waterboys' latest album",
+      "score": 7
+    },
+    {
+      "headline": "How Japan created the ultimate take-away food",
+      "score": 7
+    },
+    {
+      "headline": "Innovation abounds in device charging",
+      "score": 7
+    },
+    {
+      "headline": "Inside the Israeli Voting Controversy That Engulfed Eurovision",
+      "score": 3
+    },
+    {
+      "headline": "Kennedy Is Driving a Vast Inquiry Into Vaccines, Despite His Public Silence",
+      "score": 3
+    },
+    {
+      "headline": "Reflecting Pool Costs Balloon to $13.1 Million, Records Show",
+      "score": 3
+    },
+    {
+      "headline": "American Passengers Exposed to Hantavirus Begin Quarantine in U.S.",
+      "score": 2
+    },
+    {
+      "headline": "Emissions rise by 10% over last year, according to new data",
+      "score": 2
+    },
+    {
+      "headline": "Man Charged With Assassination Attempt at Press Gala Pleads Not Guilty",
+      "score": 1
+    }
+  ],
+  "note": "Written by editorial_filter.py from the Rally Admin filter. Do not edit by hand — edit the Filter tab."
+}

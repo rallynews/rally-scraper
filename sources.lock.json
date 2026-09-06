@@ -1,0 +1,456 @@
+{
+  "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
+  "count": 50,
+  "sources": [
+    {
+      "source": "Aeon",
+      "feed_url": "https://aeon.co/feed.rss",
+      "website": "https://aeon.co",
+      "country": "AU",
+      "continent": "Oceania",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Africanews",
+      "feed_url": "https://www.africanews.com/feed/rss",
+      "website": "https://www.africanews.com",
+      "country": "CG",
+      "continent": "Africa",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Al Jazeera",
+      "feed_url": "https://www.aljazeera.com/xml/rss/all.xml",
+      "website": "https://www.aljazeera.com",
+      "country": "QA",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Ars Technica",
+      "feed_url": "https://feeds.arstechnica.com/arstechnica/index",
+      "website": "https://arstechnica.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "BBC News",
+      "feed_url": "https://feeds.bbci.co.uk/news/rss.xml",
+      "website": "https://www.bbc.co.uk/news",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Bloomberg",
+      "feed_url": "https://www.bloomberg.com/feeds/news.rss",
+      "website": "https://www.bloomberg.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Business Day",
+      "feed_url": "https://businessday.ng/feed",
+      "website": "https://businessday.ng",
+      "country": "NG",
+      "continent": "Africa",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "CNBC",
+      "feed_url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+      "website": "https://www.cnbc.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Daily Maverick",
+      "feed_url": "https://www.dailymaverick.co.za/rss/",
+      "website": "https://www.dailymaverick.co.za",
+      "country": "ZA",
+      "continent": "Africa",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Dawn",
+      "feed_url": "https://www.dawn.com/feeds/home",
+      "website": "https://www.dawn.com",
+      "country": "PK",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "DW (Deutsche Welle)",
+      "feed_url": "https://rss.dw.com/rdf/rss-en-all",
+      "website": "https://www.dw.com",
+      "country": "DE",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "El País (English)",
+      "feed_url": "https://feeds.elpais.com/mrss-s/pages/ep/site/english.elpais.com/portada",
+      "website": "https://english.elpais.com",
+      "country": "ES",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Euronews",
+      "feed_url": "https://www.euronews.com/rss",
+      "website": "https://www.euronews.com",
+      "country": "FR",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Exclaim!",
+      "feed_url": "https://exclaim.ca/rss/news",
+      "website": "https://exclaim.ca",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Financial Post",
+      "feed_url": "https://financialpost.com/feed",
+      "website": "https://financialpost.com",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Financial Times",
+      "feed_url": "https://www.ft.com/?format=rss",
+      "website": "https://www.ft.com",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Global News",
+      "feed_url": "https://globalnews.ca/feed/",
+      "website": "https://globalnews.ca",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Grist",
+      "feed_url": "https://grist.org/feed/",
+      "website": "https://grist.org",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Hong Kong Free Press",
+      "feed_url": "https://hongkongfp.com/feed",
+      "website": "https://hongkongfp.com",
+      "country": "HK",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Kyiv Independent",
+      "feed_url": "https://kyivindependent.com/feed/rss",
+      "website": "https://kyivindependent.com",
+      "country": "UA",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Le Monde",
+      "feed_url": "https://www.lemonde.fr/en/rss/une.xml",
+      "website": "https://www.lemonde.fr",
+      "country": "FR",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Los Angeles Times",
+      "feed_url": "https://www.latimes.com/world-nation/rss2.0.xml",
+      "website": "https://www.latimes.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Mexico News Daily",
+      "feed_url": "https://mexiconewsdaily.com/feed/",
+      "website": "https://mexiconewsdaily.com",
+      "country": "MX",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "MIT Technology Review",
+      "feed_url": "https://www.technologyreview.com/feed/",
+      "website": "https://www.technologyreview.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "National Post",
+      "feed_url": "https://nationalpost.com/feed",
+      "website": "https://nationalpost.com",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "New Scientist",
+      "feed_url": "https://www.newscientist.com/subject/technology/feed/",
+      "website": "https://www.newscientist.com",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "NPR",
+      "feed_url": "https://feeds.npr.org/1001/rss.xml",
+      "website": "https://www.npr.org",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Premium Times",
+      "feed_url": "https://www.premiumtimesng.com/feed",
+      "website": "https://www.premiumtimesng.com",
+      "country": "NG",
+      "continent": "Africa",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Rappler",
+      "feed_url": "https://www.rappler.com/feed/",
+      "website": "https://www.rappler.com",
+      "country": "PH",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Science News",
+      "feed_url": "https://www.sciencenews.org/feed",
+      "website": "https://www.sciencenews.org",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "ScienceAlert",
+      "feed_url": "https://www.sciencealert.com/feed",
+      "website": "https://www.sciencealert.com",
+      "country": "AU",
+      "continent": "Oceania",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Scientific American",
+      "feed_url": "https://www.scientificamerican.com/platform/syndication/rss/",
+      "website": "https://www.scientificamerican.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Smithsonian Magazine",
+      "feed_url": "https://www.smithsonianmag.com/rss/latest_articles/",
+      "website": "https://www.smithsonianmag.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "TechCrunch",
+      "feed_url": "https://techcrunch.com/feed/",
+      "website": "https://techcrunch.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Atlantic",
+      "feed_url": "https://www.theatlantic.com/feed/all/",
+      "website": "https://www.theatlantic.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 1
+    },
+    {
+      "source": "The China Digital Times",
+      "feed_url": "https://chinadigitaltimes.net/feed/",
+      "website": "https://chinadigitaltimes.net",
+      "country": "CN",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Globe and Mail",
+      "feed_url": "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/world/",
+      "website": "https://www.theglobeandmail.com",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Guardian",
+      "feed_url": "https://www.theguardian.com/world/rss",
+      "website": "https://www.theguardian.com",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Hindu",
+      "feed_url": "https://www.thehindu.com/feeder/default.rss",
+      "website": "https://www.thehindu.com",
+      "country": "IN",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Japan Times",
+      "feed_url": "https://www.japantimes.co.jp/feed/topstories/",
+      "website": "https://www.japantimes.co.jp",
+      "country": "JP",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Moscow Times",
+      "feed_url": "https://www.themoscowtimes.com/rss/news",
+      "website": "https://www.themoscowtimes.com",
+      "country": "RU",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Narwhal",
+      "feed_url": "https://thenarwhal.ca/feed/",
+      "website": "https://thenarwhal.ca",
+      "country": "CA",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The New York Times",
+      "feed_url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+      "website": "https://www.nytimes.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Straits Times",
+      "feed_url": "https://www.straitstimes.com/news/singapore/rss.xml",
+      "website": "https://www.straitstimes.com",
+      "country": "SG",
+      "continent": "Asia",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Sydney Morning Herald",
+      "feed_url": "https://www.smh.com.au/rss/feed.xml",
+      "website": "https://www.smh.com.au",
+      "country": "AU",
+      "continent": "Oceania",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Taipei Times",
+      "feed_url": "https://www.taipeitimes.com/xml/index.rss",
+      "website": "https://www.taipeitimes.com",
+      "country": "TW",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "The Telegraph",
+      "feed_url": "https://www.telegraph.co.uk/rss.xml",
+      "website": "https://www.telegraph.co.uk",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Washington Post",
+      "feed_url": "https://feeds.washingtonpost.com/rss/world",
+      "website": "https://www.washingtonpost.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "The Yucatan Times",
+      "feed_url": "https://theyucatantimes.com/feed/",
+      "website": "https://theyucatantimes.com",
+      "country": "MX",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Wired",
+      "feed_url": "https://www.wired.com/feed/rss",
+      "website": "https://www.wired.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 1,
+      "metered": 0
+    }
+  ]
+}
