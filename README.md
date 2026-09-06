@@ -144,8 +144,26 @@ changed in the source list and when. Don't edit it by hand.
 
 ```bash
 python source_directory.py --check       # fetch, validate, diff against the code
+python source_directory.py --verify      # fetch every feed, report the dead ones
 python source_directory.py --print-lock  # show the cached list
 ```
+
+### Checking that feeds actually work
+
+Validating a URL and validating a *feed* are different jobs. `--check` answers
+"is this URL safe and well-formed"; `--verify` answers "does fetching it produce
+a feed", which is the only way to catch a URL that is perfectly valid and simply
+wrong — an https address on a real domain that now serves a 404 page because the
+publisher moved its feed.
+
+Run it from the **Verify Source Feeds** workflow (Actions → Run workflow) after
+adding sources in the dashboard, and periodically to catch feeds that rot. It
+writes nothing and fails the run if any feed is dead, naming what to fix.
+
+Note that a feed your *browser* downloads instead of displaying is fine. That is
+a Content-Type decision by the publisher and a presentation decision by the
+browser; the scraper reads the bytes either way, and `--verify` judges a feed
+only on whether those bytes parse.
 
 ## 🖼️ Featured Images
 

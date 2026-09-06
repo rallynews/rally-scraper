@@ -35,14 +35,22 @@ Three things guard it:
 Run directly to see what the API is serving and how it differs from the code:
 
     python source_directory.py --check         # fetch, validate, diff, exit
+    python source_directory.py --verify        # fetch every feed, report dead ones
     python source_directory.py --print-lock    # show the cached list
+
+``--verify`` is the check a URL cannot answer on its own: whether fetching it
+actually produces a feed. A URL can be perfectly well-formed, https, and public,
+and still return a 404 page — which is what happens when a publisher moves its
+feed. It exits non-zero if anything is dead, so CI can fail on it.
 """
 
+import concurrent.futures
 import ipaddress
 import json
 import os
 import socket
 import sys
+import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit
 
 import requests
@@ -393,6 +401,78 @@ def load_sources(verbose=True):
     return (kept, 'remote')
 
 
+# ── Feed verification ──────────────────────────────────────────────────────────
+# feed_url_error() answers "is this URL safe to fetch". This answers the other
+# half — "does fetching it actually produce a feed" — which is the check that
+# catches a URL that is perfectly well-formed and simply wrong.
+#
+# Content-Type is deliberately not consulted. Plenty of publishers serve a feed
+# as application/octet-stream, which makes a browser download it rather than
+# display it; that is a browser presentation decision and says nothing about
+# whether the bytes are a feed. Only the parsed root element decides.
+
+FEED_ROOTS = ('rss', 'feed', 'rdf')
+
+
+def verify_feed(url, timeout=20):
+    """Fetch a feed URL and confirm the response really is a feed.
+
+    Returns (ok, detail). Never raises: a failure is a result, not an error.
+    """
+    try:
+        resp = fetch_feed(url, timeout=timeout)
+    except SourceDirectoryError as e:
+        return False, str(e)
+    except requests.RequestException as e:
+        return False, f'{type(e).__name__}: {e}'
+
+    if resp.status_code != 200:
+        return False, f'HTTP {resp.status_code}'
+    if not resp.content:
+        return False, 'empty response'
+
+    try:
+        root = ET.fromstring(resp.content)
+    except ET.ParseError as e:
+        head = resp.content[:80].decode('utf-8', 'replace').strip().replace('\n', ' ')
+        return False, f'not XML ({e}) — starts: {head!r}'
+
+    tag = root.tag.split('}', 1)[-1].lower()
+    if tag not in FEED_ROOTS:
+        return False, f'XML root is <{tag}>, not a feed'
+
+    items = sum(1 for _ in root.iter() if _.tag.split('}', 1)[-1].lower() in ('item', 'entry'))
+    return True, f'{tag}, {items} entries, {len(resp.content)} bytes'
+
+
+def verify_all(sources, workers=8, timeout=20):
+    """Verify every source's feed concurrently. Returns [(source, ok, detail)]."""
+    def check(s):
+        ok, detail = verify_feed(s['feed_url'], timeout=timeout)
+        return (s['source'], ok, detail)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        results = list(pool.map(check, sources))
+    return sorted(results, key=lambda r: (r[1], r[0].lower()))
+
+
+def report_verification(results):
+    """Print verification results. Returns the number that failed."""
+    failed = [r for r in results if not r[1]]
+    for name, ok, detail in results:
+        if not ok:
+            print(f"  DEAD  {name:<28} {detail}")
+    for name, ok, detail in results:
+        if ok:
+            print(f"  ok    {name:<28} {detail}")
+    print(f"\n{len(results) - len(failed)}/{len(results)} feeds returned a parseable feed")
+    if failed:
+        print("\nFeeds needing attention in the Sources tab:")
+        for name, _, detail in failed:
+            print(f"  - {name}: {detail}")
+    return len(failed)
+
+
 # ── Shadow mode ────────────────────────────────────────────────────────────────
 
 def diff_against_code(sources, rss_feeds, whitelist, continents):
@@ -450,6 +530,16 @@ def _main(argv):
         print(f"\n{len(lock)} sources")
         return 0
 
+    if '--verify' in argv:
+        # Fetches every feed, so it is opt-in rather than part of --check.
+        sources, origin = load_sources()
+        if not sources:
+            print('No sources to verify.')
+            return 1
+        print(f"Verifying {len(sources)} feeds from {origin}…\n")
+        # Exit non-zero when anything is dead, so CI can fail on it.
+        return 1 if report_verification(verify_all(sources)) else 0
+
     if '--check' in argv:
         print(f"Mode: {MODE}")
         sources, origin = load_sources()
@@ -468,7 +558,7 @@ def _main(argv):
         return 0
 
     print(__doc__.strip().split('\n\n')[0])
-    print('\nUsage: python source_directory.py [--check | --print-lock]')
+    print('\nUsage: python source_directory.py [--check | --verify | --print-lock]')
     return 0
 
 

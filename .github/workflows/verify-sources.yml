@@ -1,0 +1,54 @@
+name: Verify Source Feeds
+
+# Fetches every feed in the source directory and checks it actually returns a
+# parseable RSS/Atom document. This is the check a URL cannot answer about
+# itself: a feed URL can be well-formed, https and public, and still serve a 404
+# page because the publisher moved it.
+#
+# Worth running after adding sources in the dashboard, and periodically to catch
+# feeds that rot. Manual trigger only, like scrape.yml — point cron-job.org at
+# it via the GitHub API if you want it on a schedule.
+#
+# The job fails when any feed is dead, so the run goes red and the summary names
+# what to fix in the Sources tab. It changes nothing: no commits, no writes.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests --break-system-packages
+
+      - name: Verify every feed
+        env:
+          NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
+          SOURCES_API_KEY: ${{ secrets.SOURCES_API_KEY }}
+        run: |
+          set -o pipefail
+          python source_directory.py --verify 2>&1 | tee verify.log
+
+      - name: Summarise
+        if: always()
+        run: |
+          {
+            echo '## Source feed verification'
+            echo
+            echo '```'
+            tail -40 verify.log 2>/dev/null || echo 'No output captured.'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
