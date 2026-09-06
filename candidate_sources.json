@@ -1,0 +1,42 @@
+{
+  "_comment": "Temporary: candidate feeds under evaluation. Verified by .github/workflows/verify-candidates.yml, then deleted.",
+
+  "Global News": "https://globalnews.ca/feed/",
+  "Global News (Canada)": "https://globalnews.ca/canada/feed/",
+  "National Post": "https://nationalpost.com/feed/",
+  "Toronto Star": "https://www.thestar.com/arc/outboundfeeds/rss/category/news/?outputType=xml",
+  "Toronto Star (alt)": "https://www.thestar.com/search/?f=rss&t=article&c=news*&l=50&s=start_time&sd=desc",
+  "CityNews Toronto": "https://toronto.citynews.ca/feed/",
+  "The Tyee": "https://thetyee.ca/rss2.xml",
+  "Winnipeg Free Press": "https://www.winnipegfreepress.com/rss/?path=/",
+  "Montreal Gazette": "https://montrealgazette.com/feed/",
+  "Vancouver Sun": "https://vancouversun.com/feed/",
+  "CP24": "https://www.cp24.com/rss/cp24-top-stories-1.1130464",
+
+  "Exclaim!": "https://exclaim.ca/rss/all",
+  "Exclaim! (alt)": "https://exclaim.ca/feed",
+  "NOW Toronto": "https://nowtoronto.com/feed/",
+  "Playback": "https://playbackonline.ca/feed/",
+  "Cult MTL": "https://cultmtl.com/feed/",
+  "Billboard Canada": "https://ca.billboard.com/feed",
+
+  "The Narwhal": "https://thenarwhal.ca/feed/",
+  "Canada's National Observer": "https://www.nationalobserver.com/front/rss",
+  "Corporate Knights": "https://www.corporateknights.com/feed/",
+  "DeSmog": "https://www.desmog.com/feed/",
+
+  "Financial Post": "https://financialpost.com/feed/",
+  "BNN Bloomberg": "https://www.bnnbloomberg.ca/feed/",
+  "BNN Bloomberg (alt)": "https://www.bnnbloomberg.ca/rss/",
+  "Canadian Business": "https://canadianbusiness.com/feed/",
+  "Betakit": "https://betakit.com/feed/",
+
+  "Mexico News Daily": "https://mexiconewsdaily.com/feed/",
+  "The Yucatan Times": "https://www.theyucatantimes.com/feed/",
+  "Mexico Daily Post": "https://mexicodailypost.com/feed/",
+  "Mexico Business News": "https://mexicobusiness.news/rss",
+  "Riviera Maya News": "https://www.riviera-maya-news.com/feed",
+  "The Guadalajara Reporter": "https://www.theguadalajarareporter.net/feed",
+  "El Universal (English)": "https://www.eluniversal.com.mx/seccion/english/feed",
+  "Mexico City Post": "https://mexicocitypost.com/feed/"
+}
