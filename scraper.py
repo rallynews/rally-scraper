@@ -988,6 +988,49 @@ def load_source_directory():
     return feeds, set(feeds), continents
 
 
+def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents):
+    """Say whether the run met its per-run minimum, and what it would have taken.
+
+    The scraper has always aimed for MIN_NEW_ARTICLES stories per run and full
+    continent coverage, stopping early only when the feeds run dry or the clock
+    runs out. Now that the cutoff is adjustable, a short run is most often the
+    cutoff biting rather than the feeds being quiet — so when the target is
+    missed this reports the score that would have met it, instead of leaving
+    someone to guess which of the two it was.
+    """
+    found = len(new_articles)
+    covered = {continents.get(a['source']) for a in new_articles}
+    covered.discard(None)
+    missing = sorted(required_continents - covered)
+
+    print(f"\n{'═' * 60}")
+    if found >= MIN_NEW_ARTICLES and not missing:
+        print(f"Run met its target: {found} stories, all "
+              f"{len(required_continents)} continents covered")
+    elif found >= MIN_NEW_ARTICLES:
+        # The count was met; only coverage fell short.
+        print(f"Run met its story target ({found}/{MIN_NEW_ARTICLES}) but found "
+              f"nothing from: {', '.join(missing)}")
+    else:
+        print(f"Run finished short: {found}/{MIN_NEW_ARTICLES} stories"
+              + (f", and nothing from {', '.join(missing)}" if missing else ""))
+
+        # How many more would have qualified at each lower cutoff.
+        for lower in range(cutoff - 1, editorial_filter.CUTOFF_MIN - 1, -1):
+            extra = sum(1 for s in rejected_scores if s >= lower)
+            if extra:
+                print(f"  A cutoff of {lower} would have added up to {extra} more "
+                      f"({found + extra} total)")
+        if rejected_scores:
+            near = sum(1 for s in rejected_scores if s == cutoff - 1)
+            print(f"  {len(rejected_scores)} stories were turned away by the cutoff"
+                  + (f", {near} of them one point short" if near else ""))
+        else:
+            print("  Nothing was turned away by the cutoff — the feeds simply "
+                  "had little to offer this run")
+    print(f"{'═' * 60}")
+
+
 def scrape_news():
     """Main scraping function"""
     print("═" * 60)
@@ -1074,6 +1117,7 @@ def scrape_news():
 
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
+    rejected_scores = []     # scores of stories the cutoff turned away, for the run summary
     checked_urls = set()     # URLs already evaluated this run (across all passes)
     pass_num = 0
 
@@ -1166,6 +1210,7 @@ def scrape_news():
                     if score < cutoff:
                         print(f"    ✗ Scored {score}/10, below the {cutoff} cutoff")
                         rejected_articles.append({'title': title, 'summary': summary[:300]})
+                        rejected_scores.append(score)
                         continue
 
                     print(f"    ✓ Scored {score}/10")
@@ -1251,6 +1296,8 @@ def scrape_news():
         if new_candidates_this_pass == 0:
             print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
             break
+
+    report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents)
 
     # Save new articles to database via API (best-effort)
     if api_available and new_articles:

@@ -158,7 +158,12 @@ things are editable there:
 - **Examples** — headlines with scores, which teach the model the scale. An
   example's score decides whether it reads as a positive or a negative one, so
   the two lists can never contradict each other.
-- **Cutoff** — the lowest score a story can have and still be published.
+- **Cutoff** — the lowest score a story can have and still be published,
+  adjustable between **6 and 9**. The band is deliberately narrower than the
+  scale: 5 means "moderate", so a cutoff below 6 would publish news Rally does
+  not consider good, and above 9 so little qualifies that a run exhausts every
+  feed and still falls short of `MIN_NEW_ARTICLES`. The scraper enforces the
+  same band, so a stale or tampered value cannot widen it.
 
 Every story is scored **1–10**: 10 is the best news imaginable, 5 is moderate, 1
 is the worst. This replaced the old YES/NO question rather than adding a second
@@ -173,6 +178,15 @@ not the feed. Readers never see a number attached to a story.
 ```bash
 python editorial_filter.py --show   # print the exact prompt a run would use
 ```
+
+The per-run rules are unchanged by any of this: a run still aims for
+`MIN_NEW_ARTICLES` stories with at least one from every continent, caps each
+source at 2 and each category at `MAX_PER_CATEGORY`, and stops early only when
+the feeds run dry or the 45-minute clock runs out. Because a raised cutoff is
+now the most likely reason a run comes up short, every run ends with a summary
+saying whether it met its target — and if not, how many more stories each lower
+cutoff would have admitted, so the choice between "the cutoff is too high" and
+"the feeds were quiet" is not a guess.
 
 `filter.lock.json` is the fallback, committed on every run like
 `sources.lock.json`, so changes to the filter stay visible in git history. If

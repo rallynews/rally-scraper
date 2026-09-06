@@ -45,6 +45,13 @@ LOCK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'filter.loc
 SCORE_MIN = 1
 SCORE_MAX = 10
 
+# The cutoff is narrower than the scale it sits on. Below 6 the filter stops
+# filtering — 5 is "moderate" — and above 9 so little qualifies that a run
+# exhausts every feed and still falls short of MIN_NEW_ARTICLES. Enforced here
+# as well as in the dashboard, so a stale or tampered value cannot widen it.
+CUTOFF_MIN = 6
+CUTOFF_MAX = 9
+
 # Mirrors FILTER_DEFAULT_* in the frontend's api/_bootstrap.php. Kept in step so
 # the scraper behaves the same when the API is unreachable and there is no lock.
 DEFAULT_CUTOFF = 7
@@ -129,9 +136,13 @@ def validate_config(data):
         raise source_directory.SourceDirectoryError('no rules in the response')
 
     cutoff = _clean_score(data.get('min_score'))
-    if cutoff is None:
+    if cutoff is None or not (CUTOFF_MIN <= cutoff <= CUTOFF_MAX):
+        # Refused rather than clamped: a cutoff outside the band means the
+        # config is not one this scraper should be judging stories by, and
+        # quietly moving it would change what gets published without saying so.
         raise source_directory.SourceDirectoryError(
-            f'cutoff {data.get("min_score")!r} is not a score between {SCORE_MIN} and {SCORE_MAX}')
+            f'cutoff {data.get("min_score")!r} is outside the allowed '
+            f'{CUTOFF_MIN}-{CUTOFF_MAX} range')
 
     examples = []
     for row in data.get('examples') or []:
