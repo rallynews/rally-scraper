@@ -36,12 +36,6 @@ jobs:
           # (api/sources.php). Deliberately NOT the same value as NEWS_API_KEY:
           # that one can write articles, this one can only read the list.
           SOURCES_API_KEY: ${{ secrets.SOURCES_API_KEY }}
-          # 'shadow' (default) fetches the dashboard's source list and reports
-          # how it differs from the maps in scraper.py, but scrapes the maps.
-          # Set the SOURCE_DIRECTORY_MODE repository variable to 'live' to
-          # scrape the dashboard's list instead — no code change needed, and it
-          # can be switched back just as quickly.
-          SOURCE_DIRECTORY_MODE: ${{ vars.SOURCE_DIRECTORY_MODE || 'shadow' }}
         run: |
           python scraper.py
       

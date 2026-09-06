@@ -163,19 +163,19 @@ AI_MODELS = [
 # RSS PARSER (stdlib only — no feedparser dependency)
 # ═══════════════════════════════════════════════════════════════
 
-def parse_feed(url, timeout=15):
-    """Fetch and parse an RSS or Atom feed; return list of entry dicts."""
+def parse_feed(url, timeout=15, validate=True):
+    """Fetch and parse an RSS or Atom feed; return list of entry dicts.
+
+    `validate` says whether this URL needs re-checking before it is fetched.
+    It is True for anything the dashboard supplied — that is user input, and
+    the dashboard cannot see where a URL redirects to, while this is the
+    process that actually makes the request. It is False only for the built-in
+    fallback maps, which are reviewed code and still hold http:// addresses.
+    """
     try:
-        if source_directory.MODE == 'live':
-            # The URL came from the dashboard, so it is checked again here and
-            # at every redirect hop. The dashboard validates a URL when it is
-            # saved but cannot see where it redirects to, and this is the
-            # process that actually makes the request.
+        if validate:
             resp = source_directory.fetch_feed(url, timeout=timeout)
         else:
-            # Shadow mode scrapes the hardcoded maps, which still hold four
-            # http:// feeds. Putting them through the https-only check would
-            # reject them, so the original fetch is kept until the flip.
             resp = requests.get(url, timeout=timeout, headers={
                 'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
             })
@@ -942,50 +942,43 @@ def migrate_from_json_via_api():
 # ═══════════════════════════════════════════════════════════════
 
 def load_source_directory():
-    """Decide which sources this run scrapes, and report on the dashboard's list.
+    """Decide which sources this run scrapes.
 
-    The master list is moving from the maps at the top of this file to a table
-    the Rally Admin dashboard edits. This is the transition:
+    The dashboard's list is authoritative. The maps at the top of this file are
+    now only a last-resort fallback, for the case where the API is unreachable
+    AND there is no lockfile — a scraper with no sources at all is worse than
+    one running a slightly stale list.
 
-    * shadow mode (the default) fetches the dashboard's list, validates it and
-      prints how it differs from the maps here — then scrapes the maps anyway.
-      Deploying it cannot change a run; it only tells us whether the two agree.
-    * live mode (SOURCE_DIRECTORY_MODE=live) scrapes what the dashboard serves,
-      falling back to sources.lock.json if the API is unreachable or answers
-      with something implausible.
+    Where the list came from decides one more thing: whether feed URLs are
+    re-validated before they are fetched. A URL from the dashboard is user
+    input and gets the full check, including at every redirect. The built-in
+    maps are code, reviewed in git, and still hold four http:// addresses that
+    an https-only check would reject — so those are fetched as they always were.
 
-    Returns (feeds, allowed_sources, continents) for this run.
+    Returns (feeds, allowed_sources, continents, validate_feeds).
     """
-    code_feeds = {n: u for n, u in RSS_FEEDS.items() if n in WHITELISTED_SOURCES}
-    code_maps  = (code_feeds, set(code_feeds), dict(SOURCE_CONTINENTS))
-
-    print(f"\n{'─' * 60}")
-    print(f"Source directory ({source_directory.MODE} mode)")
-    print(f"{'─' * 60}")
+    print(f"\n{'-' * 60}")
+    print("Source directory")
+    print(f"{'-' * 60}")
 
     sources, origin = source_directory.load_sources()
+
     if origin == 'none':
-        print(f"  No directory available — scraping the {len(code_feeds)} sources in scraper.py")
-        return code_maps
-
-    source_directory.report_diff(source_directory.diff_against_code(
-        sources, RSS_FEEDS, WHITELISTED_SOURCES, SOURCE_CONTINENTS
-    ))
-
-    if source_directory.MODE != 'live':
-        print(f"  Shadow mode: scraping the {len(code_feeds)} sources in scraper.py, "
-              f"not the {len(sources)} above")
-        return code_maps
+        code_feeds = {n: u for n, u in RSS_FEEDS.items() if n in WHITELISTED_SOURCES}
+        print(f"  !! No dashboard list and no lockfile — falling back to the "
+              f"{len(code_feeds)} sources built into scraper.py")
+        return code_feeds, set(code_feeds), dict(SOURCE_CONTINENTS), False
 
     feeds      = {s['source']: s['feed_url'] for s in sources}
     continents = {s['source']: s['continent'] for s in sources if s['continent']}
     no_continent = [s['source'] for s in sources if not s['continent']]
     if no_continent:
-        # A source with no continent still gets scraped; it just can't satisfy
+        # A source with no continent still gets scraped; it just cannot satisfy
         # the per-run coverage check, so it is worth saying out loud.
-        print(f"  No continent for: {', '.join(sorted(no_continent))}")
-    print(f"  Live mode: scraping {len(feeds)} sources from {origin}")
-    return feeds, set(feeds), continents
+        print(f"  No continent set for: {', '.join(sorted(no_continent))}")
+
+    print(f"  Scraping {len(feeds)} sources from {origin}")
+    return feeds, set(feeds), continents, True
 
 
 def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents):
@@ -1040,15 +1033,13 @@ def scrape_news():
     SCRAPE_TIMEOUT = 45 * 60   # 45 minutes max per run
     BATCH_SIZE = 10             # feed entries examined per pass
 
-    # Which sources this run scrapes. In shadow mode — the default — this is the
-    # hardcoded list above, and the dashboard's list is only fetched, compared
-    # and reported. See load_source_directory().
-    feeds, allowed_sources, continents = load_source_directory()
+    # Which sources this run scrapes. The dashboard decides; the maps above are
+    # only a last resort. See load_source_directory().
+    feeds, allowed_sources, continents, validate_feeds = load_source_directory()
 
-    # The editorial judgement, also owned by the dashboard. Unlike the source
-    # list this has no shadow mode: there is no second opinion to compare
-    # against, and the built-in defaults reproduce the prompt that used to be
-    # hardcoded here, so the fallback path behaves the way this file always did.
+    # The editorial judgement, also owned by the dashboard. Its built-in
+    # defaults reproduce the prompt that used to be hardcoded here, so the
+    # fallback path behaves the way this file always did.
     print(f"\n{'-' * 60}")
     filter_config, filter_origin = editorial_filter.load_filter()
     cutoff = filter_config['min_score']
@@ -1161,7 +1152,7 @@ def scrape_news():
             print(f"\nScraping: {source_name}")
 
             try:
-                entries = parse_feed(feed_url)
+                entries = parse_feed(feed_url, validate=validate_feeds)
 
                 for entry in entries[start_idx:end_idx]:
                     url = entry.get('link', '').strip()

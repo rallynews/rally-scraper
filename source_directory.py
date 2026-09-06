@@ -27,10 +27,10 @@ Three things guard it:
   leaves a diff in git history: the audit trail that moving off code would
   otherwise cost.
 
-* **Shadow mode** (the default, ``SOURCE_DIRECTORY_MODE=shadow``). The remote
-  list is fetched, validated and compared against the maps in ``scraper.py``,
-  and the differences are printed — but the hardcoded maps are what actually get
-  scraped. Nothing changes behaviour until the mode is set to ``live``.
+* **A built-in last resort.** If the API is unreachable and there is no
+  lockfile either, ``scraper.py`` falls back to the source maps still defined
+  at the top of that file. A scraper with no sources at all is worse than one
+  running a slightly stale list.
 
 Run directly to see what the API is serving and how it differs from the code:
 
@@ -59,12 +59,6 @@ import requests
 
 LOCK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sources.lock.json')
 
-# 'shadow' fetches and reports but scrapes the hardcoded maps; 'live' scrapes
-# what the dashboard serves. Shadow is the default so that deploying this module
-# cannot change what gets scraped — flipping to live is a separate, deliberate
-# act.
-MODE = os.environ.get('SOURCE_DIRECTORY_MODE', 'shadow').strip().lower()
-
 SOURCES_API_KEY = os.environ.get('SOURCES_API_KEY')
 
 # Refuse a list that is empty or absurdly large, and refuse one that has moved
@@ -72,7 +66,7 @@ SOURCES_API_KEY = os.environ.get('SOURCES_API_KEY')
 # half-written directory would take.
 MIN_SOURCES = 5
 MAX_SOURCES = 500
-MAX_CHURN   = 0.30      # fraction of the locked list that may change at once
+MAX_CHURN   = 0.30      # fraction of the locked list that may be lost at once
 
 FETCH_TIMEOUT = 30
 MAX_REDIRECTS = 3
@@ -187,10 +181,10 @@ def fetch_feed(url, timeout=15, user_agent='Mozilla/5.0 (compatible; RallyNewsBo
 # ── Country → continent ────────────────────────────────────────────────────────
 # The directory records each source's country; the scraper's per-run coverage
 # check works in continents. This is the bridge. It agrees with the
-# SOURCE_CONTINENTS map in scraper.py for 40 of its 41 live sources — the
-# exception is Reuters, which the directory places in Canada (Thomson Reuters'
-# head office) and the map places in Europe (the newsroom that files the copy).
-# Shadow mode reports that as a difference rather than silently picking a side.
+# SOURCE_CONTINENTS map in scraper.py for 40 of its 41 sources — the exception
+# is Reuters, which the directory places in Canada (Thomson Reuters' head
+# office) and the old map placed in Europe (the newsroom that files the copy).
+# The dashboard's country decides it now.
 
 _CONTINENTS = {
     'North America': 'AG AI AW BB BL BM BQ BS BZ CA CR CU CW DM DO GD GL GP GT HN HT JM '
@@ -347,14 +341,18 @@ def is_plausible(sources, lock):
     old = {s['source']: s.get('feed_url') for s in lock}
     new = {s['source']: s.get('feed_url') for s in sources}
 
-    # Churn is measured against every name either list mentions, so it stays a
-    # real fraction: a source added, removed, or repointed all count once.
-    every = set(old) | set(new)
-    unchanged = {n for n in set(old) & set(new) if old[n] == new[n]}
-    churn = (len(every) - len(unchanged)) / max(len(every), 1)
+    # Only losses count. Adding sources is what a newsroom does — each new URL
+    # is individually validated before it is ever fetched, and an addition
+    # cannot take away coverage — so a batch of additions must not get the whole
+    # list refused and the admin's work silently ignored. Mass REMOVAL or mass
+    # REPOINTING is the shape a replaced or hijacked list takes, and that is
+    # what this still refuses.
+    lost = {n for n in old if n not in new}
+    moved = {n for n in set(old) & set(new) if old[n] != new[n]}
+    churn = len(lost | moved) / max(len(old), 1)
     if churn > MAX_CHURN:
-        return (f'{len(every) - len(unchanged)} of {len(every)} sources added, '
-                f'removed or repointed ({churn:.0%} > {MAX_CHURN:.0%} limit)')
+        return (f'{len(lost)} of {len(old)} sources removed and {len(moved)} '
+                f'repointed ({churn:.0%} > {MAX_CHURN:.0%} limit)')
     return ''
 
 
@@ -393,12 +391,42 @@ def load_sources(verbose=True):
                   f"{f' ({len(lock)} sources)' if lock else ' — which is empty'}")
         return (lock or [], 'lock' if lock else 'none')
 
+    if verbose:
+        report_changes_since(lock, kept)
+
     try:
         write_lock(kept)
     except OSError as e:
         if verbose:
             print(f"  Warning: could not update the lockfile ({e})")
     return (kept, 'remote')
+
+
+def report_changes_since(lock, sources):
+    """Say what changed since the last run, if anything.
+
+    Compared against the lockfile rather than the maps in scraper.py: those are
+    a frozen fallback that the dashboard is expected to drift away from, so
+    diffing them would grow into noise. The lock is what the previous run
+    actually used, which makes every line here something that just changed —
+    and the difference between "we removed that on purpose" and "we deleted it
+    by accident".
+    """
+    if not lock:
+        return
+    old = {s['source']: s.get('feed_url') for s in lock}
+    new = {s['source']: s.get('feed_url') for s in sources}
+
+    added    = sorted(set(new) - set(old))
+    removed  = sorted(set(old) - set(new))
+    repointed = sorted(n for n in set(old) & set(new) if old[n] != new[n])
+    if not (added or removed or repointed):
+        return
+
+    if added:     print(f"  Added since the last run: {', '.join(added)}")
+    if removed:   print(f"  No longer listed, so no longer scraped: {', '.join(removed)}")
+    for name in repointed:
+        print(f"  Feed changed for {name}: {old[name]} -> {new[name]}")
 
 
 # ── Feed verification ──────────────────────────────────────────────────────────
@@ -473,7 +501,7 @@ def report_verification(results):
     return len(failed)
 
 
-# ── Shadow mode ────────────────────────────────────────────────────────────────
+# ── Comparison against the built-in maps ───────────────────────────────────────
 
 def diff_against_code(sources, rss_feeds, whitelist, continents):
     """Compare the served list with the maps still hardcoded in scraper.py."""
@@ -497,7 +525,7 @@ def diff_against_code(sources, rss_feeds, whitelist, continents):
 
 
 def report_diff(diff):
-    """Print the shadow-mode comparison. Returns True if anything differed."""
+    """Print the comparison against the code. Returns True if anything differed."""
     any_diff = any(diff.values())
     if not any_diff:
         print("  Source directory matches the hardcoded list exactly")
@@ -541,7 +569,6 @@ def _main(argv):
         return 1 if report_verification(verify_all(sources)) else 0
 
     if '--check' in argv:
-        print(f"Mode: {MODE}")
         sources, origin = load_sources()
         print(f"Loaded {len(sources)} sources from {origin}")
         if origin == 'none':

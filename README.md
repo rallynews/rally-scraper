@@ -110,24 +110,22 @@ selected_sources = random.sample(list(NEWS_SOURCES.items()), 15)  # Changed from
 
 ### Add More News Sources
 
-Sources are moving out of this repository and into the **Sources tab of Rally
-Admin**, so a source can be added without a commit and a deploy. The move is
-happening in two steps, and right now it is on the first one.
+Sources live in the **Sources tab of Rally Admin**, so one can be added or
+removed without a commit and a deploy. The dashboard's list is what gets
+scraped — there is no toggle.
 
-**Shadow mode (current default).** Every run fetches the dashboard's list from
-`api/sources.php`, validates it, and prints how it differs from the
-`WHITELISTED_SOURCES` / `RSS_FEEDS` / `SOURCE_CONTINENTS` maps in `scraper.py` —
-then scrapes those maps anyway. Nothing the dashboard says can change a run.
-Read the diff in the Actions log to see whether the two agree.
+To add a source: open the Sources tab, fill in the name, website, feed and
+country, and it is in the next run. To stop scraping one, remove it there.
 
-**Live mode.** Set the `SOURCE_DIRECTORY_MODE` repository variable to `live` and
-the dashboard's list is what gets scraped. The maps in `scraper.py` stay as the
-seed for the lockfile. Set it back to `shadow` to revert — no code change either
-way.
+The `WHITELISTED_SOURCES` / `RSS_FEEDS` / `SOURCE_CONTINENTS` maps still at the
+top of `scraper.py` are now only a last resort, used when the API is unreachable
+*and* there is no lockfile — a scraper with no sources at all is worse than one
+running a stale list. Editing them changes nothing in normal operation.
 
-So: to add a source **today**, edit both `WHITELISTED_SOURCES` and `RSS_FEEDS`
-(and give it a continent in `SOURCE_CONTINENTS`, or it won't count toward the
-per-run coverage check). Once live mode is on, add it in the dashboard instead.
+Whether a feed URL is re-validated before it is fetched follows where it came
+from, not a setting: a URL from the dashboard is user input and gets the full
+check at every redirect hop, while the built-in maps are reviewed code and are
+fetched as they always were.
 
 Two secrets are involved:
 
