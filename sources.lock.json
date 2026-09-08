@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 51,
+  "count": 52,
   "sources": [
     {
       "source": "Aeon",
@@ -234,6 +234,15 @@
       "country": "GB",
       "continent": "Europe",
       "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Newslaundry",
+      "feed_url": "https://www.newslaundry.com/stories.rss",
+      "website": "https://www.newslaundry.com",
+      "country": "IN",
+      "continent": "Asia",
+      "paywalled": 0,
       "metered": 0
     },
     {
