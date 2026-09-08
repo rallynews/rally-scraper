@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 50,
+  "count": 51,
   "sources": [
     {
       "source": "Aeon",
@@ -224,8 +224,8 @@
       "website": "https://nationalpost.com",
       "country": "CA",
       "continent": "North America",
-      "paywalled": 0,
-      "metered": 0
+      "paywalled": 1,
+      "metered": 1
     },
     {
       "source": "New Scientist",
@@ -233,6 +233,15 @@
       "website": "https://www.newscientist.com",
       "country": "GB",
       "continent": "Europe",
+      "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Newsweek",
+      "feed_url": "https://www.newsweek.com/rss",
+      "website": "https://www.newsweek.com",
+      "country": "US",
+      "continent": "North America",
       "paywalled": 1,
       "metered": 0
     },
@@ -350,7 +359,7 @@
       "website": "https://www.thehindu.com",
       "country": "IN",
       "continent": "Asia",
-      "paywalled": 0,
+      "paywalled": 1,
       "metered": 0
     },
     {
