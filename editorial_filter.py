@@ -508,18 +508,24 @@ def is_preferred(config, average):
     return average >= config['strong_score']
 
 
-def select_for_run(config, articles, target, score_key='positivity_score'):
+def select_for_run(config, articles, target, score_key='positivity_score',
+                   category_key=None, per_category=None):
     """Choose what a run actually publishes, best first.
 
-    Tier 1 is every qualifying story at ``strong_score`` or above, with no cap:
-    if a run finds twenty of them it publishes twenty and takes nothing from
-    below. Tier 2 is only reached for when tier 1 leaves the run short of
-    ``target``, and then only as far as filling it — the weaker band tops a run
-    up, it never bulks one out.
+    Tier 1 is every qualifying story at ``strong_score`` or above, uncapped by
+    the target: if a run finds twenty of them it publishes twenty and takes
+    nothing from below. Tier 2 is only reached for when tier 1 leaves the run
+    short of ``target``, and then only as far as filling it — the weaker band
+    tops a run up, it never bulks one out.
 
-    Returns (published, unused). Unused stories qualified but were not needed;
-    they are the lowest-scoring of the fallback band, and they are simply not
-    published this run.
+    ``category_key``/``per_category`` apply the newsroom's "no more than N
+    stories in any one category" rule to the PUBLISHED set. It has to be applied
+    here rather than only as stories are found: a run holds candidates from both
+    tiers, and topping up from the fallback band could otherwise push a category
+    past its cap. Within a tier the highest scores win the contested slots.
+
+    Returns (published, unused). Unused stories qualified but were not needed —
+    the run was full, or their category was.
 
     Decided at the end of the run rather than as stories are found, because how
     far down the run has to reach depends on how many strong ones it ends up
@@ -528,16 +534,36 @@ def select_for_run(config, articles, target, score_key='positivity_score'):
     A run that ends up short still publishes what it has. Only a run with
     nothing at all publishes nothing, and that is a blank scrape.
     """
-    preferred = [a for a in articles if is_preferred(config, a[score_key])]
+    by_score = lambda a: a[score_key]
+    preferred = sorted((a for a in articles if is_preferred(config, a[score_key])),
+                       key=by_score, reverse=True)
     fallback  = sorted((a for a in articles if not is_preferred(config, a[score_key])),
-                       key=lambda a: a[score_key], reverse=True)
+                       key=by_score, reverse=True)
 
-    if len(preferred) >= target:
-        # Target met on the strong tier alone: take all of it, nothing below.
-        return preferred, fallback
+    counts = {}
+    capped = bool(category_key and per_category)
 
-    need = target - len(preferred)
-    return preferred + fallback[:need], fallback[need:]
+    def has_room(a):
+        return not capped or counts.get(a.get(category_key), 0) < per_category
+
+    published, unused = [], []
+
+    def admit(a):
+        published.append(a)
+        if capped:
+            key = a.get(category_key)
+            counts[key] = counts.get(key, 0) + 1
+
+    for a in preferred:
+        (admit if has_room(a) else unused.append)(a)
+
+    for a in fallback:
+        if len(published) >= target or not has_room(a):
+            unused.append(a)
+        else:
+            admit(a)
+
+    return published, unused
 
 
 # ── CLI ────────────────────────────────────────────────────────────────────────

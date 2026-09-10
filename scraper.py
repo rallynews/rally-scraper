@@ -1304,10 +1304,24 @@ def scrape_news():
                     category = categorize_article(title, summary)
                     print(f"    ✓ Categorized as: {category}")
 
-                    # Cap: no more than MAX_PER_CATEGORY stories in any one category
-                    category_count = sum(1 for a in new_articles if a['category'] == category)
-                    if category_count >= MAX_PER_CATEGORY:
-                        print(f"    ✗ Already have {MAX_PER_CATEGORY} '{category}' stories this run")
+                    # Cap: no more than MAX_PER_CATEGORY stories in any one
+                    # category. Counted within the candidate's own tier, not
+                    # across everything held. Nine categories at two apiece is a
+                    # ceiling of eighteen, and the run is holding candidates from
+                    # both tiers — count them together and a handful of 6.6s can
+                    # occupy the slots the run needs for the 7.5s it is still
+                    # looking for, which is the whole thing the tiers exist to
+                    # prevent. select_for_run applies the real cap to what is
+                    # actually published.
+                    preferred = editorial_filter.is_preferred(filter_config, score)
+                    tier_peers = sum(
+                        1 for a in new_articles
+                        if a['category'] == category
+                        and editorial_filter.is_preferred(
+                            filter_config, a['positivity_score']) == preferred)
+                    if tier_peers >= MAX_PER_CATEGORY:
+                        print(f"    ✗ Already have {MAX_PER_CATEGORY} '{category}' stories "
+                              f"in this tier")
                         continue
 
                     image_url = get_article_image(entry, used_images)
@@ -1387,7 +1401,8 @@ def scrape_news():
     # the run has to reach depends on how many strong ones it found.
     qualified_count = len(new_articles)
     new_articles, unused = editorial_filter.select_for_run(
-        filter_config, new_articles, MIN_NEW_ARTICLES)
+        filter_config, new_articles, MIN_NEW_ARTICLES,
+        category_key='category', per_category=MAX_PER_CATEGORY)
 
     report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents,
                          continents, filter_config, unused)
