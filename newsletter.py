@@ -3,10 +3,10 @@
 Bright Spots — daily newsletter compiler & sender for Rally News.
 
 Philosophy: AI-compiled, NOT AI-generated. Real, human-written journalism that
-the scraper surfaced is poured into a fixed template. An LLM writes only three
-small pieces of copy: the one-paragraph intro, the three category lead-in labels,
-and the closing sign-off line. Everything else is real article titles, summaries,
-and the scraper's Rallying Cry / On Balance text.
+the scraper surfaced is poured into a fixed template. An LLM writes only two
+small pieces of copy: the one-paragraph intro and the three category lead-in
+labels. Everything else is real article titles, summaries, and the scraper's
+Rallying Cry / On Balance text.
 
 Data source: the LIVE rally.news API (news.php / rallying-cry.php / balance.php),
 NOT the committed JSON files in the repo (those are frozen snapshots).
@@ -60,6 +60,7 @@ RULE = "#E5E5E5"
 BOX_BG = "#EDF1ED"           # light green-grey, Rallying Cry box only
 LOGO_URL = "https://rally.news/images/icons/brightspots.png"
 HOME_URL = "https://rally.news/"
+APP_URL = "https://play.google.com/store/apps/details?id=com.rallynews.rallynews"
 FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
 SERIF = "Georgia,'Times New Roman',serif"
 INCLUDE_FEATURED_IMAGE = False   # flip to True if you ever want the lead image
@@ -362,18 +363,6 @@ def make_labels(more):
         return [fallback[i % 3] for i in range(len(more))]
 
 
-def make_signoff():
-    try:
-        return ai(
-            "Write one short, warm closing line (max 18 words) for a positive-news email, "
-            "reminding the reader to stay positive and have a good day. No emojis.",
-            max_tokens=60, temperature=0.8,
-        )
-    except Exception as e:
-        print(f"[warn] signoff AI failed: {e}", file=sys.stderr)
-        return "Carry a little of this with you — stay positive, and have a wonderful day."
-
-
 # ─────────────────────────────────────────────────────────────────────────────
 # HTML assembly (pure function — easy to preview/test)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -383,7 +372,7 @@ def make_signoff():
 #   dm-g  → green accent colour     light: #5A775E  dark: #90C296
 #   dm-b  → Rallying Cry box bg     light: #EDF1ED  dark: #1E3020
 #   dm-r  → horizontal rule border  light: #E5E5E5  dark: #3A3A3A
-def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls=None):
+def build_html(featured, more, labels, intro, cry, balance, url_to_article, used_urls=None):
     today = datetime.date.today().strftime("%A, %B %-d, %Y")
 
     f_title = clean(featured.get("title", ""))
@@ -511,9 +500,13 @@ def build_html(featured, more, labels, intro, cry, balance, signoff, url_to_arti
   <!-- On Balance -->
   {balance_block}
 
-  <!-- Sign-off -->
+  <!-- App promo -->
   <tr><td class="dm-r" style="padding:8px 0 0;border-top:1px solid {RULE};"></td></tr>
-  <tr><td align="center" class="dm-t" style="padding:22px 0 6px;font:italic 16px/1.5 {SERIF};color:{TEXT};">{esc(signoff)}</td></tr>
+  <tr><td align="center" class="dm-t" style="padding:22px 0 6px;font:italic 16px/1.5 {SERIF};color:{TEXT};">
+    Want more good news?
+    <a href="{APP_URL}" class="dm-g" style="color:{RALLY_GREEN};text-decoration:underline;">Download the Rally News app</a>
+    to stay even happier every day.
+  </td></tr>
 
   <!-- AI transparency note -->
   <tr><td class="dm-m dm-r" style="padding:20px 0 0;border-top:1px solid {RULE};font:13px/1.6 {FONT};color:{MUTED};">
@@ -591,7 +584,6 @@ def main():
 
     intro = make_intro([featured] + more)
     labels = make_labels(more)
-    signoff = make_signoff()
 
     # Only exclude the featured article from the Rallying Cry bullet list —
     # it has the most prominent placement (headline + summary + link), so
@@ -600,7 +592,7 @@ def main():
     used_urls = {featured.get("url")} if featured.get("url") else set()
 
     subject = build_subject(featured)
-    html_out = build_html(featured, more, labels, intro, cry, balance, signoff, url_to_article, used_urls)
+    html_out = build_html(featured, more, labels, intro, cry, balance, url_to_article, used_urls)
 
     if DRY_RUN:
         with open("newsletter_preview.html", "w", encoding="utf-8") as f:
