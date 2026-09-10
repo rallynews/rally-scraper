@@ -3,6 +3,21 @@ name: Run Rally News Scraper
 on:
   # Triggered externally every hour by cron-jobs.org via GitHub API
   workflow_dispatch:
+    inputs:
+      filter_version:
+        # Which set of filter rules to judge stories by. Blank — which is what
+        # an unattended dispatch sends, since it sends no inputs at all — means
+        # the version deployed in Rally Studio, and that is what every scheduled
+        # run uses.
+        #
+        # Naming a version here runs against that one instead, so a draft can be
+        # tried on real feeds before anyone deploys it. Such a run publishes what
+        # it finds like any other, but it does NOT update filter.lock.json: the
+        # lockfile is the fallback every future run reaches for when the API is
+        # unreachable, and a draft has no business becoming that.
+        description: 'Filter version ID to run against (blank = the deployed one)'
+        required: false
+        type: string
 
   # Runs on push to main (for testing)
   push:
@@ -33,9 +48,15 @@ jobs:
           NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
           # Read-only key for the admin-managed source directory
-          # (api/sources.php). Deliberately NOT the same value as NEWS_API_KEY:
-          # that one can write articles, this one can only read the list.
+          # (api/sources.php) and the editorial filter (api/filter.php).
+          # Deliberately NOT the same value as NEWS_API_KEY: that one can write
+          # articles, these can only read configuration.
           SOURCES_API_KEY: ${{ secrets.SOURCES_API_KEY }}
+          # Empty on every scheduled run, which is how the scraper knows to ask
+          # for the deployed filter version. See the workflow_dispatch input.
+          # Read through github.event rather than the inputs context so the same
+          # expression is valid on the push trigger, where there are no inputs.
+          FILTER_VERSION_ID: ${{ github.event.inputs.filter_version }}
         run: |
           python scraper.py
       
@@ -47,9 +68,13 @@ jobs:
       - name: Commit and push changes
         run: |
           # The lockfiles are the scraper's fallback copies of the source list
-          # and the editorial filter. Committing them keeps every change an
-          # admin makes visible in git history — the audit trail that moving
-          # those out of the code would otherwise cost.
+          # and the deployed editorial filter. Committing them keeps every
+          # change an admin makes visible in git history — the audit trail that
+          # moving those out of the code would otherwise cost, and, for the
+          # filter, a record of which version was live for which runs.
+          #
+          # A run pointed at an undeployed filter version writes no lockfile at
+          # all, so a dry run against a draft leaves nothing here to commit.
           #
           # They are only written once the scraper has successfully read the
           # dashboard, so on a runner that has no SOURCES_API_KEY yet — or any

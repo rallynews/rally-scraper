@@ -50,58 +50,21 @@ FALLBACK - All articles that don't match other categories
 # AI FILTERING CRITERIA
 # ========================================
 
-## What Makes a Positive News Story?
-
-A positive news story focuses primarily on **improvements to society** in one or more areas:
-- Climate
-- Entertainment  
-- AI & Science & Technology
-- Arts & Culture
-- Business & Finance
-- Politics
-
-## Key Requirements
-
-The article **MUST** have a **clear idea for improvement**. It doesn't need to be purely positive, but must show:
-
-- Progress toward a solution
-- Cooperation or agreements
-- Breakthroughs or innovations
-- New openings or launches
-- Reforms or policy improvements
-- Aid, protection, or rescue efforts
-- Steps forward (even small ones)
-- Deals or compromises reached
-
-## Heavy Topics Can Be Positive
-
-Even articles about difficult subjects (war, strikes, protests) qualify if they show **forward movement**:
-
-✅ "Russia and Ukraine Agree to Three-Day Ceasefire" - Progress toward peace
-✅ "Writers Guild reaches deal, ending strike" - Resolution achieved  
-✅ "New govt in Hungary pledges democratic reforms" - Democratic progress
-✅ "ASEAN leaders adopt measures to ease economic pain" - Proactive solutions
-
-## What to REJECT
-
-❌ Pure crisis/disaster with no solutions
-❌ Negative events with no improvement angle
-❌ Escalating conflicts with no progress
-❌ Stories about fears, warnings, threats with no action taken
-
-## Examples of Positive Angles
-
-- "Rent freeze approved" → Housing affordability progress
-- "Subway opens in LA" → Infrastructure improvement  
-- "Scientists closer to HIV vaccine" → Medical advancement
-- "France sends ambassador back to Algeria" → Diplomatic thaw
-- "AI banned from Oscars" → Protection of human creativity
-- "€1 meals tested at French university" → Educational equity
-- "Palestine Marathon held despite conflict" → Resilience and normalcy
-
-## Guiding Principle
-
-Ask: **"Does this show society moving forward in some way?"**
-
-If YES → It's positive news for Rally.
-If NO → Reject it.
+# The AI half of the filter is no longer written down here. It lives in Rally
+# Studio, under News > Filters, as a set of filter rules that can be versioned
+# and deployed — see "Changing what counts as good news" in README.md, and
+# editorial_filter.py for the code that reads it.
+#
+# In short: the model is given a job (the Prompt), a person to be while it does
+# it (the Personality), and a list of statements about the story (the Scoring
+# Questions). It rates every statement from 1 (disagree completely) to 10 (agree
+# completely) in that person's voice, and the AVERAGE of those answers is the
+# story's score. A story is published when the average reaches the cutoff and
+# fewer than `veto_count` answers came back as a 1; across a run, at most
+# `weak_quota` percent of what is published may score below `strong_score`.
+#
+#   python editorial_filter.py --show   # the exact prompt a run would use
+#
+# Nothing in this file is read by the scraper. The keyword lists above are kept
+# as a record of the pre-AI filter and as a starting point for anyone tuning the
+# prompt; edit the deployed filter version in Studio, not this.

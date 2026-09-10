@@ -512,15 +512,20 @@ def generate_rallying_cry_rss(entry):
     print("✓ rallyingcries.rss updated")
 
 def score_article(title, summary, filter_config):
-    """Score a story 1-10 against the dashboard's editorial filter.
+    """Score a story against the filter version deployed in Rally Studio.
 
-    Replaces the old YES/NO question rather than adding a second one, so a run
-    still makes one AI call per candidate. Returns None when the model gives no
-    usable answer — the caller treats that as a rejection, because publishing on
-    an unparseable reply would mean publishing unjudged.
+    Still one AI call per candidate: the model answers every scoring question in
+    a single reply, and the average of those answers is the story's score.
+
+    Returns (average, published, why_not). The average is None when the model
+    gave no usable answer — the caller treats that as a rejection, because
+    publishing on an unparseable reply would mean publishing unjudged.
     """
     prompt = editorial_filter.build_prompt(filter_config, title, summary)
-    return editorial_filter.parse_score(call_ai(prompt))
+    scores = editorial_filter.parse_scores(call_ai(prompt), len(filter_config['questions']))
+    if scores is None:
+        return None, False, 'no usable answer'
+    return editorial_filter.evaluate(filter_config, scores)
 
 def is_duplicate_topic(new_title, new_summary, recent_articles):
     """Check if this article is about the same topic as recent articles"""
@@ -981,15 +986,17 @@ def load_source_directory():
     return feeds, set(feeds), continents, True
 
 
-def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents):
+def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents,
+                         continents, filter_config, quota_dropped=()):
     """Say whether the run met its per-run minimum, and what it would have taken.
 
     The scraper has always aimed for MIN_NEW_ARTICLES stories per run and full
     continent coverage, stopping early only when the feeds run dry or the clock
-    runs out. Now that the cutoff is adjustable, a short run is most often the
-    cutoff biting rather than the feeds being quiet — so when the target is
-    missed this reports the score that would have met it, instead of leaving
-    someone to guess which of the two it was.
+    runs out. Now that the filter is adjustable, a short run is most often the
+    filter biting rather than the feeds being quiet — so when the target is
+    missed this reports what would have met it, instead of leaving someone to
+    guess which of the three it was: the cutoff, the run's quota on weak
+    stories, or feeds with nothing in them.
     """
     found = len(new_articles)
     covered = {continents.get(a['source']) for a in new_articles}
@@ -997,6 +1004,19 @@ def report_run_shortfall(new_articles, rejected_scores, cutoff, required_contine
     missing = sorted(required_continents - covered)
 
     print(f"\n{'═' * 60}")
+    if quota_dropped:
+        # The quota is a share of what a run publishes, so a small run can be
+        # unable to afford a story a larger one would have kept. Worth naming:
+        # from the outside it looks like the story was simply never found.
+        print(f"Quota: {len(quota_dropped)} "
+              f"{'story' if len(quota_dropped) == 1 else 'stories'} cleared the {cutoff} "
+              f"cutoff but {'was' if len(quota_dropped) == 1 else 'were'} "
+              f"dropped to keep weak stories under {filter_config['weak_quota']}% of the run "
+              f"(scored {', '.join(str(a['positivity_score']) for a in quota_dropped)}, "
+              f"all under {filter_config['strong_score']})")
+        if not found:
+            print("  Every story this run found was a weak one, so none of them could be "
+                  "published. Raise the quota in Studio if that is not what you want.")
     if found >= MIN_NEW_ARTICLES and not missing:
         print(f"Run met its target: {found} stories, all "
               f"{len(required_continents)} continents covered")
@@ -1008,18 +1028,22 @@ def report_run_shortfall(new_articles, rejected_scores, cutoff, required_contine
         print(f"Run finished short: {found}/{MIN_NEW_ARTICLES} stories"
               + (f", and nothing from {', '.join(missing)}" if missing else ""))
 
-        # How many more would have qualified at each lower cutoff.
-        for lower in range(cutoff - 1, editorial_filter.CUTOFF_MIN - 1, -1):
+        # How many more would have qualified at each lower cutoff. Half a point
+        # at a time: the score is an average of ten answers, so the interesting
+        # gaps are smaller than a whole point.
+        lower = round(cutoff - 0.5, 1)
+        while lower >= editorial_filter.CUTOFF_MIN:
             extra = sum(1 for s in rejected_scores if s >= lower)
             if extra:
                 print(f"  A cutoff of {lower} would have added up to {extra} more "
                       f"({found + extra} total)")
+            lower = round(lower - 0.5, 1)
         if rejected_scores:
-            near = sum(1 for s in rejected_scores if s == cutoff - 1)
-            print(f"  {len(rejected_scores)} stories were turned away by the cutoff"
-                  + (f", {near} of them one point short" if near else ""))
-        else:
-            print("  Nothing was turned away by the cutoff — the feeds simply "
+            near = sum(1 for s in rejected_scores if cutoff - 0.5 <= s < cutoff)
+            print(f"  {len(rejected_scores)} stories were turned away by the filter"
+                  + (f", {near} of them within half a point of the cutoff" if near else ""))
+        elif not quota_dropped:
+            print("  Nothing was turned away by the filter — the feeds simply "
                   "had little to offer this run")
     print(f"{'═' * 60}")
 
@@ -1037,14 +1061,21 @@ def scrape_news():
     # only a last resort. See load_source_directory().
     feeds, allowed_sources, continents, validate_feeds = load_source_directory()
 
-    # The editorial judgement, also owned by the dashboard. Its built-in
-    # defaults reproduce the prompt that used to be hardcoded here, so the
-    # fallback path behaves the way this file always did.
+    # The editorial judgement, also owned by the dashboard — specifically, by
+    # whichever filter version is deployed in Rally Studio. Its built-in defaults
+    # reproduce the deployed wording, so the fallback path judges stories the
+    # same way when the API is unreachable.
     print(f"\n{'-' * 60}")
     filter_config, filter_origin = editorial_filter.load_filter()
     cutoff = filter_config['min_score']
-    print(f"Editorial filter from {filter_origin}: publish at {cutoff}+ "
-          f"({len(filter_config.get('examples') or [])} examples)")
+    print(f"Editorial filter from {filter_origin}: “{filter_config.get('version_name')}”"
+          + (f" (version {filter_config['version_id']})" if filter_config.get('version_id') else ""))
+    print(f"  Publish at {cutoff}+ on the average of "
+          f"{len(filter_config['questions'])} scoring questions")
+    print(f"  {filter_config['veto_count']} answers of 1 fail a story; at most "
+          f"{filter_config['weak_quota']}% of this run may score under "
+          f"{filter_config['strong_score']}")
+    print(f"  {len(filter_config.get('examples') or [])} worked examples")
     print(f"{'-' * 60}")
 
     # Continents we expect to cover — every continent that has a live feed.
@@ -1190,7 +1221,7 @@ def scrape_news():
                             continue
 
                     print(f"  Checking: {title[:60]}...")
-                    score = score_article(title, summary, filter_config)
+                    score, published, why_not = score_article(title, summary, filter_config)
                     if score is None:
                         # No usable answer from the model. Rejecting is the safe
                         # direction: publishing here would mean publishing a
@@ -1198,13 +1229,15 @@ def scrape_news():
                         print(f"    ✗ No score returned — skipping")
                         rejected_articles.append({'title': title, 'summary': summary[:300]})
                         continue
-                    if score < cutoff:
-                        print(f"    ✗ Scored {score}/10, below the {cutoff} cutoff")
+                    if not published:
+                        print(f"    ✗ Scored {score}/10 — {why_not}")
                         rejected_articles.append({'title': title, 'summary': summary[:300]})
                         rejected_scores.append(score)
                         continue
 
-                    print(f"    ✓ Scored {score}/10")
+                    print(f"    ✓ Scored {score}/10"
+                          + (" (weak — counts against the run's quota)"
+                             if editorial_filter.is_weak(filter_config, score) else ""))
 
                     combined_articles = new_articles + existing_articles
                     if is_duplicate_topic(title, summary, combined_articles):
@@ -1267,8 +1300,9 @@ def scrape_news():
                         'topics': metadata['topics'],
                         'countries': metadata['countries'],
                         'people': metadata['people'],
-                        # Internal only: stored for the dashboard, never served
-                        # to readers by any public endpoint.
+                        # Internal only: the average of the filter's scoring
+                        # questions, stored for the dashboard and never served to
+                        # readers by any public endpoint.
                         'positivity_score': score,
                     }
 
@@ -1288,7 +1322,13 @@ def scrape_news():
             print(f"\nNo new entries found in pass {pass_num}. Feeds exhausted.")
             break
 
-    report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents, continents)
+    # The run-level half of the filter: a run may only be so full of stories
+    # that scraped past the cutoff. It has to wait until the run is over,
+    # because the share depends on how many stories the run ended up with.
+    new_articles, quota_dropped = editorial_filter.apply_weak_quota(filter_config, new_articles)
+
+    report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents,
+                         continents, filter_config, quota_dropped)
 
     # Save new articles to database via API (best-effort)
     if api_available and new_articles:
