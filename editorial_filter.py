@@ -11,16 +11,30 @@ The model is given a job (``prompt``), a person to be while it does it
 (``personality``), and a list of statements about the story (``questions``). It
 rates every statement from 1 (disagree completely) to 10 (agree completely), in
 that person's voice, and the AVERAGE of those answers is the story's score. A
-story is published when both hold:
+story QUALIFIES when both hold:
 
 * the average is at least ``min_score``, and
 * fewer than ``veto_count`` statements came back as a 1.
 
-Two more thresholds are about the run rather than the story: at most
-``weak_quota`` percent of the stories a run publishes may score below
-``strong_score``. Only the caller can enforce that — it depends on the rest of
-the run — so :func:`apply_weak_quota` is here and ``scraper.py`` applies it once
-the run is done.
+Qualifying is not the same as being published. A run is filled in two tiers,
+best first, by :func:`select_for_run`:
+
+1. Every qualifying story scoring ``strong_score`` or above goes in, with no
+   cap. Find twenty at 7.5+ and all twenty are published, and nothing from
+   below is used at all.
+2. Only if that leaves the run short of ``target`` does it top up, highest score
+   first, from the stories between ``min_score`` and ``strong_score`` — and it
+   stops the moment the target is met. That band is a shortfall filler, never a
+   bulk source.
+
+A run that ends up short still publishes what it has. A run that qualifies
+nothing publishes nothing and is reported as a blank scrape, which Rally Studio
+shows on the Filters page.
+
+``HARD_FLOOR`` is under all of it: a story averaging below it is never
+published, whatever a config or a stale lockfile says. The configurable cutoff
+band sits above the floor, so in normal use it never comes up — it is there so
+that a corrupted config cannot quietly put a 4 on the site.
 
 The score is INTERNAL. It is stored against the article for the dashboard and is
 absent from every public read in the API. Readers never see a number attached to
@@ -68,14 +82,19 @@ SCORE_MAX = 10
 CUTOFF_MIN = 6.0
 CUTOFF_MAX = 9.0
 
+# The line under everything. Not a setting, not part of the band above, and not
+# reachable by any cutoff this file will accept: a story averaging below 5 is
+# never published, whatever the API, a lockfile or a later change to the band
+# says. Mirrors FILTER_HARD_FLOOR in the frontend's api/_bootstrap.php.
+HARD_FLOOR = 5.0
+
 QUESTIONS_MIN = 3
 QUESTIONS_MAX = 20
 
 # Mirrors FILTER_DEFAULT_* in the frontend's api/_bootstrap.php. Kept in step so
 # the scraper behaves the same when the API is unreachable and there is no lock.
-DEFAULT_CUTOFF = 6.5
-DEFAULT_STRONG = 7.5
-DEFAULT_QUOTA = 30
+DEFAULT_CUTOFF = 6.5   # tier 2: the shortfall filler
+DEFAULT_STRONG = 7.5   # tier 1: what a run is filled with first
 DEFAULT_VETO = 2
 
 DEFAULT_PROMPT = (
@@ -167,7 +186,6 @@ DEFAULTS = {
     'questions': list(DEFAULT_QUESTIONS),
     'min_score': DEFAULT_CUTOFF,
     'strong_score': DEFAULT_STRONG,
-    'weak_quota': DEFAULT_QUOTA,
     'veto_count': DEFAULT_VETO,
     'examples': [{'headline': h, 'score': s} for h, s in DEFAULT_EXAMPLES],
 }
@@ -243,26 +261,23 @@ def validate_config(data):
             f'{len(questions)} scoring questions is more than the {QUESTIONS_MAX} allowed')
 
     cutoff = _clean_average(data.get('min_score'))
-    if cutoff is None or not (CUTOFF_MIN <= cutoff <= CUTOFF_MAX):
+    if cutoff is None or not (CUTOFF_MIN <= cutoff <= CUTOFF_MAX) or cutoff < HARD_FLOOR:
         # Refused rather than clamped: a cutoff outside the band means the config
         # is not one this scraper should be judging stories by, and quietly
-        # moving it would change what gets published without saying so.
+        # moving it would change what gets published without saying so. The floor
+        # is checked as well as the band, not instead of it — today that is
+        # redundant, and that is the point.
         raise source_directory.SourceDirectoryError(
             f'cutoff {data.get("min_score")!r} is outside the allowed '
             f'{CUTOFF_MIN}-{CUTOFF_MAX} range')
 
-    # The run-level thresholds are advisory rather than structural: a missing or
-    # silly value falls back to the default instead of failing the whole config,
-    # because a run with the wrong quota still publishes good news.
+    # The preferred score is the tier a run fills from first. A missing or silly
+    # value falls back to the default rather than failing the whole config: a run
+    # with the tiers slightly wrong still publishes good news, and refusing here
+    # would mean judging stories by the built-in defaults instead.
     strong = _clean_average(data.get('strong_score'))
-    if strong is None or strong <= cutoff:
+    if strong is None or strong <= cutoff or strong < HARD_FLOOR:
         strong = max(cutoff, DEFAULT_STRONG)
-
-    try:
-        quota = int(round(float(data.get('weak_quota'))))
-    except (TypeError, ValueError):
-        quota = DEFAULT_QUOTA
-    quota = min(max(quota, 0), 100)
 
     veto = _clean_score(data.get('veto_count')) or DEFAULT_VETO
 
@@ -284,7 +299,6 @@ def validate_config(data):
         'questions': questions,
         'min_score': cutoff,
         'strong_score': strong,
-        'weak_quota': quota,
         'veto_count': veto,
         'examples': examples,
     }
@@ -469,13 +483,18 @@ def average_of(scores):
 
 
 def evaluate(config, scores):
-    """(average, published, why_not) for one story's answers.
+    """(average, qualified, why_not) for one story's answers.
 
-    Two ways to fail, and the veto comes first because it is the more specific
-    one: a story a reader completely disagrees with on two counts is not good
-    news however well it did on the other eight.
+    Three ways to fail. The floor comes first because nothing overrides it, then
+    the veto, because it is the more specific of the remaining two: a story a
+    reader completely disagrees with on two counts is not good news however well
+    it did on the other eight.
+
+    Qualifying is not the same as being published — see :func:`select_for_run`.
     """
     average = average_of(scores)
+    if average < HARD_FLOOR:
+        return average, False, f"below the {HARD_FLOOR} floor"
     ones = sum(1 for s in scores if s == SCORE_MIN)
     if ones >= config['veto_count']:
         return average, False, f"{ones} answers of {SCORE_MIN}"
@@ -484,47 +503,41 @@ def evaluate(config, scores):
     return average, True, ''
 
 
-def is_weak(config, average):
-    """A published story that only just cleared the bar. Rationed by the quota."""
-    return average < config['strong_score']
+def is_preferred(config, average):
+    """Tier 1: a story good enough to go in whatever else the run finds."""
+    return average >= config['strong_score']
 
 
-def apply_weak_quota(config, articles, score_key='positivity_score'):
-    """Hold a run to its share of stories that only just cleared the cutoff.
+def select_for_run(config, articles, target, score_key='positivity_score'):
+    """Choose what a run actually publishes, best first.
 
-    At most ``weak_quota`` percent of what a run publishes may score below
-    ``strong_score``. Enforced at the end of the run rather than as stories are
-    found: the share depends on how many stories the run ends up with, so
-    deciding early would either turn away a story a later one would have paid
-    for, or admit one the run never grows big enough to afford.
+    Tier 1 is every qualifying story at ``strong_score`` or above, with no cap:
+    if a run finds twenty of them it publishes twenty and takes nothing from
+    below. Tier 2 is only reached for when tier 1 leaves the run short of
+    ``target``, and then only as far as filling it — the weaker band tops a run
+    up, it never bulks one out.
 
-    Returns (kept, dropped). Dropped stories are the lowest-scoring weak ones —
-    they cleared the cutoff, so the only thing separating them is the score.
+    Returns (published, unused). Unused stories qualified but were not needed;
+    they are the lowest-scoring of the fallback band, and they are simply not
+    published this run.
 
-    Note the quota is a hard share, not a preference: a run where every story is
-    weak has no way to publish any of them and stay inside it. That is what the
-    rule says, and the run summary says so out loud when it bites. Set the quota
-    to 100 in Studio to turn it off.
+    Decided at the end of the run rather than as stories are found, because how
+    far down the run has to reach depends on how many strong ones it ends up
+    with — a story turned away early could be one a thinner run needed.
+
+    A run that ends up short still publishes what it has. Only a run with
+    nothing at all publishes nothing, and that is a blank scrape.
     """
-    quota = config.get('weak_quota', DEFAULT_QUOTA)
-    if quota >= 100 or not articles:
-        return list(articles), []
+    preferred = [a for a in articles if is_preferred(config, a[score_key])]
+    fallback  = sorted((a for a in articles if not is_preferred(config, a[score_key])),
+                       key=lambda a: a[score_key], reverse=True)
 
-    weak = sorted((a for a in articles if is_weak(config, a[score_key])),
-                  key=lambda a: a[score_key])
-    if not weak:
-        return list(articles), []
+    if len(preferred) >= target:
+        # Target met on the strong tier alone: take all of it, nothing below.
+        return preferred, fallback
 
-    dropped = []
-    w, t = len(weak), len(articles)
-    while w * 100 > quota * t and len(dropped) < len(weak):
-        dropped.append(weak[len(dropped)])
-        w -= 1
-        t -= 1
-
-    dropped_ids = {id(a) for a in dropped}
-    kept = [a for a in articles if id(a) not in dropped_ids]
-    return kept, dropped
+    need = target - len(preferred)
+    return preferred + fallback[:need], fallback[need:]
 
 
 # ── CLI ────────────────────────────────────────────────────────────────────────
@@ -535,10 +548,12 @@ def _main(argv):
         print(f"Filter loaded from: {origin}")
         print(f"Version: {config.get('version_name')} "
               f"(id {config.get('version_id')})")
-        print(f"Publish at {config['min_score']}+ on the average of "
+        print(f"Qualify at {config['min_score']}+ on the average of "
               f"{len(config['questions'])} questions; {config['veto_count']} answers of 1 fail a "
-              f"story; at most {config['weak_quota']}% of a run may score under "
-              f"{config['strong_score']} ({len(config.get('examples') or [])} examples)\n")
+              f"story; nothing under {HARD_FLOOR} ever")
+        print(f"A run takes every story at {config['strong_score']}+, and reaches down to "
+              f"{config['min_score']} only to fill a shortfall "
+              f"({len(config.get('examples') or [])} examples)\n")
         print('─' * 70)
         print(build_prompt(config, '<article title>', '<article summary>'))
         print('─' * 70)

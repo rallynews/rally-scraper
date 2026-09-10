@@ -167,19 +167,24 @@ of rules is written as:
 - **Examples** — headlines with scores, which teach the model the scale. An
   example's score decides whether it reads as a positive or a negative one, so
   the two lists can never contradict each other.
-- **Thresholds** — the four numbers below.
+- **Thresholds** — the three numbers below.
 
 A story's score is the **average** of its answers, to one decimal. Still one AI
 call per candidate: the model answers every question in a single reply. A story
-is published when
+**qualifies** when
 
-- the average reaches the **cutoff** (default **6.5**, adjustable between **6.0
-  and 9.0**), and
+- the average reaches the **fallback cutoff** (default **6.5**, adjustable
+  between **6.0 and 9.0**), and
 - fewer than **`veto_count`** answers came back as a 1 (default **2**: two
   complete disagreements sink a story however well it did elsewhere).
 
 A story the model gives no usable answer for is rejected too — publishing on an
 unparseable reply would mean publishing a story nothing judged.
+
+**Nothing scoring below 5.0 is ever published**, whatever the thresholds say.
+That floor is not a setting, and the cutoff band sits above it, so in normal use
+it never comes up — it is there so a corrupted config or a stale lockfile cannot
+quietly put a 4 on the site. Both this repo and the API enforce it.
 
 The cutoff band is deliberately narrower than the scale: 5 means "moderate", so
 a cutoff below 6 would publish news Rally does not consider good, and above 9 so
@@ -187,14 +192,24 @@ little qualifies that a run exhausts every feed and still falls short of
 `MIN_NEW_ARTICLES`. The scraper enforces the same band, so a stale or tampered
 value cannot widen it.
 
-The last two thresholds are about the run rather than the story: at most
-**`weak_quota`** percent of what a run publishes (default **30%**) may score
-below **`strong_score`** (default **7.5**). That is applied once the run is over
-— the share depends on how many stories the run ended up with — and the lowest
-scoring weak stories are dropped until it holds. It is a hard share, not a
-preference: a run where every story is weak cannot publish any of them and stay
-inside it. The run summary says so out loud when that happens; set the quota to
-100 in Studio to turn it off.
+#### How a run is filled
+
+Qualifying is not the same as being published. A run fills itself in two tiers,
+best first:
+
+1. **Every** qualifying story scoring the **preferred score** or above (default
+   **7.5**) goes in, with no cap. If a run finds twenty at 7.5+, it publishes
+   twenty and takes **nothing** from below.
+2. Only if that leaves the run short of `MIN_NEW_ARTICLES` does it top up,
+   highest score first, from the band between the cutoff and the preferred
+   score — and it stops the moment the target is met. That band tops a run up;
+   it never bulks one out.
+
+The tiers are applied once the run is over, because how far down the run has to
+reach depends on how many strong stories it found. A run that still comes up
+short publishes what it has. A run that qualifies **nothing** publishes nothing
+and is recorded as a **blank scrape**, which Studio reports on the Filters page
+next to the rules that produced it.
 
 **Scores are internal.** They are stored against the article for the dashboard
 and appear in no public read: not `news.php`, not the digest, not `article.php`,
@@ -224,9 +239,11 @@ The per-run rules are unchanged by any of this: a run still aims for
 source at 2 and each category at `MAX_PER_CATEGORY`, and stops early only when
 the feeds run dry or the 45-minute clock runs out. Because the filter is now the
 most likely reason a run comes up short, every run ends with a summary saying
-whether it met its target — and if not, how many stories the quota dropped and
-how many more each lower cutoff would have admitted, so the choice between "the
-filter is too tight" and "the feeds were quiet" is not a guess.
+whether it met its target — how it was filled, how many qualifying stories it
+did not need, and if it came up short, how many more each lower cutoff would
+have admitted, so the choice between "the filter is too tight" and "the feeds
+were quiet" is not a guess. Every run is reported to `api/scrape-report.php`,
+which is how Studio can tell a blank scrape from an Action that never fired.
 
 `filter.lock.json` is the fallback, committed on every run like
 `sources.lock.json`, so changes to the deployed filter stay visible in git
@@ -318,7 +335,8 @@ API isn't configured.
 - `source_directory.py` - Reads the admin-managed source list; URL safety checks
 - `sources.lock.json` - Last known good source list (auto-updated, don't edit)
 - `editorial_filter.py` - Reads the deployed filter version; builds the scoring
-  prompt, parses the answers, applies the cutoff, the veto and the run quota
+  prompt, parses the answers, applies the cutoff, the veto, the 5.0 floor and
+  the two-tier fill
 - `filter.lock.json` - Last known good deployed filter (auto-updated, don't edit)
 - `image_library.py` - Default featured images: manifest, matching, link checks
 - `fallback_images.json` - File names of the royalty-free photo library

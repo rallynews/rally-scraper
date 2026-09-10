@@ -59,9 +59,12 @@ FALLBACK - All articles that don't match other categories
 # it (the Personality), and a list of statements about the story (the Scoring
 # Questions). It rates every statement from 1 (disagree completely) to 10 (agree
 # completely) in that person's voice, and the AVERAGE of those answers is the
-# story's score. A story is published when the average reaches the cutoff and
-# fewer than `veto_count` answers came back as a 1; across a run, at most
-# `weak_quota` percent of what is published may score below `strong_score`.
+# story's score. A story qualifies when the average reaches the cutoff and fewer
+# than `veto_count` answers came back as a 1 — and nothing below 5.0 is ever
+# published, whatever the settings say. A run then takes every qualifying story
+# at `strong_score` or above, however many there are, and only reaches down to
+# the cutoff to fill a shortfall. A run that qualifies nothing publishes nothing
+# and is marked in Studio as a blank scrape.
 #
 #   python editorial_filter.py --show   # the exact prompt a run would use
 #
