@@ -417,6 +417,224 @@ def is_reachable(url, timeout=8):
     return result
 
 # ═══════════════════════════════════════════════════════════════
+# IMAGE QUALITY
+# ═══════════════════════════════════════════════════════════════
+
+# Smallest a featured image may be. A Rally card is 600px wide on a phone and
+# wider than that everywhere else, so anything under this is a logo, an avatar,
+# a WordPress thumbnail or a tracking pixel — not a photograph of the story.
+MIN_IMAGE_WIDTH = 400
+MIN_IMAGE_HEIGHT = 225
+
+# A photograph that small in bytes is a placeholder, whatever it claims to be.
+MIN_IMAGE_BYTES = 8_000
+
+# File types that are never a news photo: vector marks, favicons, and the
+# 1x1 GIFs analytics scripts leave lying around in the markup.
+_NON_PHOTO_TYPES = ('image/svg', 'image/x-icon', 'image/vnd.microsoft.icon')
+_NON_PHOTO_EXTENSIONS = ('.svg', '.ico')
+
+# Words that, as their own segment of a path or file name, mark furniture
+# rather than a photo of the story. Matched between separators so a legitimate
+# name like "logotherapy-clinic.jpg" or a path under /badges-of-honour/ is left
+# alone.
+_JUNK_IMAGE_WORDS = re.compile(
+    r'(?:^|[/_\-.])'
+    r'(?:logo|logos|favicon|sprite|sprites|spacer|blank|pixel|placeholder|'
+    r'avatar|avatars|gravatar|profile[-_]?pic|icon|icons|watermark|'
+    r'transparent|1x1|beacon)'
+    r'(?:[/_\-.]|$)',
+    re.IGNORECASE,
+)
+
+# Dimensions a CDN advertises in the URL itself: WordPress' "-300x200.jpg"
+# suffix, and the width/height query parameters most image proxies take.
+_URL_SIZE_SUFFIX = re.compile(r'-(\d{2,5})x(\d{2,5})\.(?:' + '|'.join(IMAGE_EXTENSIONS) + r')\b',
+                              re.IGNORECASE)
+_URL_WIDTH_PARAM = re.compile(r'[?&](?:w|width|max-?w(?:idth)?)=(\d{2,5})\b', re.IGNORECASE)
+
+
+def declared_dimensions(url):
+    """(width, height) the URL itself advertises, or None. No network."""
+    text = unquote(str(url or ''))
+    suffix = _URL_SIZE_SUFFIX.search(text)
+    if suffix:
+        return int(suffix.group(1)), int(suffix.group(2))
+    width = _URL_WIDTH_PARAM.search(text)
+    if width:
+        return int(width.group(1)), None
+    return None
+
+
+def looks_like_junk_image(url):
+    """True for URLs that cannot be a story photo, without asking the network."""
+    text = str(url or '')
+    if not text.startswith(('http://', 'https://')):
+        return True
+
+    path = unquote(text.split('?', 1)[0].split('#', 1)[0]).lower()
+    if path.endswith(_NON_PHOTO_EXTENSIONS):
+        return True
+    if _JUNK_IMAGE_WORDS.search(path):
+        return True
+
+    declared = declared_dimensions(text)
+    if declared:
+        width, height = declared
+        if width and width < MIN_IMAGE_WIDTH:
+            return True
+        if height and height < MIN_IMAGE_HEIGHT:
+            return True
+    return False
+
+
+def _dimensions_from_header(data):
+    """(width, height) read from the opening bytes of an image, or None.
+
+    Covers the formats news CDNs actually serve. An unrecognised format — AVIF,
+    a progressive JPEG whose size header sits past the bytes we asked for —
+    returns None, and the caller treats unknown as acceptable rather than
+    throwing away a photo it simply could not measure.
+    """
+    if len(data) < 16:
+        return None
+
+    # PNG: IHDR is always the first chunk.
+    if data.startswith(b'\x89PNG\r\n\x1a\n') and data[12:16] == b'IHDR':
+        return (int.from_bytes(data[16:20], 'big'), int.from_bytes(data[20:24], 'big'))
+
+    # GIF: logical screen descriptor, little-endian.
+    if data.startswith((b'GIF87a', b'GIF89a')):
+        return (int.from_bytes(data[6:8], 'little'), int.from_bytes(data[8:10], 'little'))
+
+    # WebP: lossy (VP8), lossless (VP8L) and extended (VP8X) each differ.
+    if data.startswith(b'RIFF') and data[8:12] == b'WEBP':
+        chunk = data[12:16]
+        if chunk == b'VP8 ' and len(data) >= 30:
+            return (int.from_bytes(data[26:28], 'little') & 0x3FFF,
+                    int.from_bytes(data[28:30], 'little') & 0x3FFF)
+        if chunk == b'VP8L' and len(data) >= 25:
+            bits = int.from_bytes(data[21:25], 'little')
+            return ((bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1)
+        if chunk == b'VP8X' and len(data) >= 30:
+            return (int.from_bytes(data[24:27], 'little') + 1,
+                    int.from_bytes(data[27:30], 'little') + 1)
+        return None
+
+    # JPEG: walk the segments to the start-of-frame, which carries the size.
+    if data.startswith(b'\xff\xd8'):
+        i = 2
+        while i + 9 < len(data):
+            if data[i] != 0xFF:
+                i += 1
+                continue
+            marker = data[i + 1]
+            if marker in (0xD8, 0x01) or 0xD0 <= marker <= 0xD7:
+                i += 2
+                continue
+            length = int.from_bytes(data[i + 2:i + 4], 'big')
+            if 0xC0 <= marker <= 0xCF and marker not in (0xC4, 0xC8, 0xCC):
+                return (int.from_bytes(data[i + 7:i + 9], 'big'),
+                        int.from_bytes(data[i + 5:i + 7], 'big'))
+            if length <= 0:
+                break
+            i += 2 + length
+    return None
+
+
+_measure_cache = {}
+
+
+def measure_image(url, timeout=8):
+    """{'bytes': n|None, 'width': w|None, 'height': h|None} for a live image.
+
+    One ranged GET of the opening bytes — enough for every header this reads —
+    so measuring a candidate costs about as much as checking it resolves.
+    Returns None if the image could not be fetched at all.
+    """
+    if not url or not str(url).startswith(('http://', 'https://')):
+        return None
+    if url in _measure_cache:
+        return _measure_cache[url]
+
+    result = None
+    try:
+        headers = dict(REQUEST_HEADERS)
+        headers['Range'] = 'bytes=0-32767'
+        resp = requests.get(url, timeout=timeout, headers=headers,
+                            allow_redirects=True, stream=True)
+        if resp.status_code < 400:
+            data = resp.raw.read(32768, decode_content=True) or b''
+            resp.close()
+
+            # Content-Length describes the slice on a 206, so it only tells us
+            # the real size when the server ignored the range and sent it all.
+            size = None
+            if resp.status_code == 200:
+                try:
+                    size = int(resp.headers.get('Content-Length') or len(data))
+                except ValueError:
+                    size = len(data)
+            elif len(data) < 32768:
+                size = len(data)
+
+            dimensions = _dimensions_from_header(data)
+            result = {
+                'bytes': size,
+                'width': dimensions[0] if dimensions else None,
+                'height': dimensions[1] if dimensions else None,
+                'content_type': resp.headers.get('Content-Type', '').lower(),
+            }
+        else:
+            resp.close()
+    except (requests.RequestException, AttributeError, ValueError):
+        result = None
+
+    _measure_cache[url] = result
+    return result
+
+
+def is_usable_image(url, timeout=8):
+    """True if the URL serves a photo good enough to feature on a story.
+
+    Reachability is only half of it: a feed or a page will happily hand over a
+    masthead logo, a 150x150 thumbnail or an analytics pixel, all of which load
+    perfectly and none of which belong on a card. Anything this rejects falls
+    through to the next candidate and, in the end, to the photo library.
+    """
+    if looks_like_junk_image(url):
+        return False
+
+    # One ranged GET answers both questions — does it load, and is it a photo —
+    # so this deliberately does not also call is_reachable(). A GET is the more
+    # permissive of the two anyway: the hosts that reject a method reject HEAD.
+    measured = measure_image(url, timeout=timeout)
+    if not measured:
+        return False
+
+    content_type = measured.get('content_type') or ''
+    if content_type.startswith(_NON_PHOTO_TYPES):
+        return False
+    # Mislabelled or missing types are tolerated, as in is_reachable(); an error
+    # page served in place of a photo is not.
+    if content_type.startswith(('text/', 'application/json')):
+        return False
+    if not content_type.startswith('image/') and not measured.get('width'):
+        # Neither the server nor the bytes say this is an image.
+        return False
+
+    size = measured.get('bytes')
+    if size is not None and size < MIN_IMAGE_BYTES:
+        return False
+
+    width, height = measured.get('width'), measured.get('height')
+    if width and width < MIN_IMAGE_WIDTH:
+        return False
+    if height and height < MIN_IMAGE_HEIGHT:
+        return False
+    return True
+
+# ═══════════════════════════════════════════════════════════════
 # MATCHING
 # ═══════════════════════════════════════════════════════════════
 
@@ -485,13 +703,20 @@ def score_filename(filename, terms):
 
 
 def pick_image(title='', summary='', topics=(), category='', countries=(),
-               used_images=(), library=None):
+               used_images=(), library=None, verify=None, verify_limit=12):
     """Best-matching library photo for an article. Returns a URL, or None.
 
     Photos in `used_images` are avoided; the caller decides that scope. The
     scraper passes the photos already used that day, so a photo is free to come
     round again on another day. If everything is taken the closest match is
     reused rather than leaving the article imageless.
+
+    `verify` is called with each candidate URL and must return True for the
+    photo to be used. The manifest is a list of file names, not a promise that
+    the bucket still holds them, so a caller that is about to publish the result
+    passes `is_reachable` here — otherwise a photo renamed or removed in R2 goes
+    out as a broken image. Checking is capped at `verify_limit` candidates so an
+    unreachable bucket costs a handful of requests rather than 204 of them.
     """
     names = list(library) if library is not None else load_library()
     if not names:
@@ -515,11 +740,26 @@ def pick_image(title='', summary='', topics=(), category='', countries=(),
         key=lambda pair: (-pair[0], tie_break(pair[1])),
     )
 
+    checked = 0
     for _, name in scored:
         url = image_url(name)
-        if url not in used:
+        if url in used:
+            continue
+        if verify is None:
+            return url
+        if checked >= verify_limit:
+            break
+        checked += 1
+        if verify(url):
             return url
 
+    if verify is not None:
+        # Every free photo that was checked failed. Saying so lets the caller
+        # skip the story rather than publish a photo known to be missing.
+        return None
+
+    # Nothing free: the closest match comes round again rather than leaving the
+    # article imageless.
     return image_url(scored[0][1])
 
 # ═══════════════════════════════════════════════════════════════
