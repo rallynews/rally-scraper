@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 52,
+  "count": 51,
   "sources": [
     {
       "source": "Aeon",
@@ -54,15 +54,6 @@
       "country": "US",
       "continent": "North America",
       "paywalled": 1,
-      "metered": 0
-    },
-    {
-      "source": "Business Day",
-      "feed_url": "https://businessday.ng/feed",
-      "website": "https://businessday.ng",
-      "country": "NG",
-      "continent": "Africa",
-      "paywalled": 0,
       "metered": 0
     },
     {
