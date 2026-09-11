@@ -269,18 +269,36 @@ only on whether those bytes parse.
 
 ## 🖼️ Featured Images
 
-Every candidate image is checked before an article is accepted — the URL from
-the feed, from `og:image`, or from the page's first `<img>` is requested and
-must actually return an image. Sources that advertise photos which no longer
-resolve (Rappler does this often, but it isn't the only one) no longer sneak a
-broken image into the database. Upscaled CDN URLs are verified too, and the
-original resolution is kept if the higher-resolution path 404s.
+Every candidate image is fetched before an article is accepted, and has to come
+back as a photograph big enough to feature. Candidates are tried in the order a
+publisher actually means them: `media:content` from the feed, then an
+enclosure, then the page's own social-card tags (`og:image`, `twitter:image`,
+`link rel=image_src`), then the largest image in the body, and only last the
+feed's `media:thumbnail`. The page's *first* `<img>` is not a candidate in its
+own right — on a news page that is the masthead.
 
-When a story has no image of its own, or all of them are dead, the scraper
+A candidate is rejected when it is:
+
+- **dead** — the request fails, 404s, or returns an error page instead of an
+  image (Rappler does this often, but it isn't the only one);
+- **not a photo** — an SVG, a favicon, or a URL whose path marks it as
+  furniture (`logo`, `sprite`, `avatar`, `pixel`, `placeholder`, …);
+- **too small** — under 400x225, measured from the image's own header bytes,
+  or under 8 KB. That is what catches the 150x150 WordPress thumbnail, the
+  1x1 tracking GIF and the publisher's mark;
+- **already used** by another story in the run.
+
+Upscaled CDN URLs are verified too, and the original resolution is kept if the
+higher-resolution path 404s.
+
+When a story has no image of its own, or all of them are rejected, the scraper
 falls back to a library of royalty-free photos in Cloudflare R2 and picks the
 one whose **file name** is closest to the story — matched against the
 headline, the AI-assigned topics, the category, the countries mentioned and
-the summary, in that order of weight.
+the summary, in that order of weight. That photo is fetched before it is used,
+since the manifest lists names that were in the bucket when it was last built;
+if nothing in the library can be fetched, the story is skipped rather than
+published with a blank space where the picture goes.
 
 A photo may be used again on a later day, but never twice on the same day — so
 a day's stories never show the same stock photo side by side, while the library
@@ -325,9 +343,32 @@ python scraper.py --repair-images --dry-run   # report only
 python scraper.py --repair-images             # replace the broken ones
 ```
 
-This writes through the API's `PATCH` handler (added in `api/news.php`, so
-re-upload that file to your host first), or straight to `news.json` when the
-API isn't configured.
+This writes through the API's `PATCH` handler, which lives in the **frontend**
+repo (`rally-frontend/api/news.php` — that is the copy deployed to rally.news;
+the one in this repo is a stale duplicate and is not served anywhere).
+
+## ✂️ Article Text
+
+RSS is not reliably plain text. Some feeds send a clean sentence, some wrap it
+in `<p>`, and the WordPress ones (BusinessDay, Premium Times) lead with the
+publisher's entire `<img srcset=...>` tag. The scraper strips tags and decodes
+entities as soon as it reads an entry, so the filter scores words rather than
+markup and the row that reaches the database is text.
+
+Where a summary was *only* markup, the article's own first paragraph is stored
+as the summary instead, since an `<img>` tag leaves nothing to read.
+
+Rows written before this existed still hold their markup, and the site is not
+the only thing that reads them — the RSS feed, the crawlable category pages and
+the meta/structured-data tags print what is stored. Clean them in place with:
+
+```bash
+python scraper.py --repair-text --dry-run     # report only
+python scraper.py --repair-text               # strip the markup
+```
+
+Rally Originals are left alone: their HTML is authored in Studio, sanitised
+there, and rendered as markup on purpose.
 
 ## 📁 Files
 

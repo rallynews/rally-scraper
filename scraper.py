@@ -4,6 +4,7 @@ Rally News Scraper - Completely Rebuilt
 Only scrapes positive news from whitelisted sources within last 48 hours
 """
 
+import html
 import re
 import requests
 import json
@@ -662,6 +663,27 @@ def contains_html(text):
     return bool(re.search(r'<[a-zA-Z][^>]*>', text or ''))
 
 
+def strip_html(text):
+    """Plain text from feed markup: tags out, entities decoded, spaces collapsed.
+
+    RSS descriptions are not plain text and are not consistent about it. Some
+    feeds send a clean sentence, some send `<p>` around it, and the WordPress
+    ones (BusinessDay, Premium Times) lead with the whole `<img srcset=...>`
+    tag. Whatever arrives, what gets stored is the words.
+
+    Entities are decoded before the tags come out, so a feed that escaped its
+    markup twice (`&lt;p&gt;`) is cleaned as markup rather than left as
+    literal angle brackets in the headline.
+    """
+    if not text:
+        return ''
+
+    plain = html.unescape(str(text))
+    if '<' in plain:
+        plain = BeautifulSoup(plain, 'html.parser').get_text(' ')
+    return re.sub(r'\s+', ' ', plain).strip()
+
+
 def extract_first_paragraph(url):
     """Extract first paragraph from article"""
     try:
@@ -707,7 +729,8 @@ def usable_image_url(img, used_images):
 
     An upscaled URL is preferred, but only if the CDN actually serves it — some
     sources 404 on the higher-resolution path — so the original is kept as a
-    fallback. A candidate that is already used, or simply dead, is rejected.
+    fallback. A candidate that is already used, dead, or too small and plain to
+    be a story photo is rejected.
     """
     if not img:
         return None
@@ -716,22 +739,58 @@ def usable_image_url(img, used_images):
     for candidate in ([upscaled, img] if upscaled != img else [img]):
         if candidate in used_images:
             continue
-        if image_library.is_reachable(candidate):
+        if image_library.is_usable_image(candidate):
             return candidate
     return None
 
 
+def page_image_candidates(soup, article_url):
+    """Image URLs worth trying from an article page, best first.
+
+    The social-card tags come first: they are the publisher's own answer to
+    "which photo is this story?". Only if the page has none of them does this
+    look at the body, and then at the biggest image on it rather than the first
+    one in the markup — the first `<img>` on a news page is almost always the
+    masthead.
+    """
+    candidates = []
+
+    def add(value):
+        if value:
+            candidates.append(urljoin(article_url, value.strip()))
+
+    for attrs in ({'property': 'og:image'}, {'property': 'og:image:secure_url'},
+                  {'name': 'twitter:image'}, {'name': 'twitter:image:src'}):
+        for tag in soup.find_all('meta', attrs=attrs):
+            add(tag.get('content'))
+
+    link = soup.find('link', rel='image_src')
+    if link:
+        add(link.get('href'))
+
+    # Body images, largest declared size first. Anything that does not say how
+    # big it is sorts last but is still tried — plenty of CMSes omit the
+    # attributes, and is_usable_image measures the file itself anyway.
+    def declared_area(tag):
+        try:
+            return int(tag.get('width') or 0) * int(tag.get('height') or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    body_images = [t for t in soup.find_all('img', src=True)
+                   if not image_library.looks_like_junk_image(
+                       urljoin(article_url, t['src'].strip()))]
+    for tag in sorted(body_images, key=declared_area, reverse=True)[:6]:
+        add(tag['src'])
+
+    return candidates
+
+
 def get_article_image(entry, used_images):
     """Extract a unique, working image URL from an article. None if there isn't one."""
-    # Try media content
-    if entry.get('media_content'):
-        img = usable_image_url(entry['media_content'][0].get('url'), used_images)
-        if img:
-            return img
-
-    # Try media thumbnail
-    if entry.get('media_thumbnail'):
-        img = usable_image_url(entry['media_thumbnail'][0].get('url'), used_images)
+    # Try media content, widest variant first (parse_feed sorts them)
+    for media in entry.get('media_content') or []:
+        img = usable_image_url(media.get('url'), used_images)
         if img:
             return img
 
@@ -743,32 +802,27 @@ def get_article_image(entry, used_images):
                 if img:
                     return img
 
-    # Fallback: fetch from page
+    # Fetch the page. Its social-card image beats a feed thumbnail, which is
+    # sized for a list and usually fails the quality check anyway, so the
+    # thumbnail is kept back as the last thing tried.
     try:
         article_url = entry.get('link', '')
-        if not article_url:
-            return None
-
-        response = requests.get(article_url, timeout=10, headers={
-            'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
-        })
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        # Try og:image
-        og_image = soup.find('meta', property='og:image')
-        if og_image and og_image.get('content'):
-            img = usable_image_url(urljoin(article_url, og_image['content']), used_images)
-            if img:
-                return img
-
-        # Try first img tag
-        img_tag = soup.find('img', src=True)
-        if img_tag:
-            img = usable_image_url(urljoin(article_url, img_tag['src']), used_images)
-            if img:
-                return img
-    except:
+        if article_url:
+            response = requests.get(article_url, timeout=10, headers={
+                'User-Agent': 'Mozilla/5.0 (compatible; RallyNewsBot/1.0)'
+            })
+            soup = BeautifulSoup(response.text, 'html.parser')
+            for candidate in page_image_candidates(soup, article_url):
+                img = usable_image_url(candidate, used_images)
+                if img:
+                    return img
+    except Exception:
         pass
+
+    if entry.get('media_thumbnail'):
+        img = usable_image_url(entry['media_thumbnail'][0].get('url'), used_images)
+        if img:
+            return img
 
     return None
 
@@ -808,6 +862,11 @@ def get_fallback_image(title, summary, category, metadata, used_today):
     Used when a story has no image of its own, or the one it has is broken.
     `used_today` is the set of library photos already taken on that article's
     day; photos used on other days are free to come round again.
+
+    The photo is fetched before it is handed back: the manifest lists file names
+    that were in the bucket when it was last built, and a name that has since
+    been renamed or removed would otherwise reach the site as a broken image —
+    exactly what the library exists to prevent.
     """
     return image_library.pick_image(
         title=title,
@@ -816,6 +875,7 @@ def get_fallback_image(title, summary, category, metadata, used_today):
         category=category,
         countries=metadata.get('countries', []),
         used_images=used_today,
+        verify=image_library.is_reachable,
     )
 
 # ═══════════════════════════════════════════════════════════════
@@ -1239,8 +1299,14 @@ def scrape_news():
                     if not is_recent(pub_date):
                         continue
 
-                    title = entry.get('title', '').strip()
-                    summary = entry.get('summary', entry.get('description', '')).strip()
+                    # Feed text is markup as often as it is prose. Clean it here,
+                    # once, so everything downstream — the filter's scoring, the
+                    # duplicate check, the metadata, the photo matching and the
+                    # row that reaches the database — works on the words alone.
+                    title = strip_html(entry.get('title', ''))
+                    raw_summary = entry.get('summary', entry.get('description', '')).strip()
+                    summary_was_markup = contains_html(raw_summary)
+                    summary = strip_html(raw_summary)
 
                     if not all([title, url]):
                         continue
@@ -1326,9 +1392,8 @@ def scrape_news():
 
                     image_url = get_article_image(entry, used_images)
 
-                    content = extract_first_paragraph(url)
-                    if not content:
-                        content = summary[:500]
+                    first_paragraph = extract_first_paragraph(url)
+                    content = strip_html(first_paragraph or summary[:500])
 
                     metadata = enrich_article_metadata(title, summary, content)
                     print(f"    ✓ Metadata: style={metadata['writing_style']}, "
@@ -1340,7 +1405,10 @@ def scrape_news():
                         image_url = get_fallback_image(
                             title, summary, category, metadata, used_fallbacks_today)
                         if not image_url:
-                            print(f"    ✗ No unique image found (fallback library empty)")
+                            # Nothing of its own, and no library photo that could
+                            # be fetched. Publishing here would put a story on the
+                            # site with a blank or broken picture.
+                            print(f"    ✗ No working image found — skipping")
                             continue
                         used_fallbacks_today.add(image_url)
                         print(f"    ✓ Default image: {image_url.rsplit('/', 1)[-1]}")
@@ -1348,10 +1416,12 @@ def scrape_news():
                     used_images.add(image_url)
 
                     display_summary = summary[:300] if summary else content[:300]
-                    if contains_html(display_summary):
-                        # Some sources (e.g. ScienceAlert) put raw HTML in their RSS
-                        # summary. Fall back to the article's first paragraph instead,
-                        # and skip the now-redundant separate content field.
+                    if summary_was_markup and first_paragraph:
+                        # Some sources (e.g. ScienceAlert, and the WordPress feeds)
+                        # put raw HTML in their RSS summary. Stripped, an <img> tag
+                        # leaves nothing worth reading, so the article's own first
+                        # paragraph stands in — and the separate content field, now
+                        # a copy of it, is dropped.
                         print(f"    ✓ Summary was HTML, using first paragraph instead")
                         display_summary = content[:300]
                         content = ''
@@ -1519,6 +1589,7 @@ def repair_broken_images(dry_run=False):
             countries=article.get('countries') or [],
             used_images=used_that_day,
             library=library,
+            verify=image_library.is_reachable,
         )
         if not replacement:
             continue
@@ -1548,9 +1619,83 @@ def repair_broken_images(dry_run=False):
     return len(updates)
 
 
+def repair_article_text(dry_run=False):
+    """Strip leftover HTML out of the title, summary and content of stored rows.
+
+    Rows written before the scraper cleaned feed text still carry it — WordPress
+    feeds in particular stored the whole `<img srcset=...>` tag as the summary.
+    The site strips markup as it renders a card, so it hides there, but the RSS
+    feed, the crawlable category pages and the social/meta tags all print what
+    the database actually holds.
+
+    Rally Originals are left alone: their HTML is written in Studio, sanitised
+    there, and rendered as markup on purpose.
+    """
+    print("═" * 60)
+    print("REPAIRING HTML IN STORED ARTICLE TEXT")
+    print("═" * 60)
+
+    api_available = bool(NEWS_API_URL and NEWS_API_KEY)
+    articles = api_get({'limit': 500}) if api_available else None
+
+    if articles is None:
+        api_available = False
+        try:
+            with open('news.json', 'r') as f:
+                articles = json.load(f)
+            print(f"Checking {len(articles)} articles from news.json")
+        except (OSError, ValueError):
+            print("No articles available to check.")
+            return 0
+    else:
+        print(f"Checking {len(articles)} articles from the database")
+
+    updates = []
+    for article in articles:
+        if str(article.get('rally_originals') or '0') in ('1', 'true', 'True'):
+            continue
+
+        fields = {}
+        for field in ('title', 'summary', 'content'):
+            current = article.get(field) or ''
+            if not contains_html(current):
+                continue
+            cleaned = strip_html(current)
+            if cleaned != current:
+                fields[field] = cleaned
+
+        if not fields:
+            continue
+
+        article.update(fields)
+        updates.append({'url': article.get('url', ''), **fields})
+        print(f"  ✗ {article.get('title', '')[:55]}")
+        print(f"    → {', '.join(sorted(fields))}")
+
+    if not updates:
+        print("\nNo stored article text contains HTML. Nothing to repair.")
+        return 0
+
+    if dry_run:
+        print(f"\nDry run: {len(updates)} articles would be cleaned.")
+        return len(updates)
+
+    if api_available:
+        updated = api_patch(updates)
+        print(f"\nCleaned {updated} of {len(updates)} articles in the database")
+        return updated
+
+    with open('news.json', 'w') as f:
+        json.dump(articles, f, indent=2, ensure_ascii=False)
+    print(f"\nCleaned {len(updates)} articles in news.json")
+    return len(updates)
+
+
 if __name__ == '__main__':
     args = sys.argv[1:]
     if '--repair-images' in args:
         repair_broken_images(dry_run='--dry-run' in args)
+    elif '--repair-text' in args:
+        repair_article_text(dry_run='--dry-run' in args)
     else:
         scrape_news()
