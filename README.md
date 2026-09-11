@@ -334,6 +334,12 @@ matches a reef story, `IMG_0042.jpg` can only ever be a random pick.
 Bucket and folder default to the values in `image_library.py` and can be
 overridden with `FALLBACK_IMAGE_BASE_URL` and `FALLBACK_IMAGE_PREFIX`.
 
+The site keeps its own copy of this manifest at
+`rally-frontend/images/fallback-images.json`, so a photo that fails to load in
+a reader's browser — one this scraper could fetch perfectly well from a server —
+is replaced client-side by the same matching. **Re-copy it whenever the manifest
+is rebuilt here**, or the site will reach for photos the bucket no longer holds.
+
 ### Repairing images already in the database
 
 Articles saved before this check existed may still hold dead URLs:
