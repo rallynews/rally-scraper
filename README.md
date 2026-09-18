@@ -8,9 +8,15 @@ Automatically scrapes positive news from 150+ trusted sources every 6 hours usin
 2. Randomly selects **10 sources** from whitelist
 3. **Mistral 7B** filters for genuinely positive stories
 4. Extracts: headline, image, first paragraph, URL
-5. **AI generates "Rallying Cry"** - one snappy positive sentence
-6. Saves to `news.json` (newest first, keeps 200 articles)
-7. Auto-commits to repo
+5. **AI writes a "Rally summary"** - two or three sentences in Rally's own
+   words. Every other text field on a scraped row belongs to the publisher, so
+   this is what the article page can show without republishing their reporting
+6. **AI generates "Rallying Cry"** - one snappy positive sentence
+7. Saves to `news.json` (newest first, keeps 200 articles)
+8. Auto-commits to repo
+
+Articles scraped before step 5 existed have no Rally summary. `backfill_rally_summary.py`
+fills them in, in gated batches — see the header of that file.
 
 ## 🚀 Setup
 
