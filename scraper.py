@@ -658,6 +658,77 @@ Respond with valid JSON only, in this exact format and nothing else:
         'people': clean_list('people'),
     }
 
+
+# Two headline words in five is ordinary overlap — the story is about what the
+# headline says it is about. Four in five means the model has handed the
+# headline back in different clothes, which is worth paying for exactly once.
+HEADLINE_ECHO_RATIO = 0.8
+RALLY_SUMMARY_MIN_CHARS = 40
+RALLY_SUMMARY_MAX_CHARS = 700
+
+
+def _significant_words(text):
+    """Lowercase words worth comparing — short ones carry no signal."""
+    return {w for w in re.findall(r"[a-z0-9]+", (text or '').lower()) if len(w) > 3}
+
+
+def restates_headline(text, title):
+    """True when the opening sentence is mostly just the headline again."""
+    title_words = _significant_words(title)
+    if len(title_words) < 4:
+        return False
+    first_sentence = re.split(r'(?<=[.!?])\s', (text or '').strip())[0]
+    shared = title_words & _significant_words(first_sentence)
+    return len(shared) >= max(4, round(len(title_words) * HEADLINE_ECHO_RATIO))
+
+
+def generate_rally_summary(title, summary, content, source):
+    """Rally's own two or three sentences about a story, in Rally's own words.
+
+    Every other text field on a scraped row belongs to the publisher: `summary`
+    is their feed's description and `content` is the opening of their piece. So
+    an article page built only from those is a near-copy of the source, which
+    loses to the source every time and is not what a publisher-friendly
+    aggregator should be publishing. This is the one field on a scraped row that
+    is Rally's, and the one an assistant can quote without quoting the publisher.
+
+    Returns '' if the model is unavailable or gives back something unusable —
+    the article page falls back to the publisher's summary in that case, which
+    is what it shows today.
+    """
+    prompt = f"""You are a news editor at Rally, a positive-news outlet that sends readers on to the publishers who did the reporting. Write Rally's own short note about the story below: two or three sentences, 40 to 70 words.
+
+Headline: {title}
+Publisher: {source}
+Their summary: {summary}
+Their opening paragraph: {content}
+
+Rules:
+- Base every statement strictly on the text above. Do not add facts, figures, names, dates or context that are not in it.
+- Do not repeat the headline back — the reader has just read it.
+- Say what actually changed, who it helps, and why it counts as good news.
+- Plain, warm and specific. No hype, no exclamation marks, no rhetorical questions.
+- Do not mention Rally, the publisher, or that this is a summary.
+
+Return only the sentences — no preamble, no quotation marks, no markdown."""
+
+    result = call_ai_long(prompt, max_tokens=200, timeout=20)
+    if not result:
+        return ''
+
+    text = re.sub(r"^```(?:\w+)?\s*|\s*```$", "", result.strip()).strip()
+    text = text.strip('"“”').strip()
+    text = re.sub(r'\s+', ' ', text)
+
+    if not (RALLY_SUMMARY_MIN_CHARS <= len(text) <= RALLY_SUMMARY_MAX_CHARS):
+        print(f"    ✗ Rally summary rejected: {len(text)} chars")
+        return ''
+    if restates_headline(text, title):
+        print(f"    ✗ Rally summary rejected: restates the headline")
+        return ''
+    return text
+
+
 def contains_html(text):
     """Detect raw HTML markup in feed text (e.g. ScienceAlert's <p> summaries)."""
     return bool(re.search(r'<[a-zA-Z][^>]*>', text or ''))
@@ -1426,12 +1497,23 @@ def scrape_news():
                         display_summary = content[:300]
                         content = ''
 
+                    # Rally's own words about the story. Written last, so it sees
+                    # the same text the article page will show.
+                    rally_summary = generate_rally_summary(
+                        title, display_summary, content, source_name)
+                    if rally_summary:
+                        print(f"    ✓ Rally summary: {rally_summary[:70]}…")
+
                     article = {
                         'title': title,
                         'source': source_name,
                         'url': url,
                         'content': content,
                         'summary': display_summary,
+                        # The only prose on a scraped row that is Rally's own.
+                        # Empty when the model was unavailable; the page falls
+                        # back to the publisher's summary.
+                        'rally_summary': rally_summary,
                         'image_url': image_url,
                         'timestamp': datetime.now().isoformat() + 'Z',
                         'category': category,
