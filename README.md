@@ -15,8 +15,14 @@ Automatically scrapes positive news from 150+ trusted sources every 6 hours usin
 7. Saves to `news.json` (newest first, keeps 200 articles)
 8. Auto-commits to repo
 
-Articles scraped before step 5 existed have no Rally summary. `backfill_rally_summary.py`
-fills them in, in gated batches — see the header of that file.
+Articles scraped before step 5 existed have no Rally summary. To fill them in,
+open **Actions → Backfill Rally summaries → Run workflow**: it asks how many to
+do, whether to write or only preview, and optionally a start date. Run it as a
+dry run first and read what it produces — each article costs a model call, and
+whether the writing is any good is a judgement nobody can automate.
+
+`backfill_rally_summary.py` is the same thing on the command line, for anyone
+who prefers it.
 
 ## 🚀 Setup
 
