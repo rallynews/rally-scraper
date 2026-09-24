@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 51,
+  "count": 39,
   "sources": [
     {
       "source": "Aeon",
@@ -8,24 +8,6 @@
       "website": "https://aeon.co",
       "country": "AU",
       "continent": "Oceania",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Africanews",
-      "feed_url": "https://www.africanews.com/feed/rss",
-      "website": "https://www.africanews.com",
-      "country": "CG",
-      "continent": "Africa",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Al Jazeera",
-      "feed_url": "https://www.aljazeera.com/xml/rss/all.xml",
-      "website": "https://www.aljazeera.com",
-      "country": "QA",
-      "continent": "Asia",
       "paywalled": 0,
       "metered": 0
     },
@@ -57,6 +39,15 @@
       "metered": 0
     },
     {
+      "source": "China Digital Times",
+      "feed_url": "https://chinadigitaltimes.net/feed/",
+      "website": "https://chinadigitaltimes.net",
+      "country": "CN",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
       "source": "CNBC",
       "feed_url": "https://www.cnbc.com/id/100003114/device/rss/rss.html",
       "website": "https://www.cnbc.com",
@@ -71,15 +62,6 @@
       "website": "https://www.dailymaverick.co.za",
       "country": "ZA",
       "continent": "Africa",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Dawn",
-      "feed_url": "https://www.dawn.com/feeds/home",
-      "website": "https://www.dawn.com",
-      "country": "PK",
-      "continent": "Asia",
       "paywalled": 0,
       "metered": 0
     },
@@ -107,15 +89,6 @@
       "website": "https://www.euronews.com",
       "country": "FR",
       "continent": "Europe",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Exclaim!",
-      "feed_url": "https://exclaim.ca/rss/news",
-      "website": "https://exclaim.ca",
-      "country": "CA",
-      "continent": "North America",
       "paywalled": 0,
       "metered": 0
     },
@@ -165,48 +138,12 @@
       "metered": 0
     },
     {
-      "source": "Kyiv Independent",
-      "feed_url": "https://kyivindependent.com/feed/rss",
-      "website": "https://kyivindependent.com",
-      "country": "UA",
-      "continent": "Europe",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
       "source": "Le Monde",
       "feed_url": "https://www.lemonde.fr/en/rss/une.xml",
       "website": "https://www.lemonde.fr",
       "country": "FR",
       "continent": "Europe",
       "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Los Angeles Times",
-      "feed_url": "https://www.latimes.com/world-nation/rss2.0.xml",
-      "website": "https://www.latimes.com",
-      "country": "US",
-      "continent": "North America",
-      "paywalled": 1,
-      "metered": 0
-    },
-    {
-      "source": "Mexico News Daily",
-      "feed_url": "https://mexiconewsdaily.com/feed/",
-      "website": "https://mexiconewsdaily.com",
-      "country": "MX",
-      "continent": "North America",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "MIT Technology Review",
-      "feed_url": "https://www.technologyreview.com/feed/",
-      "website": "https://www.technologyreview.com",
-      "country": "US",
-      "continent": "North America",
-      "paywalled": 1,
       "metered": 0
     },
     {
@@ -228,15 +165,6 @@
       "metered": 0
     },
     {
-      "source": "Newslaundry",
-      "feed_url": "https://www.newslaundry.com/stories.rss",
-      "website": "https://www.newslaundry.com",
-      "country": "IN",
-      "continent": "Asia",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
       "source": "Newsweek",
       "feed_url": "https://www.newsweek.com/rss",
       "website": "https://www.newsweek.com",
@@ -255,20 +183,11 @@
       "metered": 0
     },
     {
-      "source": "Premium Times",
-      "feed_url": "https://www.premiumtimesng.com/feed",
-      "website": "https://www.premiumtimesng.com",
-      "country": "NG",
-      "continent": "Africa",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "Rappler",
-      "feed_url": "https://www.rappler.com/feed/",
-      "website": "https://www.rappler.com",
-      "country": "PH",
-      "continent": "Asia",
+      "source": "NV",
+      "feed_url": "https://english.nv.ua/rss/all_english.xml",
+      "website": "https://english.nv.ua",
+      "country": "UA",
+      "continent": "Europe",
       "paywalled": 0,
       "metered": 0
     },
@@ -327,15 +246,6 @@
       "metered": 1
     },
     {
-      "source": "The China Digital Times",
-      "feed_url": "https://chinadigitaltimes.net/feed/",
-      "website": "https://chinadigitaltimes.net",
-      "country": "CN",
-      "continent": "Asia",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
       "source": "The Globe and Mail",
       "feed_url": "https://www.theglobeandmail.com/arc/outboundfeeds/rss/category/world/",
       "website": "https://www.theglobeandmail.com",
@@ -368,15 +278,6 @@
       "website": "https://www.japantimes.co.jp",
       "country": "JP",
       "continent": "Asia",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
-      "source": "The Moscow Times",
-      "feed_url": "https://www.themoscowtimes.com/rss/news",
-      "website": "https://www.themoscowtimes.com",
-      "country": "RU",
-      "continent": "Europe",
       "paywalled": 0,
       "metered": 0
     },
@@ -441,15 +342,6 @@
       "country": "US",
       "continent": "North America",
       "paywalled": 1,
-      "metered": 0
-    },
-    {
-      "source": "The Yucatan Times",
-      "feed_url": "https://theyucatantimes.com/feed/",
-      "website": "https://theyucatantimes.com",
-      "country": "MX",
-      "continent": "North America",
-      "paywalled": 0,
       "metered": 0
     },
     {
