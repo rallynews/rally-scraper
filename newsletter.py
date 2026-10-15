@@ -43,6 +43,8 @@ RALLYING_URL = f"{API_BASE}/rallying-cry.php"
 BALANCE_URL = f"{API_BASE}/balance.php"
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+# OpenRouter app attribution: https://openrouter.ai/docs/app-attribution
+OPENROUTER_ATTRIBUTION = {"HTTP-Referer": "https://rally.news", "X-OpenRouter-Title": "Rally"}
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
 DRY_RUN = os.environ.get("DRY_RUN", "").strip() not in ("", "0", "false", "False")
 
@@ -115,7 +117,8 @@ def ai(prompt: str, max_tokens: int = 300, temperature: float = 0.7) -> str:
     r = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                 "Content-Type": "application/json"},
+                 "Content-Type": "application/json",
+                 **OPENROUTER_ATTRIBUTION},
         json={
             "model": OR_MODEL,
             "max_tokens": max_tokens,

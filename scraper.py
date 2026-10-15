@@ -26,6 +26,11 @@ import editorial_filter
 # ═══════════════════════════════════════════════════════════════
 
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+# OpenRouter app attribution: https://openrouter.ai/docs/app-attribution
+OPENROUTER_ATTRIBUTION = {
+    'HTTP-Referer': 'https://rally.news',
+    'X-OpenRouter-Title': 'Rally',
+}
 NEWS_API_URL = os.environ.get('NEWS_API_URL')
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 
@@ -332,7 +337,8 @@ def call_ai(prompt, timeout=15):
                 'https://openrouter.ai/api/v1/chat/completions',
                 headers={
                     'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    **OPENROUTER_ATTRIBUTION,
                 },
                 json={
                     'model': model,
@@ -369,7 +375,8 @@ def call_ai_long(prompt, max_tokens=500, timeout=30):
                 'https://openrouter.ai/api/v1/chat/completions',
                 headers={
                     'Authorization': f'Bearer {OPENROUTER_API_KEY}',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    **OPENROUTER_ATTRIBUTION,
                 },
                 json={
                     'model': model,
