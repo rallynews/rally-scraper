@@ -420,6 +420,24 @@ Write ONE paragraph only. No headers, no bullet points. Be factual and direct.""
 
     return call_ai_long(prompt, max_tokens=400, timeout=30)
 
+def _rallying_cry_story(story, approved_articles):
+    """The model only hands back a title and a URL for each story it mentioned.
+    The website's source cards also show the story's photo, its publisher and a
+    line of summary, so those are copied in from the article itself here, while
+    it is still to hand. Matched by URL, then by title; unmatched stories keep
+    just what the model gave."""
+    match = next((a for a in approved_articles if a.get('url') == story.get('url')), None) \
+        or next((a for a in approved_articles if a.get('title') == story.get('title')), None)
+    if not match:
+        return story
+    return {
+        **story,
+        'source': match.get('source', ''),
+        'summary': match.get('rally_summary') or match.get('summary', ''),
+        'thumbnail': match.get('image_url', ''),
+        'category': match.get('category', ''),
+    }
+
 def generate_rallying_cry(approved_articles):
     """Create a one-sentence upbeat summary of today's positive articles."""
     if not approved_articles:
@@ -459,7 +477,7 @@ The "stories" array must contain only the 2–4 articles you actually referenced
     try:
         data = json.loads(cleaned)
         stories = [s for s in data.get('stories', []) if isinstance(s, dict) and 'title' in s]
-        return {'content': data.get('content', ''), 'stories': stories}
+        return {'content': data.get('content', ''), 'stories': [_rallying_cry_story(s, approved_articles) for s in stories]}
     except (json.JSONDecodeError, AttributeError):
         # AI returned plain text instead of JSON — use it as content directly
         if cleaned.startswith('{') or cleaned.startswith('['):
