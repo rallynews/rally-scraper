@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 39,
+  "count": 44,
   "sources": [
     {
       "source": "Aeon",
@@ -120,6 +120,24 @@
       "metered": 0
     },
     {
+      "source": "Good Good Good",
+      "feed_url": "https://www.goodgoodgood.co/articles/rss.xml",
+      "website": "https://www.goodgoodgood.co/",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Good News Networks",
+      "feed_url": "https://www.goodnewsnetwork.org/category/news/feed/",
+      "website": "https://www.goodnewsnetwork.org",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
       "source": "Grist",
       "feed_url": "https://grist.org/feed/",
       "website": "https://grist.org",
@@ -188,6 +206,24 @@
       "website": "https://english.nv.ua",
       "country": "UA",
       "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Positive News",
+      "feed_url": "https://www.positive.news/feed/",
+      "website": "https://www.positive.news/",
+      "country": "GB",
+      "continent": "Europe",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Reasons To Be Cheerful",
+      "feed_url": "https://reasonstobecheerful.world/feed/",
+      "website": "https://reasonstobecheerful.world/",
+      "country": "US",
+      "continent": "North America",
       "paywalled": 0,
       "metered": 0
     },
@@ -342,6 +378,15 @@
       "country": "US",
       "continent": "North America",
       "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Upworthy",
+      "feed_url": "https://www.upworthy.com/feed/",
+      "website": "https://upworthy.com",
+      "country": "US",
+      "continent": "North America",
+      "paywalled": 0,
       "metered": 0
     },
     {
