@@ -566,6 +566,56 @@ def select_for_run(config, articles, target, score_key='positivity_score',
     return published, unused
 
 
+def limit_paywalled(published, unused, is_paywalled, target, score_key='positivity_score',
+                    category_key=None, per_category=None):
+    """Make at least half of what a run publishes free to read.
+
+    Sam's rule: a reader who taps through should usually be able to read the
+    story. Applied after select_for_run, to the published set: while paywalled
+    stories outnumber free ones, the lowest-scoring paywalled story is set
+    aside; then, if that left the run under ``target``, free stories that
+    qualified but were not needed are brought back in, best first, within the
+    same per-category cap — and after them any paywalled story the extra free
+    ones now make room for. A run with few free stories therefore publishes
+    fewer stories rather than break the rule.
+
+    Returns (published, unused), each in the order select_for_run would give.
+    """
+    published = list(published)
+    unused = list(unused)
+    paid = lambda: [a for a in published if is_paywalled(a)]
+    free = lambda: [a for a in published if not is_paywalled(a)]
+
+    while len(paid()) > len(free()):
+        drop = min(paid(), key=lambda a: a[score_key])
+        published.remove(drop)
+        unused.append(drop)
+
+    capped = bool(category_key and per_category)
+    room = lambda a: not capped or sum(1 for p in published if p.get(category_key) == a.get(category_key)) < per_category
+
+    for a in sorted((a for a in unused if not is_paywalled(a)), key=lambda a: a[score_key], reverse=True):
+        if len(published) >= target:
+            break
+        if room(a):
+            published.append(a)
+            unused.remove(a)
+
+    # The free stories just added may make room for paywalled ones set aside
+    # above (or never needed): best first, while the run is short and stays at
+    # least half free.
+    for a in sorted((a for a in unused if is_paywalled(a)), key=lambda a: a[score_key], reverse=True):
+        if len(published) >= target or len(paid()) + 1 > len(free()):
+            break
+        if room(a):
+            published.append(a)
+            unused.remove(a)
+
+    # Order as select_for_run does: strongest first.
+    published.sort(key=lambda a: a[score_key], reverse=True)
+    return published, unused
+
+
 # ── CLI ────────────────────────────────────────────────────────────────────────
 
 def _main(argv):

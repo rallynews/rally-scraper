@@ -1,0 +1,51 @@
+name: Joyscroll games (manual run)
+
+# The same step every scrape ends with — trivia, a Joyword answer and a
+# crossword for each recent story still missing one — run on its own, to try
+# it out (dry run prints instead of saving) or to catch up after the keys were
+# first set. It never scrapes anything.
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'At most this many stories'
+        required: true
+        default: '5'
+        type: string
+      dry_run:
+        description: 'Print what would be saved instead of saving it'
+        required: false
+        default: true
+        type: boolean
+
+jobs:
+  games:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4 lxml trafilatura
+      - name: Tests
+        run: python -m unittest discover tests
+      - name: Make the games
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
+          JOYSCROLL_WORDS_API_KEY: ${{ secrets.JOYSCROLL_WORDS_API_KEY }}
+          JOYSCROLL_TRIVIA_API_KEY: ${{ secrets.JOYSCROLL_TRIVIA_API_KEY }}
+          TRIVIA_WRITER_MODEL: ${{ vars.TRIVIA_WRITER_MODEL }}
+          TRIVIA_CHECKER_MODEL: ${{ vars.TRIVIA_CHECKER_MODEL }}
+          JOYSCROLL_MAX_CALLS: ${{ vars.JOYSCROLL_MAX_CALLS }}
+          LIMIT: ${{ github.event.inputs.limit }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          case "$LIMIT" in ''|*[!0-9]*) echo "limit must be a number"; exit 1 ;; esac
+          if [ "$DRY_RUN" = "true" ]; then
+            python joyscroll_games.py --dry-run --limit "$LIMIT"
+          else
+            python joyscroll_games.py --limit "$LIMIT"
+          fi

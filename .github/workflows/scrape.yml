@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 lxml --break-system-packages
+          pip install requests beautifulsoup4 lxml trafilatura --break-system-packages
       
       - name: Run scraper
         env:
@@ -57,6 +57,17 @@ jobs:
           # Read through github.event rather than the inputs context so the same
           # expression is valid on the push trigger, where there are no inputs.
           FILTER_VERSION_ID: ${{ github.event.inputs.filter_version }}
+          # Joyscroll's games (joyscroll_games.py): each story's trivia
+          # question, Joyword answer and crossword. Two keys of their own, each
+          # writing only its own tables; without them the step is skipped and
+          # the scrape is unaffected. Models and caps are repo variables
+          # (Settings ▸ Secrets and variables ▸ Actions ▸ Variables), with
+          # defaults in the code when unset.
+          JOYSCROLL_WORDS_API_KEY: ${{ secrets.JOYSCROLL_WORDS_API_KEY }}
+          JOYSCROLL_TRIVIA_API_KEY: ${{ secrets.JOYSCROLL_TRIVIA_API_KEY }}
+          TRIVIA_WRITER_MODEL: ${{ vars.TRIVIA_WRITER_MODEL }}
+          TRIVIA_CHECKER_MODEL: ${{ vars.TRIVIA_CHECKER_MODEL }}
+          JOYSCROLL_MAX_CALLS: ${{ vars.JOYSCROLL_MAX_CALLS }}
         run: |
           python scraper.py
       

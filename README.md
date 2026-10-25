@@ -24,6 +24,72 @@ whether the writing is any good is a judgement nobody can automate.
 `backfill_rally_summary.py` is the same thing on the command line, for anyone
 who prefers it.
 
+## 🎮 Joyscroll games
+
+Every story the scraper publishes also gets three small games for **Joyscroll**,
+Rally's second app — each tied to the story, so the app can always say *Read
+the story*:
+
+- **one trivia question** (four options, or true/false about 40% of the time),
+  written from the article's text and checked by a second model before it is
+  published;
+- **one Joyword answer** — a positive 5-letter word about the story, for the
+  word-guessing game;
+- **one Crossjoy mini crossword** (5×5, or an open 4×4), built around words
+  from the story, every clue checked by having a model solve it blind.
+
+It is the last thing a scrape does (`joyscroll_games.py`, called after the
+articles are saved), and it works from the API's list of recent stories still
+missing a piece, so a story that failed in one scrape is tried again in the
+next. One that fails twice in a week is left alone; the reasons are in the
+`trivia_rejects` table (Studio will show them). **Stories from paywalled
+sources get no games**: a game's "Read the story" should lead somewhere the
+player can read.
+
+### Free to read
+
+At least half of every run's published stories must come from sources **not**
+marked paywalled in Studio ▸ Sources (`editorial_filter.limit_paywalled`). The
+search counts only stories that rule would let through toward its target,
+skips paywalled candidates while the run already holds more paywalled than
+free ones, and the final selection drops the weakest paywalled stories if it
+must. A run that can't find enough free stories publishes fewer rather than
+break the rule. Metered sources count as free.
+
+**The article's text is fetched once and kept in memory only** — never written
+to the database, a log or a file. Questions and clues are written fresh and
+link back to the source. When the page can't be read (a paywall, a consent
+wall), the question is written from the summary and opening paragraph the
+scraper already has.
+
+**Cost is capped:** at most six model calls per story and `JOYSCROLL_MAX_CALLS`
+(default 120) per run, plus a 15-minute time limit. The games' summary line in
+each scrape's log gives the calls used and what OpenRouter charged for them.
+If games are failing, the scrape itself is unaffected.
+
+### Setup (once)
+
+1. **Keys.** Make two random values (e.g. `openssl rand -hex 32`, twice). Put
+   them in the website's `api/config.php` as `JOYSCROLL_WORDS_API_KEY` and
+   `JOYSCROLL_TRIVIA_API_KEY`, and as repository secrets of the same names
+   here (Settings ▸ Secrets and variables ▸ Actions). Without them the games
+   step is skipped and says so.
+2. **The word bank.** Actions ▸ **Joyscroll word seed** ▸ Run workflow. It
+   sorts the 13,511 three-to-five-letter words of the public-domain ENABLE list
+   (`words/`) into positive / wholesome / excluded, about 136 calls in all.
+   Crosswords are filled from the bank, so run it before relying on them; it
+   is resumable, so just run it again if it stops early.
+3. **Try it.** Actions ▸ **Joyscroll games (manual run)** with *dry run* ticked
+   prints what it would save for a few recent stories without saving anything.
+
+Optional repository **variables** (not secrets): `TRIVIA_WRITER_MODEL`
+(default `openai/gpt-4o-mini`), `TRIVIA_CHECKER_MODEL` (default
+`google/gemini-2.0-flash-001` — keep it a different model family from the
+writer), `JOYSCROLL_MAX_CALLS`, `JOYSCROLL_SEED_MODEL`.
+
+Tests: `python -m unittest discover tests` (crossword fill and validation, the
+checks on what the models write, and a whole story with the models faked).
+
 ## 🚀 Setup
 
 ### Step 1: Fork This Repo
