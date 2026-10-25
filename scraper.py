@@ -1137,7 +1137,9 @@ def load_source_directory():
     maps are code, reviewed in git, and still hold four http:// addresses that
     an https-only check would reject — so those are fetched as they always were.
 
-    Returns (feeds, allowed_sources, continents, validate_feeds).
+    Returns (feeds, allowed_sources, continents, validate_feeds, paywalled) —
+    the last being the sources marked paywalled in Studio, which may make up at
+    most half of a run (see editorial_filter.limit_paywalled).
     """
     print(f"\n{'-' * 60}")
     print("Source directory")
@@ -1149,7 +1151,9 @@ def load_source_directory():
         code_feeds = {n: u for n, u in RSS_FEEDS.items() if n in WHITELISTED_SOURCES}
         print(f"  !! No dashboard list and no lockfile — falling back to the "
               f"{len(code_feeds)} sources built into scraper.py")
-        return code_feeds, set(code_feeds), dict(SOURCE_CONTINENTS), False
+        # The built-in maps carry no paywall flags, so on this last-resort
+        # path nothing is treated as paywalled.
+        return code_feeds, set(code_feeds), dict(SOURCE_CONTINENTS), False, set()
 
     feeds      = {s['source']: s['feed_url'] for s in sources}
     continents = {s['source']: s['continent'] for s in sources if s['continent']}
@@ -1159,8 +1163,9 @@ def load_source_directory():
         # the per-run coverage check, so it is worth saying out loud.
         print(f"  No continent set for: {', '.join(sorted(no_continent))}")
 
-    print(f"  Scraping {len(feeds)} sources from {origin}")
-    return feeds, set(feeds), continents, True
+    paywalled = {s['source'] for s in sources if s.get('paywalled')}
+    print(f"  Scraping {len(feeds)} sources from {origin} ({len(paywalled)} paywalled)")
+    return feeds, set(feeds), continents, True, paywalled
 
 
 def report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents,
@@ -1241,7 +1246,7 @@ def scrape_news():
 
     # Which sources this run scrapes. The dashboard decides; the maps above are
     # only a last resort. See load_source_directory().
-    feeds, allowed_sources, continents, validate_feeds = load_source_directory()
+    feeds, allowed_sources, continents, validate_feeds, paywalled_sources = load_source_directory()
 
     # The editorial judgement, also owned by the dashboard — specifically, by
     # whichever filter version is deployed in Rally Studio. Its built-in defaults
@@ -1328,6 +1333,21 @@ def scrape_news():
         return sum(1 for a in new_articles
                    if editorial_filter.is_preferred(filter_config, a['positivity_score']))
 
+    # At least half of what a run publishes must be free to read (Sam's rule;
+    # editorial_filter.limit_paywalled enforces it on the published set). So
+    # the search counts only tier-1 stories that rule would let through: every
+    # free one, and as many paywalled ones as there are free ones. Otherwise a
+    # run holding eight paywalled and seven free 7.5s would stop searching,
+    # then publish fourteen.
+    def is_paywalled(a):
+        return a.get('source') in paywalled_sources
+
+    def usable_strong():
+        strong = [a for a in new_articles
+                  if editorial_filter.is_preferred(filter_config, a['positivity_score'])]
+        free = sum(1 for a in strong if not is_paywalled(a))
+        return free + min(len(strong) - free, free)
+
     new_articles = []
     rejected_articles = []   # negative/neutral articles collected for balance.json
     rejected_scores = []     # scores of stories the cutoff turned away, for the run summary
@@ -1352,9 +1372,9 @@ def scrape_news():
         # The target is measured in tier-1 stories, not in qualifying ones.
         # Counting the fallback band here would let a handful of 6.6s end the
         # search while the feeds still had 7.5s in them — exactly backwards.
-        if strong_held() >= MIN_NEW_ARTICLES and not missing_continents:
-            print(f"\nTarget reached: {strong_held()} stories at "
-                  f"{filter_config['strong_score']}+, "
+        if usable_strong() >= MIN_NEW_ARTICLES and not missing_continents:
+            print(f"\nTarget reached: {usable_strong()} stories at "
+                  f"{filter_config['strong_score']}+ (at least half free to read), "
                   f"all {len(required_continents)} continents covered")
             break
 
@@ -1363,8 +1383,8 @@ def scrape_news():
 
         print(f"\n{'─' * 60}")
         print(f"Pass {pass_num + 1}: checking feed entries {start_idx + 1}–{end_idx}")
-        print(f"Articles found so far: {strong_held()}/{MIN_NEW_ARTICLES} at "
-              f"{filter_config['strong_score']}+"
+        print(f"Articles found so far: {usable_strong()}/{MIN_NEW_ARTICLES} at "
+              f"{filter_config['strong_score']}+ counting toward the target"
               f" ({len(new_articles) - strong_held()} more in the fallback band)")
         if missing_continents:
             print(f"Continents still needed: {', '.join(sorted(missing_continents))}")
@@ -1422,8 +1442,19 @@ def scrape_news():
                     continent = continents.get(source_name)
                     covered_now = {continents.get(a['source']) for a in new_articles}
                     fills_a_gap = continent is not None and continent not in covered_now
-                    if strong_held() >= MIN_NEW_ARTICLES and not fills_a_gap:
+                    if usable_strong() >= MIN_NEW_ARTICLES and not fills_a_gap:
                         continue
+
+                    # Paywalled stories can be at most half of the run. While the
+                    # run already holds more paywalled stories than free ones,
+                    # another paywalled one could not be published anyway, so it
+                    # is not worth the scoring and enrichment calls.
+                    if source_name in paywalled_sources:
+                        paid = sum(1 for a in new_articles if is_paywalled(a))
+                        if paid > len(new_articles) - paid:
+                            print(f"    ✗ Paywalled, and the run already holds {paid} paywalled "
+                                  f"to {len(new_articles) - paid} free")
+                            continue
 
                     print(f"  Checking: {title[:60]}...")
                     score, qualified, why_not = score_article(title, summary, filter_config)
@@ -1555,7 +1586,7 @@ def scrape_news():
                     }
 
                     new_articles.append(article)
-                    print(f"    ✓ Added ({strong_held()}/{MIN_NEW_ARTICLES} at "
+                    print(f"    ✓ Added ({usable_strong()}/{MIN_NEW_ARTICLES} at "
                           f"{filter_config['strong_score']}+, "
                           f"{len(new_articles)} held in total)")
 
@@ -1581,6 +1612,12 @@ def scrape_news():
     new_articles, unused = editorial_filter.select_for_run(
         filter_config, new_articles, MIN_NEW_ARTICLES,
         category_key='category', per_category=MAX_PER_CATEGORY)
+    new_articles, unused = editorial_filter.limit_paywalled(
+        new_articles, unused, is_paywalled, MIN_NEW_ARTICLES,
+        category_key='category', per_category=MAX_PER_CATEGORY)
+    paid_published = sum(1 for a in new_articles if is_paywalled(a))
+    print(f"\nPublishing {len(new_articles)}: {len(new_articles) - paid_published} free to read, "
+          f"{paid_published} paywalled")
 
     report_run_shortfall(new_articles, rejected_scores, cutoff, required_continents,
                          continents, filter_config, unused)

@@ -12,8 +12,10 @@ Runs at the end of every scrape (scraper.py) and by hand:
     python joyscroll_games.py --limit 3    # at most three stories
 
 What it works from is the API's own list of recent stories still missing a
-piece (trivia.php?action=pending), so a story that failed one hour is tried
-again the next, and a story that fails twice in a week is left alone.
+piece (trivia.php?action=pending), so a story that failed in one scrape is
+tried again in the next, and a story that fails twice in a week is left alone.
+Stories from paywalled sources are never on that list: a game should lead to a
+story the player can actually read.
 
 Per story, at most these model calls (MAX_CALLS_PER_RUN caps the run):
   1. writer   — the trivia question, three Joyword candidates, and a few short
@@ -106,6 +108,9 @@ class Budget:
         self.max_calls = max_calls
         self.calls = 0
         self.deadline = time.time() + seconds
+        # What OpenRouter says the calls cost, in US dollars — the real figure
+        # for the log's summary line, not an estimate.
+        self.cost = 0.0
 
     def can_call(self, n=1):
         return self.calls + n <= self.max_calls and time.time() < self.deadline
@@ -154,13 +159,21 @@ def call_json(model, prompt, budget, max_tokens=900, timeout=45):
                 'max_tokens': max_tokens,
                 'temperature': 0.4,
                 'response_format': {'type': 'json_object'},
+                # Ask OpenRouter to report each call's cost, so a run can say
+                # what it spent.
+                'usage': {'include': True},
             },
             timeout=timeout,
         )
         if resp.status_code != 200:
             print(f"      ✗ {model}: {resp.status_code} {resp.text[:160]}")
             return None
-        return parse_json_reply(resp.json()['choices'][0]['message']['content'])
+        data = resp.json()
+        try:
+            budget.cost += float((data.get('usage') or {}).get('cost') or 0)
+        except (TypeError, ValueError):
+            pass
+        return parse_json_reply(data['choices'][0]['message']['content'])
     except Exception as e:
         print(f"      ✗ {model}: {type(e).__name__}: {e}")
         return None
@@ -652,8 +665,8 @@ def run(dry_run=False, limit=None):
             break
         done += 1
     print(f"\n  Joyscroll games: {done} stories worked, {budget.calls} model calls "
-          f"(cap {budget.max_calls})")
-    return {'stories': done, 'calls': budget.calls}
+          f"(cap {budget.max_calls}), ${budget.cost:.4f}")
+    return {'stories': done, 'calls': budget.calls, 'cost': budget.cost}
 
 
 if __name__ == '__main__':

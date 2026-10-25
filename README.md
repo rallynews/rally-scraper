@@ -40,9 +40,21 @@ the story*:
 
 It is the last thing a scrape does (`joyscroll_games.py`, called after the
 articles are saved), and it works from the API's list of recent stories still
-missing a piece, so a story that failed one hour is tried again the next. One
-that fails twice in a week is left alone; the reasons are in the
-`trivia_rejects` table (Studio will show them).
+missing a piece, so a story that failed in one scrape is tried again in the
+next. One that fails twice in a week is left alone; the reasons are in the
+`trivia_rejects` table (Studio will show them). **Stories from paywalled
+sources get no games**: a game's "Read the story" should lead somewhere the
+player can read.
+
+### Free to read
+
+At least half of every run's published stories must come from sources **not**
+marked paywalled in Studio ▸ Sources (`editorial_filter.limit_paywalled`). The
+search counts only stories that rule would let through toward its target,
+skips paywalled candidates while the run already holds more paywalled than
+free ones, and the final selection drops the weakest paywalled stories if it
+must. A run that can't find enough free stories publishes fewer rather than
+break the rule. Metered sources count as free.
 
 **The article's text is fetched once and kept in memory only** — never written
 to the database, a log or a file. Questions and clues are written fresh and
@@ -51,8 +63,9 @@ wall), the question is written from the summary and opening paragraph the
 scraper already has.
 
 **Cost is capped:** at most six model calls per story and `JOYSCROLL_MAX_CALLS`
-(default 120) per run, plus a 15-minute time limit; the log's last line says
-how many were used. If games are failing, the scrape itself is unaffected.
+(default 120) per run, plus a 15-minute time limit. The games' summary line in
+each scrape's log gives the calls used and what OpenRouter charged for them.
+If games are failing, the scrape itself is unaffected.
 
 ### Setup (once)
 

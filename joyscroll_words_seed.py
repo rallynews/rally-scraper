@@ -104,7 +104,8 @@ def main(max_calls=40, dry_run=False):
         counts = ', '.join(f"{n} letters: {tally[(tier, n)]}" for n in (3, 4, 5))
         print(f"  {tier:9} {counts}")
     left = len(todo) - sum(tally.values())
-    print(f"\nSeed: {sum(tally.values())} words sorted in {budget.calls} calls; about {left} still to go"
+    print(f"\nSeed: {sum(tally.values())} words sorted in {budget.calls} calls (${budget.cost:.2f}); "
+          f"about {left} still to go"
           + (" — run it again." if left > 0 else "."))
     return 0
 
