@@ -1,0 +1,50 @@
+name: Joyscroll word seed
+
+# Fills Joyscroll's word bank, once, from the public-domain ENABLE list
+# (words/enable-3-5.txt): a model sorts every 3–5 letter word into positive,
+# wholesome or excluded, with a theme and a definition. Crossjoy's grids are
+# filled from the bank, so this has to have run before crosswords work well.
+#
+# Resumable: words already in the bank are skipped, so run it again until the
+# log's last line says nothing is left (about 136 calls for the whole list).
+# Manual only — there is nothing to repeat once the bank is full.
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_calls:
+        description: 'Model calls this run (100 words each; the whole list is about 136)'
+        required: true
+        default: '140'
+        type: string
+      dry_run:
+        description: 'Print one batch instead of saving anything'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests beautifulsoup4 lxml
+      - name: Sort the words
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
+          JOYSCROLL_WORDS_API_KEY: ${{ secrets.JOYSCROLL_WORDS_API_KEY }}
+          JOYSCROLL_SEED_MODEL: ${{ vars.JOYSCROLL_SEED_MODEL }}
+          MAX_CALLS: ${{ github.event.inputs.max_calls }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          case "$MAX_CALLS" in ''|*[!0-9]*) echo "max_calls must be a number"; exit 1 ;; esac
+          if [ "$DRY_RUN" = "true" ]; then
+            python joyscroll_words_seed.py --dry-run --max-calls 1
+          else
+            python joyscroll_words_seed.py --max-calls "$MAX_CALLS"
+          fi

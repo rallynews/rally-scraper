@@ -20,6 +20,7 @@ import sys
 import image_library
 import source_directory
 import editorial_filter
+import joyscroll_games
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -1604,6 +1605,17 @@ def scrape_news():
     if api_available and new_articles:
         saved = api_post(new_articles)
         print(f"\nSaved {saved} new articles to database")
+
+    # Joyscroll's games: a trivia question, a Joyword answer and a crossword for
+    # every story, this run's and any recent one still missing a piece (see
+    # joyscroll_games.py). After the save, because they are tied to the stored
+    # story; and walled off, because nothing about a game may cost the run its
+    # articles, its balance entry or its rallying cry.
+    if api_available:
+        try:
+            joyscroll_games.run()
+        except Exception as e:
+            print(f"\n✗ Joyscroll games failed ({type(e).__name__}): {e}")
 
     run_timestamp = datetime.now().isoformat() + 'Z'
     run_date = datetime.now().strftime('%Y-%m-%d')
