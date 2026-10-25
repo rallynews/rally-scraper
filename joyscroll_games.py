@@ -70,7 +70,7 @@ TRIVIA_API_KEY = os.environ.get('JOYSCROLL_TRIVIA_API_KEY')
 # variables. The checker must be a different model family from the writer, so
 # the two don't share the same blind spots.
 WRITER_MODEL = os.environ.get('TRIVIA_WRITER_MODEL') or 'openai/gpt-4o-mini'
-CHECKER_MODEL = os.environ.get('TRIVIA_CHECKER_MODEL') or 'google/gemini-2.0-flash-001'
+CHECKER_MODEL = os.environ.get('TRIVIA_CHECKER_MODEL') or 'mistralai/mistral-small-3.2-24b-instruct'
 
 MAX_CALLS_PER_RUN = int(os.environ.get('JOYSCROLL_MAX_CALLS') or 120)
 TIME_BUDGET_S = int(os.environ.get('JOYSCROLL_TIME_BUDGET') or 15 * 60)
@@ -111,6 +111,10 @@ class Budget:
         # What OpenRouter says the calls cost, in US dollars — the real figure
         # for the log's summary line, not an estimate.
         self.cost = 0.0
+        # Models that failed at the provider (an error status, a timeout) this
+        # run. That is an outage, not a verdict on the story, so the run stops
+        # without recording a reject and the stories wait for the next scrape.
+        self.down = set()
 
     def can_call(self, n=1):
         return self.calls + n <= self.max_calls and time.time() < self.deadline
@@ -142,7 +146,7 @@ def parse_json_reply(text):
 
 def call_json(model, prompt, budget, max_tokens=900, timeout=45):
     """One model call that must answer with a JSON object."""
-    if not OPENROUTER_API_KEY or not budget.can_call():
+    if not OPENROUTER_API_KEY or not budget.can_call() or model in budget.down:
         return None
     budget.spend()
     try:
@@ -167,6 +171,7 @@ def call_json(model, prompt, budget, max_tokens=900, timeout=45):
         )
         if resp.status_code != 200:
             print(f"      ✗ {model}: {resp.status_code} {resp.text[:160]}")
+            budget.down.add(model)
             return None
         data = resp.json()
         try:
@@ -176,7 +181,17 @@ def call_json(model, prompt, budget, max_tokens=900, timeout=45):
         return parse_json_reply(data['choices'][0]['message']['content'])
     except Exception as e:
         print(f"      ✗ {model}: {type(e).__name__}: {e}")
+        budget.down.add(model)
         return None
+
+
+def outage(budget):
+    """True (and says so) when a model failed at the provider this run."""
+    if budget.down:
+        print(f"      … {', '.join(sorted(budget.down))} unavailable — stopping; "
+              f"these stories are retried next scrape")
+        return True
+    return False
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -511,6 +526,8 @@ def make_games(article, ctx, budget, rng, dry_run=False, fetch=fetch_article_tex
 
     kind = 'truefalse' if rng.random() < TRUE_FALSE_SHARE else 'choice'
     draft = call_json(WRITER_MODEL, writer_prompt(article, text, kind, needs), budget, 1100)
+    if outage(budget):
+        return False
     if not draft:
         reject(article, 'writer', 'writer gave no usable reply', WRITER_MODEL, dry_run)
         return True
@@ -534,6 +551,8 @@ def make_games(article, ctx, budget, rng, dry_run=False, fetch=fetch_article_tex
 
     verdict = call_json(CHECKER_MODEL, checker_prompt(article, text, trivia, proposed), budget, 700) \
         if (trivia or proposed) else {}
+    if outage(budget):
+        return False
     if verdict is None:
         verdict = {}
     tiers = {w: t for w, t in (verdict.get('words') or {}).items()
@@ -610,6 +629,8 @@ def make_games(article, ctx, budget, rng, dry_run=False, fetch=fetch_article_tex
                 if w in others and clue_ok(c, w):
                     clue_for[w] = c.strip()
         checked = solve_and_fix_clues(entries, clue_for, defs, budget, article.get('title', ''))
+        if outage(budget):
+            return False
         if not checked:
             reject(article, 'crossword', 'some entries have no solvable clue', CHECKER_MODEL, dry_run)
             return True
