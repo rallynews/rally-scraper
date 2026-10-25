@@ -231,6 +231,25 @@ class WholeStoryTest(unittest.TestCase):
         games.make_games(article, ctx, games.Budget(20, 600), random.Random(1), fetch=lambda url: '')
         self.assertEqual([(e, p['action'], p['stage']) for e, p in self.posted], [('trivia.php', 'reject', 'fetch')])
 
+    def test_a_model_outage_stops_the_run_without_rejecting_the_story(self):
+        writer = games.call_json
+
+        def checker_down(model, prompt, budget, max_tokens=900, timeout=45):
+            if model == games.CHECKER_MODEL:
+                budget.spend()
+                budget.down.add(model)
+                return None
+            return writer(model, prompt, budget, max_tokens, timeout)
+
+        games.call_json = checker_down
+        article = {'id': 3, 'url': 'https://ex.com/orchard', 'title': 'Town plants orchard', 'source': 'Src',
+                   'needs': {'trivia': True, 'word': True, 'crossword': True}}
+        ctx = {'dictionary': DICT, 'known': self.known, 'recent': set()}
+        carry_on = games.make_games(article, ctx, games.Budget(20, 600), random.Random(5),
+                                    fetch=lambda url: ARTICLE_TEXT)
+        self.assertFalse(carry_on)
+        self.assertEqual(self.posted, [])
+
 
 if __name__ == '__main__':
     unittest.main()

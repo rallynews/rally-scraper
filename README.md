@@ -84,8 +84,8 @@ If games are failing, the scrape itself is unaffected.
 
 Optional repository **variables** (not secrets): `TRIVIA_WRITER_MODEL`
 (default `openai/gpt-4o-mini`), `TRIVIA_CHECKER_MODEL` (default
-`google/gemini-2.0-flash-001` — keep it a different model family from the
-writer), `JOYSCROLL_MAX_CALLS`, `JOYSCROLL_SEED_MODEL`.
+`mistralai/mistral-small-3.2-24b-instruct` — keep it a different model family
+from the writer), `JOYSCROLL_MAX_CALLS`, `JOYSCROLL_SEED_MODEL`.
 
 Tests: `python -m unittest discover tests` (crossword fill and validation, the
 checks on what the models write, and a whole story with the models faked).
