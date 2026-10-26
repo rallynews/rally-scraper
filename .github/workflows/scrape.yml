@@ -1,7 +1,10 @@
 name: Run Rally News Scraper
 
 on:
-  # Triggered externally every hour by cron-jobs.org via GitHub API
+  # Started only from outside: cron-job.org dispatches it through GitHub's API
+  # on Rally's schedule, and it can be run by hand from the Actions tab.
+  # Nothing in GitHub starts it on its own — not a timer, and not a merge
+  # (a merge used to start a full, real scrape as a side effect).
   workflow_dispatch:
     inputs:
       filter_version:
@@ -19,10 +22,6 @@ on:
         required: false
         type: string
 
-  # Runs on push to main (for testing)
-  push:
-    branches:
-      - main
 
 jobs:
   scrape:
