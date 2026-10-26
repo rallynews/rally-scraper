@@ -1,7 +1,8 @@
 name: Joyscroll Joy clips
 
-# Finds short, joyful videos posted publicly on Bluesky for Joyscroll, for a
-# person to review in Studio ▸ News ▸ Joy clips — and, in re-check mode, looks
+# Finds short, joyful videos posted publicly on Bluesky for Joyscroll (live at
+# once, or for a person in Studio ▸ News ▸ Joy clips, by Studio's review
+# setting) — and, in re-check mode, looks
 # again at every approved or live clip to take down anything deleted, edited
 # or newly labelled. See bluesky_clips.py.
 #
