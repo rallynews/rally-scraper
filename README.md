@@ -90,6 +90,34 @@ from the writer), `JOYSCROLL_MAX_CALLS`, `JOYSCROLL_SEED_MODEL`.
 Tests: `python -m unittest discover tests` (crossword fill and validation, the
 checks on what the models write, and a whole story with the models faked).
 
+## 🎬 Joyscroll Joy clips (Bluesky)
+
+`bluesky_clips.py` finds short, joyful videos people have posted publicly on
+Bluesky, for a person to review in **Studio ▸ News ▸ Joy clips**. Nothing it
+finds reaches the app until that person approves it *and* the creator has
+given permission. Workflow: **Joyscroll Joy clips** (`bluesky-clips.yml`), mode
+`find` every 6 hours and `recheck` daily, both dispatched by cron-job.org.
+
+- **Read only**, from its own account, signed in once per run with an app
+  password. It never posts, likes, follows, replies or messages anyone.
+- **Nothing copied**: the post's text and thumbnail are checked in memory and
+  dropped. Rally receives the post's AT-URI, CID and rkey, the author's DID and
+  verdicts in our own words — never text, handles, names, avatars or media
+  URLs. Studio and the app look everything else up live from Bluesky.
+- **Labels win**: anything labelled on the post or the creator's profile is
+  turned down, using self-labels and Bluesky's moderation service.
+- **Polite**: a second between requests, backing off on 429 and stopping after
+  three in a row or any 401/403. Caps per run: 20 searches, 1,000 posts, 40
+  candidates, 60 model calls; the log's last line says what was used.
+- **Re-check** (`--recheck`): every approved, waiting or live clip is looked up
+  again — deleted ones become *gone*, edited ones go back to review, newly
+  labelled ones are *removed*.
+
+Secrets: `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`, `JOYSCROLL_CLIPS_API_KEY`
+(plus the existing `NEWS_API_URL`, `OPENROUTER_API_KEY`). Variables:
+`CLIPS_TEXT_MODEL`, `CLIPS_VISION_MODEL` (both default `openai/gpt-4o-mini`),
+`CLIPS_CONTACT_EMAIL`. Tests: `python -m unittest tests.test_bluesky_clips`.
+
 ## 🚀 Setup
 
 ### Step 1: Fork This Repo
