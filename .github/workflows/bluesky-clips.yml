@@ -1,0 +1,60 @@
+name: Joyscroll Joy clips
+
+# Finds short, joyful videos posted publicly on Bluesky for Joyscroll, for a
+# person to review in Studio ▸ News ▸ Joy clips — and, in re-check mode, looks
+# again at every approved or live clip to take down anything deleted, edited
+# or newly labelled. See bluesky_clips.py.
+#
+# No schedule here: cron-job.org dispatches it — mode "find" every 6 hours,
+# mode "recheck" once a day — with failure emails on.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'find (search Bluesky) or recheck (look again at approved and live clips)'
+        required: true
+        default: 'find'
+        type: choice
+        options: [find, recheck]
+      dry_run:
+        description: 'Print what would be saved instead of saving it'
+        required: false
+        default: false
+        type: boolean
+
+# One run at a time: two would sign in twice and could post the same find twice.
+concurrency:
+  group: bluesky-clips
+  cancel-in-progress: false
+
+jobs:
+  clips:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      # atproto is pinned: until its 1.0 the SDK may change between versions.
+      - run: pip install requests atproto==0.0.73
+      - name: Tests
+        run: python -m unittest tests.test_bluesky_clips
+      - name: Run
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          JOYSCROLL_CLIPS_API_KEY: ${{ secrets.JOYSCROLL_CLIPS_API_KEY }}
+          NEWS_API_URL: ${{ secrets.NEWS_API_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CLIPS_TEXT_MODEL: ${{ vars.CLIPS_TEXT_MODEL }}
+          CLIPS_VISION_MODEL: ${{ vars.CLIPS_VISION_MODEL }}
+          CLIPS_CONTACT_EMAIL: ${{ vars.CLIPS_CONTACT_EMAIL }}
+          MODE: ${{ github.event.inputs.mode }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          ARGS=""
+          [ "$MODE" = "recheck" ] && ARGS="--recheck"
+          [ "$DRY_RUN" = "true" ] && ARGS="$ARGS --dry-run"
+          python bluesky_clips.py $ARGS
