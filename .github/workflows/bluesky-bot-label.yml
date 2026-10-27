@@ -1,0 +1,36 @@
+name: Joyscroll Joy clips — mark the finder as a bot
+
+# Run once, by hand (Actions ▸ this workflow ▸ Run workflow): adds Bluesky's
+# "bot" self-label to the finder account's profile, as Bluesky's guide for
+# bots asks. Leaves the rest of the profile as it is; running it again changes
+# nothing. See bluesky_bot_label.py.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only show what the profile has now'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Tests
+        run: python -m unittest tests.test_bluesky_bot_label
+      - name: Run
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          CLIPS_CONTACT_EMAIL: ${{ vars.CLIPS_CONTACT_EMAIL }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then python bluesky_bot_label.py --dry-run; else python bluesky_bot_label.py; fi

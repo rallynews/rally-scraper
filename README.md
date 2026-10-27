@@ -120,6 +120,11 @@ Secrets: `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`, `JOYSCROLL_CLIPS_API_KEY`
 `CLIPS_TEXT_MODEL`, `CLIPS_VISION_MODEL` (both default `openai/gpt-4o-mini`),
 `CLIPS_CONTACT_EMAIL`. Tests: `python -m unittest tests.test_bluesky_clips`.
 
+**Mark the finder as a bot** (once): Actions ▸ **Joyscroll Joy clips — mark
+the finder as a bot** (`bluesky-bot-label.yml`, `bluesky_bot_label.py`) adds
+Bluesky's `bot` self-label to the finder's profile and changes nothing else.
+Running it again does nothing.
+
 ## 🚀 Setup
 
 ### Step 1: Fork This Repo
