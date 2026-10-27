@@ -93,9 +93,10 @@ checks on what the models write, and a whole story with the models faked).
 ## 🎬 Joyscroll Joy clips (Bluesky)
 
 `bluesky_clips.py` finds short, joyful videos people have posted publicly on
-Bluesky, for a person to review in **Studio ▸ News ▸ Joy clips**. Nothing it
-finds reaches the app until that person approves it *and* the creator has
-given permission. Workflow: **Joyscroll Joy clips** (`bluesky-clips.yml`), mode
+Bluesky for Joyscroll. While Studio's review setting is *automatic*, what
+passes its checks goes live at once (creators can opt out at
+rally.news/joyscroll/creators, and readers can report clips); set to *manual*,
+it waits in **Studio ▸ News ▸ Joy clips** for a person. Workflow: **Joyscroll Joy clips** (`bluesky-clips.yml`), mode
 `find` every 6 hours and `recheck` daily, both dispatched by cron-job.org.
 
 - **Read only**, from its own account, signed in once per run with an app
@@ -109,9 +110,10 @@ given permission. Workflow: **Joyscroll Joy clips** (`bluesky-clips.yml`), mode
 - **Polite**: a second between requests, backing off on 429 and stopping after
   three in a row or any 401/403. Caps per run: 20 searches, 1,000 posts, 40
   candidates, 60 model calls; the log's last line says what was used.
-- **Re-check** (`--recheck`): every approved, waiting or live clip is looked up
-  again — deleted ones become *gone*, edited ones go back to review, newly
-  labelled ones are *removed*.
+- **Re-check** (`--recheck`): every approved or live clip is looked up again —
+  deleted ones become *gone*, edited ones go back to Studio's Pending list for
+  a person (the job never checked the new version), newly labelled ones are
+  *removed*.
 
 Secrets: `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`, `JOYSCROLL_CLIPS_API_KEY`
 (plus the existing `NEWS_API_URL`, `OPENROUTER_API_KEY`). Variables:

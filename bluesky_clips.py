@@ -6,8 +6,9 @@ on Bluesky, for a person to review in Studio ▸ News ▸ Joy clips.
     python bluesky_clips.py --recheck     # look again at every approved/live clip
 
 Dispatched by cron-job.org: finding every 6 hours, re-checking daily
-(.github/workflows/bluesky-clips.yml). Nothing here ever makes a clip live:
-that takes a person in Studio and the creator's recorded permission.
+(.github/workflows/bluesky-clips.yml). This only proposes clips: whether one
+goes live at once or waits for a person is Studio's review setting, decided
+by api/bluesky-clips.php, and creators can opt out at rally.news/joyscroll/creators.
 
 The rules this follows (JOYSCROLL_BLUESKY_CLIPS_BRIEF.md §0):
 
