@@ -108,8 +108,12 @@ it waits in **Studio ▸ News ▸ Joy clips** for a person. Workflow: **Joyscrol
 - **Labels win**: anything labelled on the post or the creator's profile is
   turned down, using self-labels and Bluesky's moderation service.
 - **Polite**: a second between requests, backing off on 429 and stopping after
-  three in a row or any 401/403. Caps per run: 20 searches, 1,000 posts, 40
-  candidates, 60 model calls; the log's last line says what was used.
+  three in a row or any 401/403. Caps per run: 30 searches, 2,500 posts, 40
+  candidates, 100 model calls (about $0.10); the log's last lines say what was
+  used and why the rest were turned down.
+- **Where it looks**: first Bluesky's own Video feed (every post a video;
+  `CLIPS_VIDEO_FEED` overrides it), then the saved searches in Studio. Wide
+  (landscape) videos are welcome: the app shows them whole.
 - **Re-check** (`--recheck`): every approved or live clip is looked up again —
   deleted ones become *gone*, edited ones go back to Studio's Pending list for
   a person (the job never checked the new version), newly labelled ones are
