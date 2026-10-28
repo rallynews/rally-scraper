@@ -1,4 +1,4 @@
-"""The Joy clips finding job, with Bluesky, Rally's API and the models faked.
+"""The Joyskies finding job, with Bluesky, Rally's API and the models faked.
 Run with:  python -m unittest discover tests
 """
 

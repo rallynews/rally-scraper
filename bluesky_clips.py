@@ -1,5 +1,5 @@
-"""Joyscroll's Joy clips: find short, joyful videos people have posted publicly
-on Bluesky, for a person to review in Studio ▸ News ▸ Joy clips.
+"""Joyscroll's Joyskies: find short, joyful videos people have posted publicly
+on Bluesky, for a person to review in Studio ▸ News ▸ Joyskies.
 
     python bluesky_clips.py               # find: search, filter, check, post candidates
     python bluesky_clips.py --dry-run     # the same, printing instead of posting
@@ -488,7 +488,7 @@ def find(dry_run=False, bsky=None, now=None):
             reasons[i['reject_reason']] = reasons.get(i['reject_reason'], 0) + 1
     if items or query_found:
         api('POST', payload={'action': 'candidates', 'items': items, 'queries': query_found}, dry_run=dry_run)
-    print(f"\n  Joy clips: {stats['feed_pages']} video-feed pages, {stats['searches']} searches, "
+    print(f"\n  Joyskies: {stats['feed_pages']} video-feed pages, {stats['searches']} searches, "
           f"{stats['examined']} posts examined, {stats['videos']} new videos, "
           f"{stats['candidates']} for review, {stats['rejected']} turned down; {bsky.calls} Bluesky requests, "
           f"{budget.calls} model calls (cap {MAX_MODEL_CALLS}), ${budget.cost:.4f}"
@@ -522,7 +522,7 @@ def recheck(dry_run=False, bsky=None):
     if results:
         api('POST', payload={'action': 'recheck_result', 'results': results}, dry_run=dry_run)
     counts = {k: sum(1 for r in results if r['result'] == k) for k in ('ok', 'gone', 'changed', 'relabelled')}
-    print(f"\n  Joy clips re-check: {len(results)} of {len(clips)} checked — {counts['ok']} fine, {counts['gone']} gone, "
+    print(f"\n  Joyskies re-check: {len(results)} of {len(clips)} checked — {counts['ok']} fine, {counts['gone']} gone, "
           f"{counts['changed']} changed, {counts['relabelled']} relabelled; {bsky.calls} Bluesky requests"
           + (f" — stopped early: {stopped}" if stopped else ''))
     return counts
@@ -532,7 +532,7 @@ def main(argv):
     mode_recheck = '--recheck' in argv
     missing = missing_config(mode_recheck)
     if missing:
-        print(f"Joy clips: skipped — {', '.join(missing)} not set")
+        print(f"Joyskies: skipped — {', '.join(missing)} not set")
         return 0
     (recheck if mode_recheck else find)(dry_run='--dry-run' in argv)
     return 0

@@ -90,13 +90,13 @@ from the writer), `JOYSCROLL_MAX_CALLS`, `JOYSCROLL_SEED_MODEL`.
 Tests: `python -m unittest discover tests` (crossword fill and validation, the
 checks on what the models write, and a whole story with the models faked).
 
-## 🎬 Joyscroll Joy clips (Bluesky)
+## 🎬 Joyscroll Joyskies (Bluesky)
 
 `bluesky_clips.py` finds short, joyful videos people have posted publicly on
 Bluesky for Joyscroll. While Studio's review setting is *automatic*, what
 passes its checks goes live at once (creators can opt out at
 rally.news/joyscroll/creators, and readers can report clips); set to *manual*,
-it waits in **Studio ▸ News ▸ Joy clips** for a person. Workflow: **Joyscroll Joy clips** (`bluesky-clips.yml`), mode
+it waits in **Studio ▸ News ▸ Joyskies** for a person. Workflow: **Joyscroll Joyskies** (`bluesky-clips.yml`), mode
 `find` every 6 hours and `recheck` daily, both dispatched by cron-job.org.
 
 - **Read only**, from its own account, signed in once per run with an app
@@ -124,7 +124,7 @@ Secrets: `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`, `JOYSCROLL_CLIPS_API_KEY`
 `CLIPS_TEXT_MODEL`, `CLIPS_VISION_MODEL` (both default `openai/gpt-4o-mini`),
 `CLIPS_CONTACT_EMAIL`. Tests: `python -m unittest tests.test_bluesky_clips`.
 
-**Mark the finder as a bot** (once): Actions ▸ **Joyscroll Joy clips — mark
+**Mark the finder as a bot** (once): Actions ▸ **Joyscroll Joyskies — mark
 the finder as a bot** (`bluesky-bot-label.yml`, `bluesky_bot_label.py`) adds
 Bluesky's `bot` self-label to the finder's profile and changes nothing else.
 Running it again does nothing.
