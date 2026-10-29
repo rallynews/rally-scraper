@@ -1,4 +1,4 @@
-"""Mark the Joy clips finder account as a bot on Bluesky. Run once.
+"""Mark the Joyskies finder account as a bot on Bluesky. Run once.
 
     python bluesky_bot_label.py             # add the "bot" self-label to the profile
     python bluesky_bot_label.py --dry-run   # only say what the profile has now

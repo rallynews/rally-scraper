@@ -1,5 +1,5 @@
-"""Joyscroll's Joy clips: find short, joyful videos people have posted publicly
-on Bluesky, for a person to review in Studio ▸ News ▸ Joy clips.
+"""Joyscroll's Joyskies: find short, joyful videos people have posted publicly
+on Bluesky, for a person to review in Studio ▸ News ▸ Joyskies.
 
     python bluesky_clips.py               # find: search, filter, check, post candidates
     python bluesky_clips.py --dry-run     # the same, printing instead of posting
@@ -55,11 +55,16 @@ USER_AGENT = f'RallyJoyscrollClips/1.0 (+https://rally.news/joyscroll/creators; 
 BSKY_LABELER_DID = 'did:plc:ar7c4by46qjdydhdevvrndac'
 
 # Hard caps per run (brief §3.1).
-MAX_SEARCHES = 20
-MAX_EXAMINED = 1000
+MAX_SEARCHES = 30
+MAX_EXAMINED = 2500
 MAX_CANDIDATES = 40
-MAX_MODEL_CALLS = 60
+MAX_MODEL_CALLS = 100
 PAGES_PER_QUERY = 2
+# Bluesky's own Video feed: every post in it is a video, where a keyword
+# search turns up about one in sixteen. Read first, a few pages of it.
+VIDEO_FEED = os.environ.get('CLIPS_VIDEO_FEED') or 'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/thevids'
+FEED_PAGES = 5
+FEED_SOURCE = 'Bluesky video feed'
 SINCE_HOURS = 48
 # Bluesky allows 3,000 requests per 5 minutes per IP; one a second is a tenth.
 MIN_INTERVAL_S = 1.0
@@ -150,9 +155,7 @@ def hard_filter(post, known_uris, blocked_dids):
     langs = [str(l).lower() for l in record.get('langs') or []]
     if not any(l == 'en' or l.startswith('en-') for l in langs):
         return 'not English', True
-    ratio = video_view(post).get('aspectRatio') or {}
-    if ratio.get('width') and ratio.get('height') and ratio['width'] > ratio['height']:
-        return 'landscape', True
+    # Landscape is fine: the app shows a wide clip whole.
     return None, False
 
 
@@ -247,6 +250,21 @@ class Bluesky:
                 delay *= 2
             except ex.UnauthorizedError as e:
                 raise StopRun(f'Bluesky refused the request ({e.__class__.__name__})')
+
+    def feed(self, cursor=None):
+        """A page of the video feed, or ([], None) if Bluesky won't serve it (a
+        renamed or retired feed must not stop the searches after it)."""
+        params = {'feed': VIDEO_FEED, 'limit': 100}
+        if cursor:
+            params['cursor'] = cursor
+        try:
+            r = self._call(lambda: self.client.app.bsky.feed.get_feed(params))
+        except StopRun:
+            raise
+        except Exception as e:  # noqa: BLE001 — any other refusal: carry on with the searches
+            print(f'  Video feed unavailable ({e.__class__.__name__}); searching only.')
+            return [], None
+        return [self._as_dict(item.post) for item in r.feed], r.cursor
 
     def search(self, q, since, cursor=None):
         params = {'q': q, 'lang': 'en', 'sort': 'top', 'since': since, 'limit': 100}
@@ -377,12 +395,41 @@ def find(dry_run=False, bsky=None, now=None):
     since = ((now or datetime.now(timezone.utc)) - timedelta(hours=SINCE_HOURS)).strftime('%Y-%m-%dT%H:%M:%SZ')
     bsky = bsky or Bluesky()
     budget = Budget()
-    stats = {'searches': 0, 'examined': 0, 'videos': 0, 'candidates': 0, 'rejected': 0}
+    stats = {'feed_pages': 0, 'searches': 0, 'examined': 0, 'videos': 0, 'candidates': 0, 'rejected': 0}
     items, query_found, stopped = [], [], None
+
+    pool = []  # (post, source) for video posts that passed the code checks
+
+    def take(posts, source):
+        """The code checks over one page of posts; returns how many new videos it held."""
+        found = 0
+        for post in posts:
+            if stats['examined'] >= MAX_EXAMINED:
+                break
+            stats['examined'] += 1
+            reason, store = hard_filter(post, known_uris, blocked)
+            if reason in QUIET_SKIPS:
+                continue
+            stats['videos'] += 1
+            known_uris.add(post['uri'])
+            found += 1
+            if reason:
+                if store:
+                    items.append({**identifiers(post), 'status': 'rejected', 'reject_reason': reason,
+                                  'found_by_query': source})
+                continue
+            pool.append((post, source))
+        return found
 
     try:
         bsky.login()
-        pool = []  # (post, query) for video posts that passed the code checks
+        cursor = None
+        for _ in range(FEED_PAGES):
+            posts, cursor = bsky.feed(cursor)
+            stats['feed_pages'] += 1
+            take(posts, FEED_SOURCE)
+            if not cursor or stats['examined'] >= MAX_EXAMINED:
+                break
         for q in queries:
             if stats['examined'] >= MAX_EXAMINED:
                 break
@@ -390,23 +437,8 @@ def find(dry_run=False, bsky=None, now=None):
             for _ in range(PAGES_PER_QUERY):
                 posts, cursor = bsky.search(q['query'], since, cursor)
                 stats['searches'] += 1
-                for post in posts:
-                    if stats['examined'] >= MAX_EXAMINED:
-                        break
-                    stats['examined'] += 1
-                    reason, store = hard_filter(post, known_uris, blocked)
-                    if reason in QUIET_SKIPS:
-                        continue
-                    stats['videos'] += 1
-                    known_uris.add(post['uri'])
-                    found += 1
-                    if reason:
-                        if store:
-                            items.append({**identifiers(post), 'status': 'rejected', 'reject_reason': reason,
-                                          'found_by_query': q['query']})
-                        continue
-                    pool.append((post, q['query']))
-                if not cursor:
+                found += take(posts, q['query'])
+                if not cursor or stats['examined'] >= MAX_EXAMINED:
                     break
             query_found.append({'id': q['id'], 'found': found})
 
@@ -449,12 +481,20 @@ def find(dry_run=False, bsky=None, now=None):
         stopped = str(e)
 
     stats['rejected'] = sum(1 for i in items if i['status'] == 'rejected')
+    # Why the rest were turned down, most common first — what to tune next.
+    reasons = {}
+    for i in items:
+        if i['status'] == 'rejected':
+            reasons[i['reject_reason']] = reasons.get(i['reject_reason'], 0) + 1
     if items or query_found:
         api('POST', payload={'action': 'candidates', 'items': items, 'queries': query_found}, dry_run=dry_run)
-    print(f"\n  Joy clips: {stats['searches']} searches, {stats['examined']} posts examined, {stats['videos']} new videos, "
+    print(f"\n  Joyskies: {stats['feed_pages']} video-feed pages, {stats['searches']} searches, "
+          f"{stats['examined']} posts examined, {stats['videos']} new videos, "
           f"{stats['candidates']} for review, {stats['rejected']} turned down; {bsky.calls} Bluesky requests, "
           f"{budget.calls} model calls (cap {MAX_MODEL_CALLS}), ${budget.cost:.4f}"
           + (f" — stopped early: {stopped}" if stopped else ''))
+    if reasons:
+        print('  Turned down because: ' + '; '.join(f'{r} {n}' for r, n in sorted(reasons.items(), key=lambda x: -x[1])))
     return stats
 
 
@@ -482,7 +522,7 @@ def recheck(dry_run=False, bsky=None):
     if results:
         api('POST', payload={'action': 'recheck_result', 'results': results}, dry_run=dry_run)
     counts = {k: sum(1 for r in results if r['result'] == k) for k in ('ok', 'gone', 'changed', 'relabelled')}
-    print(f"\n  Joy clips re-check: {len(results)} of {len(clips)} checked — {counts['ok']} fine, {counts['gone']} gone, "
+    print(f"\n  Joyskies re-check: {len(results)} of {len(clips)} checked — {counts['ok']} fine, {counts['gone']} gone, "
           f"{counts['changed']} changed, {counts['relabelled']} relabelled; {bsky.calls} Bluesky requests"
           + (f" — stopped early: {stopped}" if stopped else ''))
     return counts
@@ -492,7 +532,7 @@ def main(argv):
     mode_recheck = '--recheck' in argv
     missing = missing_config(mode_recheck)
     if missing:
-        print(f"Joy clips: skipped — {', '.join(missing)} not set")
+        print(f"Joyskies: skipped — {', '.join(missing)} not set")
         return 0
     (recheck if mode_recheck else find)(dry_run='--dry-run' in argv)
     return 0

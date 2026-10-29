@@ -1,4 +1,4 @@
-"""The Joy clips finding job, with Bluesky, Rally's API and the models faked.
+"""The Joyskies finding job, with Bluesky, Rally's API and the models faked.
 Run with:  python -m unittest discover tests
 """
 
@@ -42,13 +42,13 @@ class FilterTests(unittest.TestCase):
         self.assertEqual(self.check(post('a'), known=['at://did:plc:maya/app.bsky.feed.post/a']), ('already seen', False))
         self.assertEqual(self.check(post('a'), blocked=[DID])[1], False)
 
-    def test_turns_down_replies_quotes_labels_language_and_landscape(self):
+    def test_turns_down_replies_quotes_labels_and_language_but_not_landscape(self):
         self.assertEqual(self.check(post('a', reply=True)), ('a reply', True))
         self.assertEqual(self.check(post('a', labels=['porn'])), ('label: porn', True))
         self.assertEqual(self.check(post('a', labels=['!no-unauthenticated'])), ('label: !no-unauthenticated', True))
         self.assertEqual(self.check(post('a', langs=['de'])), ('not English', True))
         self.assertEqual(self.check(post('a', langs=['en-GB'])), (None, False))
-        self.assertEqual(self.check(post('a', ratio=(16, 9))), ('landscape', True))
+        self.assertEqual(self.check(post('a', ratio=(16, 9))), (None, False))
 
     def test_a_quote_with_video_passes_only_when_it_quotes_the_same_creator(self):
         video = post('v')['embed']
@@ -90,9 +90,16 @@ class FilterTests(unittest.TestCase):
 
 
 class FakeBluesky:
-    def __init__(self, pages, profiles=None, posts=None, stop_after=None):
+    def __init__(self, pages, profiles=None, posts=None, stop_after=None, feed_pages=None):
         self.pages, self.profile_map, self.post_map = pages, profiles or {}, posts or {}
         self.calls, self.logins, self.stop_after, self.searched = 0, 0, stop_after, []
+        self.feed_pages = feed_pages or {}
+
+    def feed(self, cursor=None):
+        self.calls += 1
+        if self.stop_after is not None and self.calls > self.stop_after:
+            raise bc.StopRun('three 429s in a row')
+        return self.feed_pages.get(cursor, ([], None))
 
     def login(self):
         self.logins += 1
@@ -177,7 +184,7 @@ class RunTests(unittest.TestCase):
         # A reply is turned down by code alone, so it is kept; the video that
         # still needed its creator checked is not — the next run finds it again.
         pages = {('rescue dog', None): ([post('good'), post('rep', reply=True)], 'c2')}
-        fake = FakeBluesky(pages, stop_after=1)
+        fake = FakeBluesky(pages, stop_after=2)  # the video feed, then one search
         fake.profiles = lambda dids: self.fail('asked Bluesky for profiles after being told to stop')
         stats = bc.find(bsky=fake)
         self.assertEqual(stats['searches'], 1)
@@ -188,7 +195,22 @@ class RunTests(unittest.TestCase):
         pages = {('rescue dog', None): (many, None)}
         stats = bc.find(bsky=FakeBluesky(pages))
         self.assertLessEqual(stats['candidates'], bc.MAX_CANDIDATES)
-        self.assertEqual(stats['candidates'], bc.MAX_MODEL_CALLS // 2)
+        self.assertEqual(stats['candidates'], min(bc.MAX_CANDIDATES, bc.MAX_MODEL_CALLS // 2))
+
+    def test_reads_the_video_feed_first_and_records_it_as_the_source(self):
+        feed = {None: ([post('wave', did='did:plc:wave'), post('wide', did='did:plc:wide', ratio=(16, 9))], 'f2'),
+                'f2': ([post('rep', did='did:plc:r', reply=True)], None)}
+        pages = {('rescue dog', None): ([post('good')], None)}
+        fake = FakeBluesky(pages, feed_pages=feed)
+        stats = bc.find(bsky=fake)
+        by = {i['rkey']: i for i in self.sent[0]['items']}
+        self.assertEqual(stats['feed_pages'], 2)
+        self.assertEqual(by['wave']['found_by_query'], bc.FEED_SOURCE)
+        self.assertEqual(by['wide']['status'], 'pending')  # landscape is welcome now
+        self.assertEqual(by['rep']['reject_reason'], 'a reply')
+        self.assertEqual(by['good']['found_by_query'], 'rescue dog')
+        # The feed isn't a saved search, so it isn't reported as one.
+        self.assertEqual([q['id'] for q in self.sent[0]['queries']], [1, 2])
 
     def test_recheck_reports_gone_changed_and_relabelled(self):
         fake = FakeBluesky({}, posts={
