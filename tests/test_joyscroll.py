@@ -74,16 +74,21 @@ class CheckTests(unittest.TestCase):
 
     def test_clean_trivia(self):
         ok, _ = games.clean_trivia({'question': 'What did they plant?', 'options': ['A', 'B', 'C', 'D'],
-                                    'answer_index': 1, 'explanation': 'Trees.', 'support': 'x'}, 'choice')
+                                    'answer_index': 1, 'explanation': 'Trees.', 'support': 'x'})
         self.assertEqual(ok['options'], ['A', 'B', 'C', 'D'])
+        self.assertEqual(ok['kind'], 'choice')
         bad, why = games.clean_trivia({'question': 'Q?', 'options': ['A', 'A', 'C', 'D'], 'answer_index': 0,
-                                       'explanation': 'x'}, 'choice')
+                                       'explanation': 'x'})
         self.assertIsNone(bad)
-        tf, _ = games.clean_trivia({'question': 'They planted trees.', 'answer_index': 0, 'explanation': 'Yes.'},
-                                   'truefalse')
-        self.assertEqual(tf['options'], ['True', 'False'])
-        timely, why = games.clean_trivia({'question': 'What opened this year?', 'answer_index': 0,
-                                          'explanation': 'x'}, 'truefalse')
+        # No options means no question: true/false is retired, it's always four.
+        tf, why = games.clean_trivia({'question': 'They planted trees.', 'answer_index': 0, 'explanation': 'Yes.'})
+        self.assertIsNone(tf)
+        self.assertIn('four', why)
+        two, _ = games.clean_trivia({'question': 'Did they plant trees?', 'options': ['True', 'False'],
+                                     'answer_index': 0, 'explanation': 'Yes.'})
+        self.assertIsNone(two)
+        timely, why = games.clean_trivia({'question': 'What opened this year?', 'options': ['A', 'B', 'C', 'D'],
+                                          'answer_index': 0, 'explanation': 'x'})
         self.assertIsNone(timely)
         self.assertIn('time', why)
 
@@ -194,18 +199,15 @@ class WholeStoryTest(unittest.TestCase):
         article = {'id': 1, 'url': 'https://ex.com/orchard', 'title': 'Town plants orchard', 'source': 'Src',
                    'needs': {'trivia': True, 'word': True, 'crossword': True}}
         ctx = {'dictionary': DICT, 'known': self.known, 'recent': set()}
-        orig_kind = games.TRUE_FALSE_SHARE
-        games.TRUE_FALSE_SHARE = 0  # force a 4-option question
-        try:
-            games.make_games(article, ctx, games.Budget(20, 600), random.Random(5),
-                             fetch=lambda url: ARTICLE_TEXT)
-        finally:
-            games.TRUE_FALSE_SHARE = orig_kind
+        games.make_games(article, ctx, games.Budget(20, 600), random.Random(5),
+                         fetch=lambda url: ARTICLE_TEXT)
         by = {}
         for endpoint, payload in self.posted:
             by.setdefault((endpoint, payload['action']), []).append(payload)
         self.assertNotIn(('trivia.php', 'reject'), by, by.get(('trivia.php', 'reject')))
         trivia = by[('trivia.php', 'add')][0]
+        self.assertEqual(trivia['kind'], 'choice')
+        self.assertEqual(len(trivia['options']), 4)
         self.assertEqual(trivia['options'][trivia['answer_index']], 'Fruit trees')
         added = {w['word']: w for w in by[('words.php', 'add')][0]['words']}
         self.assertEqual(added['bloom']['article_url'], 'https://ex.com/orchard')

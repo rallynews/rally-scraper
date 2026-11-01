@@ -30,7 +30,7 @@ Every story the scraper publishes also gets three small games for **Joyscroll**,
 Rally's second app — each tied to the story, so the app can always say *Read
 the story*:
 
-- **one trivia question** (four options, or true/false about 40% of the time),
+- **one trivia question** (always four options),
   written from the article's text and checked by a second model before it is
   published;
 - **one Joyword answer** — a positive 5-letter word about the story, for the
