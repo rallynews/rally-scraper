@@ -83,7 +83,6 @@ FULL_TEXT_MIN = 800
 FALLBACK_TEXT_MIN = 200
 TEXT_MAX = 12000
 
-TRUE_FALSE_SHARE = 0.4
 STORY_WORD_DAYS = 14
 
 THEMES = ['nature', 'food', 'feelings', 'people', 'places', 'home', 'animals', 'music', 'arts',
@@ -257,17 +256,12 @@ def quote_found(support, text):
 # PROMPTS
 # ═══════════════════════════════════════════════════════════════
 
-def writer_prompt(article, text, kind, needs):
+def writer_prompt(article, text, needs):
     want = []
     if needs.get('trivia'):
-        if kind == 'truefalse':
-            want.append('"trivia": {"kind": "truefalse", "question": "<a statement to judge true or false>", '
-                        '"answer_index": <0 if true, 1 if false>, "explanation": "<one line>", '
-                        '"support": "<one exact sentence copied from the article that proves the answer>"}')
-        else:
-            want.append('"trivia": {"kind": "choice", "question": "...", "options": ["...", "...", "...", "..."], '
-                        '"answer_index": <0-3>, "explanation": "<one line>", '
-                        '"support": "<one exact sentence copied from the article that proves the answer>"}')
+        want.append('"trivia": {"kind": "choice", "question": "...", "options": ["...", "...", "...", "..."], '
+                    '"answer_index": <0-3>, "explanation": "<one line>", '
+                    '"support": "<one exact sentence copied from the article that proves the answer>"}')
     if needs.get('word'):
         want.append('"joyword": [{"word": "<five letters>", "definition": "<one line, without the word>", '
                     f'"theme": "<one of {", ".join(THEMES)}>", "clue": "<crossword clue pointing at this story>"}}, '
@@ -353,19 +347,16 @@ Reply with one JSON object: {{"answers": ["<answer 1>", "<answer 2>", ...]}} in 
 # CHECKS (pure)
 # ═══════════════════════════════════════════════════════════════
 
-def clean_trivia(raw, kind):
-    """The writer's trivia, shaped and validated, or (None, reason)."""
+def clean_trivia(raw):
+    """The writer's trivia — always four options — shaped and validated, or (None, reason)."""
     if not isinstance(raw, dict):
         return None, 'no trivia in the reply'
     q = str(raw.get('question') or '').strip()
     expl = str(raw.get('explanation') or '').strip()
     support = str(raw.get('support') or '').strip()
-    if kind == 'truefalse':
-        options = ['True', 'False']
-    else:
-        options = [str(o).strip() for o in (raw.get('options') or [])]
-        if len(options) != 4 or any(not o for o in options) or len({o.lower() for o in options}) != 4:
-            return None, 'needs four different options'
+    options = [str(o).strip() for o in (raw.get('options') or [])]
+    if len(options) != 4 or any(not o for o in options) or len({o.lower() for o in options}) != 4:
+        return None, 'needs four different options'
     try:
         answer = int(raw.get('answer_index'))
     except (TypeError, ValueError):
@@ -376,7 +367,7 @@ def clean_trivia(raw, kind):
         return None, 'question or explanation missing or too long'
     if re.search(r'\b(this year|currently|recently|right now|nowadays)\b', q, re.I):
         return None, 'time-relative wording'
-    return {'kind': kind, 'question': q, 'options': options, 'answer_index': answer,
+    return {'kind': 'choice', 'question': q, 'options': options, 'answer_index': answer,
             'explanation': expl, 'support': support}, ''
 
 
@@ -524,8 +515,7 @@ def make_games(article, ctx, budget, rng, dry_run=False, fetch=fetch_article_tex
         return True
     print(f"      text: {len(text)} chars from the {origin}")
 
-    kind = 'truefalse' if rng.random() < TRUE_FALSE_SHARE else 'choice'
-    draft = call_json(WRITER_MODEL, writer_prompt(article, text, kind, needs), budget, 1100)
+    draft = call_json(WRITER_MODEL, writer_prompt(article, text, needs), budget, 1100)
     if outage(budget):
         return False
     if not draft:
@@ -534,7 +524,7 @@ def make_games(article, ctx, budget, rng, dry_run=False, fetch=fetch_article_tex
 
     trivia, why = (None, '')
     if needs.get('trivia'):
-        trivia, why = clean_trivia(draft.get('trivia'), kind)
+        trivia, why = clean_trivia(draft.get('trivia'))
         if trivia and not quote_found(trivia['support'], text):
             trivia, why = None, 'supporting sentence is not in the article'
             reject(article, 'quote', why, WRITER_MODEL, dry_run)
