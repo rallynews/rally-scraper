@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 43,
+  "count": 42,
   "sources": [
     {
       "source": "Aeon",
@@ -332,15 +332,6 @@
       "website": "https://www.nytimes.com",
       "country": "US",
       "continent": "North America",
-      "paywalled": 1,
-      "metered": 0
-    },
-    {
-      "source": "The Straits Times",
-      "feed_url": "https://www.straitstimes.com/news/singapore/rss.xml",
-      "website": "https://www.straitstimes.com",
-      "country": "SG",
-      "continent": "Asia",
       "paywalled": 1,
       "metered": 0
     },
