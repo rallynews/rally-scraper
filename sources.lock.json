@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 43,
+  "count": 44,
   "sources": [
     {
       "source": "Aeon",
@@ -17,6 +17,15 @@
       "website": "https://www.africanews.com",
       "country": "CG",
       "continent": "Africa",
+      "paywalled": 0,
+      "metered": 0
+    },
+    {
+      "source": "Al Jazeera",
+      "feed_url": "https://www.aljazeera.com/rss",
+      "website": "https://www.aljazeera.com",
+      "country": "QA",
+      "continent": "Asia",
       "paywalled": 0,
       "metered": 0
     },
