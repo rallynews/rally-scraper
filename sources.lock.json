@@ -1,6 +1,6 @@
 {
   "note": "Written by source_directory.py from the Rally Admin source directory. Do not edit by hand — edit the Sources tab.",
-  "count": 42,
+  "count": 43,
   "sources": [
     {
       "source": "Aeon",
@@ -165,15 +165,6 @@
       "metered": 0
     },
     {
-      "source": "Mexico News Daily",
-      "feed_url": "https://mexiconewsdaily.com/feed/",
-      "website": "https://mexiconewsdaily.com/",
-      "country": "MX",
-      "continent": "North America",
-      "paywalled": 0,
-      "metered": 0
-    },
-    {
       "source": "National Post",
       "feed_url": "https://nationalpost.com/feed",
       "website": "https://nationalpost.com",
@@ -198,6 +189,15 @@
       "country": "US",
       "continent": "North America",
       "paywalled": 1,
+      "metered": 0
+    },
+    {
+      "source": "Nikkei Asia",
+      "feed_url": "https://asia.nikkei.com/rss/feed/nar",
+      "website": "https://asia.nikkei.com",
+      "country": "JP",
+      "continent": "Asia",
+      "paywalled": 0,
       "metered": 0
     },
     {
@@ -280,6 +280,15 @@
       "continent": "North America",
       "paywalled": 1,
       "metered": 1
+    },
+    {
+      "source": "The Diplomat",
+      "feed_url": "https://thediplomat.com/feed/",
+      "website": "https://thediplomat.com/",
+      "country": "JP",
+      "continent": "Asia",
+      "paywalled": 0,
+      "metered": 0
     },
     {
       "source": "The Globe and Mail",
