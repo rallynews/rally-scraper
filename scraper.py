@@ -626,7 +626,7 @@ Answer with ONLY the category name (one word)."""
 def enrich_article_metadata(title, summary, content):
     """Use Mistral (acting as an expert content editor) to add editorial metadata
     to a new article, based only on its headline, summary, and first paragraph."""
-    prompt = f"""You are an expert content editor for a positive news outlet. Read the headline, summary, and first paragraph below and decide five pieces of metadata about it. Base every judgment strictly on the text given — do not guess, assume, or invent anything that isn't actually stated or clearly implied.
+    prompt = f"""You are an expert content editor for a positive news outlet. Read the headline, summary, and first paragraph below and decide six pieces of metadata about it. Base every judgment strictly on the text given — do not guess, assume, or invent anything that isn't actually stated or clearly implied.
 
 Headline: {title}
 Summary: {summary}
@@ -638,6 +638,7 @@ Decide:
 3. topics — the general subject area(s) this story is about, as short lowercase phrases (e.g. "sports", "space", "movies", "tv", "books", "politics", "health", "wildlife"). List only topics that are clearly central to the story, at most 4.
 4. countries — real-world countries that are directly affected by or are the setting of this story. Use full country names. Leave empty if no specific country is identifiable.
 5. people — real, specific named individuals (full names as given) who are actually mentioned in this text. Do not include organizations, generic titles, or fictional characters. Leave empty if none are named.
+6. region — the one region of the world this story is covering: where it takes place, or who it mainly affects. This is about the story, not about where the publisher is based. Choose exactly one of: {', '.join(source_directory.RALLY_REGIONS)}. Use "None" if the story is global, spans several regions equally, or its region cannot be determined from the text.
 
 Respond with valid JSON only, in this exact format and nothing else:
 {{
@@ -645,11 +646,13 @@ Respond with valid JSON only, in this exact format and nothing else:
   "complexity": "Moderate",
   "topics": ["example topic"],
   "countries": ["Example Country"],
-  "people": ["Example Name"]
+  "people": ["Example Name"],
+  "region": "Europe"
 }}"""
 
     result = call_ai_long(prompt, max_tokens=300, timeout=20)
-    defaults = {'writing_style': [], 'complexity': 'Moderate', 'topics': [], 'countries': [], 'people': []}
+    defaults = {'writing_style': [], 'complexity': 'Moderate', 'topics': [], 'countries': [],
+                'people': [], 'region': None}
     if not result:
         return defaults
 
@@ -682,7 +685,31 @@ Respond with valid JSON only, in this exact format and nothing else:
         'topics': clean_list('topics'),
         'countries': clean_list('countries'),
         'people': clean_list('people'),
+        'region': clean_region(data.get('region')),
     }
+
+
+def clean_region(value):
+    """The model's region if it is one of Rally's regions, else None."""
+    if not isinstance(value, str):
+        return None
+    wanted = value.strip().lower()
+    for region in source_directory.RALLY_REGIONS:
+        if region.lower() == wanted:
+            return region
+    return None
+
+
+def article_region(metadata_region, source_name, continents):
+    """The region an article counts toward in the per-run coverage check.
+
+    The region the story is covering, as the metadata pass decided it. When the
+    model could not name one — or named somewhere that is not one of Rally's
+    regions — the story falls back to its source's continent, which is what
+    the check used for every story before. Source verification is unaffected:
+    a source's country and continent are still what the directory says.
+    """
+    return metadata_region or continents.get(source_name)
 
 
 # Two headline words in five is ordinary overlap — the story is about what the
@@ -1182,7 +1209,7 @@ def report_run_shortfall(new_articles, rejected_scores, cutoff, required_contine
     found = len(new_articles)
     strong = sum(1 for a in new_articles
                  if editorial_filter.is_preferred(filter_config, a['positivity_score']))
-    covered = {continents.get(a['source']) for a in new_articles}
+    covered = {a.get('region') for a in new_articles}
     covered.discard(None)
     missing = sorted(required_continents - covered)
 
@@ -1363,9 +1390,7 @@ def scrape_news():
             print(f"\nTimeout reached after {pass_num} passes ({elapsed/60:.1f} min)")
             break
 
-        covered_continents = {
-            continents.get(a['source']) for a in new_articles
-        }
+        covered_continents = {a.get('region') for a in new_articles}
         covered_continents.discard(None)
         missing_continents = required_continents - covered_continents
 
@@ -1438,9 +1463,13 @@ def scrape_news():
                         continue
 
                     # Once the target is met on tier 1, only keep scraping to
-                    # fill in continents we don't yet have a story from.
+                    # fill in continents we don't yet have a story from. A
+                    # story's region is only known after the metadata pass, so
+                    # the source's continent stands in as a cheap first guess
+                    # here; it is checked again against the story's own region
+                    # once that is known.
                     continent = continents.get(source_name)
-                    covered_now = {continents.get(a['source']) for a in new_articles}
+                    covered_now = {a.get('region') for a in new_articles}
                     fills_a_gap = continent is not None and continent not in covered_now
                     if usable_strong() >= MIN_NEW_ARTICLES and not fills_a_gap:
                         continue
@@ -1527,6 +1556,20 @@ def scrape_news():
                     print(f"    ✓ Metadata: style={metadata['writing_style']}, "
                           f"complexity={metadata['complexity']}, topics={metadata['topics']}")
 
+                    region = article_region(metadata['region'], source_name, continents)
+                    print(f"    ✓ Region: {region or 'unknown'}"
+                          + ("" if metadata['region'] else " (source's continent)"))
+
+                    # Let in only to fill a coverage gap on the source's continent?
+                    # Then the story's own region has to fill one too.
+                    only_for_gap = (usable_strong() >= MIN_NEW_ARTICLES or (
+                        not preferred
+                        and len(new_articles) - strong_held() >= MIN_NEW_ARTICLES))
+                    if only_for_gap and (region is None or region in covered_now):
+                        print(f"    ✗ Covers {region or 'no known region'}, which the run "
+                              f"already has")
+                        continue
+
                     # No image of its own, or the only ones on offer were broken:
                     # fall back to the closest-matching royalty-free photo.
                     if not image_url:
@@ -1579,6 +1622,9 @@ def scrape_news():
                         'topics': metadata['topics'],
                         'countries': metadata['countries'],
                         'people': metadata['people'],
+                        # The region the story covers (or, failing that, its
+                        # source's continent). Drives the coverage check.
+                        'region': region,
                         # Internal only: the average of the filter's scoring
                         # questions, stored for the dashboard and never served to
                         # readers by any public endpoint.
