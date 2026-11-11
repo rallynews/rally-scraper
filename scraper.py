@@ -148,6 +148,20 @@ SOURCE_CONTINENTS = {
     'Aeon': 'Oceania',
 }
 
+# Rally's reader-facing regions (the site's and apps' region filter), as the
+# model is asked to name them → the slug the site stores and filters on. An
+# article whose region is none of these is stored without one, and the site
+# falls back to its source's country of origin, as it did for every story
+# before. Not to be confused with SOURCE_CONTINENTS, which only drives the
+# per-run coverage check.
+RALLY_REGIONS = {
+    'North America': 'north-america',
+    'Europe':        'europe',
+    'Asia-Pacific':  'asia-pacific',
+    'Middle East':   'middle-east',
+    'Africa':        'africa',
+}
+
 # Selection limits applied to each scraper run
 MIN_NEW_ARTICLES = 15      # target new positive stories per run
 MAX_PER_CATEGORY = 2       # no more than this many stories in any one category
@@ -638,7 +652,7 @@ Decide:
 3. topics — the general subject area(s) this story is about, as short lowercase phrases (e.g. "sports", "space", "movies", "tv", "books", "politics", "health", "wildlife"). List only topics that are clearly central to the story, at most 4.
 4. countries — real-world countries that are directly affected by or are the setting of this story. Use full country names. Leave empty if no specific country is identifiable.
 5. people — real, specific named individuals (full names as given) who are actually mentioned in this text. Do not include organizations, generic titles, or fictional characters. Leave empty if none are named.
-6. region — the one region of the world this story is covering: where it takes place, or who it mainly affects. This is about the story, not about where the publisher is based. Choose exactly one of: {', '.join(source_directory.RALLY_REGIONS)}. Use "None" if the story is global, spans several regions equally, or its region cannot be determined from the text.
+6. region — the one region of the world this story is covering: where it takes place, or who it mainly affects. This is about the story, not about where the publisher is based. Choose exactly one of: {', '.join(RALLY_REGIONS)}. Use "None" if the story is set somewhere else (e.g. South America or Antarctica), is global or spans several regions equally, or its region cannot be determined from the text.
 
 Respond with valid JSON only, in this exact format and nothing else:
 {{
@@ -690,26 +704,19 @@ Respond with valid JSON only, in this exact format and nothing else:
 
 
 def clean_region(value):
-    """The model's region if it is one of Rally's regions, else None."""
+    """The slug of the Rally region the model named, or None.
+
+    None covers every way of not naming one of Rally's regions — "None", a
+    region Rally doesn't have, or no usable answer at all. The site treats a
+    story without a region exactly as before: by its source's country of origin.
+    """
     if not isinstance(value, str):
         return None
-    wanted = value.strip().lower()
-    for region in source_directory.RALLY_REGIONS:
-        if region.lower() == wanted:
-            return region
+    wanted = re.sub(r'[\s_-]+', ' ', value).strip().lower()
+    for name, slug in RALLY_REGIONS.items():
+        if wanted in (name.lower().replace('-', ' '), slug.replace('-', ' ')):
+            return slug
     return None
-
-
-def article_region(metadata_region, source_name, continents):
-    """The region an article counts toward in the per-run coverage check.
-
-    The region the story is covering, as the metadata pass decided it. When the
-    model could not name one — or named somewhere that is not one of Rally's
-    regions — the story falls back to its source's continent, which is what
-    the check used for every story before. Source verification is unaffected:
-    a source's country and continent are still what the directory says.
-    """
-    return metadata_region or continents.get(source_name)
 
 
 # Two headline words in five is ordinary overlap — the story is about what the
@@ -1209,7 +1216,7 @@ def report_run_shortfall(new_articles, rejected_scores, cutoff, required_contine
     found = len(new_articles)
     strong = sum(1 for a in new_articles
                  if editorial_filter.is_preferred(filter_config, a['positivity_score']))
-    covered = {a.get('region') for a in new_articles}
+    covered = {continents.get(a['source']) for a in new_articles}
     covered.discard(None)
     missing = sorted(required_continents - covered)
 
@@ -1390,7 +1397,9 @@ def scrape_news():
             print(f"\nTimeout reached after {pass_num} passes ({elapsed/60:.1f} min)")
             break
 
-        covered_continents = {a.get('region') for a in new_articles}
+        covered_continents = {
+            continents.get(a['source']) for a in new_articles
+        }
         covered_continents.discard(None)
         missing_continents = required_continents - covered_continents
 
@@ -1463,13 +1472,9 @@ def scrape_news():
                         continue
 
                     # Once the target is met on tier 1, only keep scraping to
-                    # fill in continents we don't yet have a story from. A
-                    # story's region is only known after the metadata pass, so
-                    # the source's continent stands in as a cheap first guess
-                    # here; it is checked again against the story's own region
-                    # once that is known.
+                    # fill in continents we don't yet have a story from.
                     continent = continents.get(source_name)
-                    covered_now = {a.get('region') for a in new_articles}
+                    covered_now = {continents.get(a['source']) for a in new_articles}
                     fills_a_gap = continent is not None and continent not in covered_now
                     if usable_strong() >= MIN_NEW_ARTICLES and not fills_a_gap:
                         continue
@@ -1554,21 +1559,8 @@ def scrape_news():
 
                     metadata = enrich_article_metadata(title, summary, content)
                     print(f"    ✓ Metadata: style={metadata['writing_style']}, "
-                          f"complexity={metadata['complexity']}, topics={metadata['topics']}")
-
-                    region = article_region(metadata['region'], source_name, continents)
-                    print(f"    ✓ Region: {region or 'unknown'}"
-                          + ("" if metadata['region'] else " (source's continent)"))
-
-                    # Let in only to fill a coverage gap on the source's continent?
-                    # Then the story's own region has to fill one too.
-                    only_for_gap = (usable_strong() >= MIN_NEW_ARTICLES or (
-                        not preferred
-                        and len(new_articles) - strong_held() >= MIN_NEW_ARTICLES))
-                    if only_for_gap and (region is None or region in covered_now):
-                        print(f"    ✗ Covers {region or 'no known region'}, which the run "
-                              f"already has")
-                        continue
+                          f"complexity={metadata['complexity']}, topics={metadata['topics']}, "
+                          f"region={metadata['region'] or 'none (source country decides)'}")
 
                     # No image of its own, or the only ones on offer were broken:
                     # fall back to the closest-matching royalty-free photo.
@@ -1622,9 +1614,10 @@ def scrape_news():
                         'topics': metadata['topics'],
                         'countries': metadata['countries'],
                         'people': metadata['people'],
-                        # The region the story covers (or, failing that, its
-                        # source's continent). Drives the coverage check.
-                        'region': region,
+                        # The Rally region the story covers, or None when it
+                        # covers none of them — the site then places it by its
+                        # source's country of origin.
+                        'region': metadata['region'],
                         # Internal only: the average of the filter's scoring
                         # questions, stored for the dashboard and never served to
                         # readers by any public endpoint.

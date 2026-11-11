@@ -352,9 +352,7 @@ stories by the draft but does not write `filter.lock.json`, so a dry run can
 never leave a draft behind as the fallback everything else falls back to.
 
 The per-run rules are unchanged by any of this: a run still aims for
-`MIN_NEW_ARTICLES` stories with at least one from every continent (counted by
-the region each story is covering, as the metadata pass decides it — falling back
-to the source's continent when it can't name one of Rally's regions), caps each
+`MIN_NEW_ARTICLES` stories with at least one from every continent, caps each
 source at 2 and each category at `MAX_PER_CATEGORY`, and stops early only when
 the feeds run dry or the 45-minute clock runs out. Because the filter is now the
 most likely reason a run comes up short, every run ends with a summary saying

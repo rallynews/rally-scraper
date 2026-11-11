@@ -210,12 +210,6 @@ COUNTRY_CONTINENT = {
 }
 
 
-# Rally's regions, in the order the dashboard lists them. An article's region is
-# one of these or nothing — anything else the model names (the Middle East,
-# Antarctica, "global") falls back to the source's continent.
-RALLY_REGIONS = tuple(_CONTINENTS)
-
-
 def continent_for_country(code):
     """Continent name for an ISO 3166-1 alpha-2 code, or None if unknown."""
     if not code:
