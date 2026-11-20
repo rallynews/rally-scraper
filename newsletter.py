@@ -5,10 +5,11 @@ Bright Spots — daily newsletter compiler & sender for Rally News.
 Philosophy: AI-compiled, NOT AI-generated. Real, human-written journalism that
 the scraper surfaced is poured into a fixed template. An LLM writes only two
 small pieces of copy: the one-paragraph intro and the three category lead-in
-labels. Everything else is real article titles, summaries, and the scraper's
-Rallying Cry / On Balance text.
+labels. Everything else is real article titles, summaries, the scraper's
+Rallying Cry text, and the newsletters listed in Studio ▸ Promotion ▸ Swaps
+("Friends of The Bright Spots").
 
-Data source: the LIVE rally.news API (news.php / rallying-cry.php / balance.php),
+Data source: the LIVE rally.news API (news.php / rallying-cry.php / friends.php),
 NOT the committed JSON files in the repo (those are frozen snapshots).
 
 Send: creates a Brevo "email campaign" and sends it immediately to the
@@ -28,6 +29,7 @@ import re
 import sys
 import html
 import json
+import random
 import datetime
 import urllib.parse
 
@@ -40,7 +42,10 @@ NEWS_API_URL = os.environ.get("NEWS_API_URL", "https://rally.news/api/news.php")
 API_BASE = NEWS_API_URL.rsplit("/", 1)[0]          # -> https://rally.news/api
 NEWS_URL = f"{API_BASE}/news.php"
 RALLYING_URL = f"{API_BASE}/rallying-cry.php"
-BALANCE_URL = f"{API_BASE}/balance.php"
+FRIENDS_URL = f"{API_BASE}/friends.php"
+# How many "Friends of The Bright Spots" each issue shows, picked at random from
+# the list so a long list rotates. Mirrors PER_ISSUE in Studio's swaps.js.
+FRIENDS_PER_ISSUE = 3
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 # OpenRouter app attribution: https://openrouter.ai/docs/app-attribution
@@ -375,7 +380,7 @@ def make_labels(more):
 #   dm-g  → green accent colour     light: #5A775E  dark: #90C296
 #   dm-b  → Rallying Cry box bg     light: #EDF1ED  dark: #1E3020
 #   dm-r  → horizontal rule border  light: #E5E5E5  dark: #3A3A3A
-def build_html(featured, more, labels, intro, cry, balance, url_to_article, used_urls=None):
+def build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls=None):
     today = datetime.date.today().strftime("%A, %B %-d, %Y")
 
     f_title = clean(featured.get("title", ""))
@@ -437,15 +442,27 @@ def build_html(featured, more, labels, intro, cry, balance, url_to_article, used
             f'</td></tr></table></td></tr>'
         )
 
-    # On Balance (paragraph only, no links)
-    balance_block = ""
-    if balance and clean(balance.get("content", "")):
-        balance_block = (
-            f'<tr><td class="dm-t" style="padding:0 0 8px;font:bold 18px/1.3 {SERIF};color:{TEXT};">On Balance</td></tr>'
-            f'<tr><td class="dm-m" style="padding:0 0 8px;font:14px/1.4 {FONT};color:{MUTED};">'
-            f'Here’s the not-so-good news happening in the world today.</td></tr>'
-            f'<tr><td class="dm-t" style="padding:0 0 28px;font:16px/1.6 {FONT};color:{TEXT};">'
-            f'{esc(clean(balance["content"]))}</td></tr>'
+    # Friends of The Bright Spots — other positive newsletters (Studio ▸ Promotion ▸ Swaps).
+    # Left out entirely when the list is empty.
+    friends_li = ""
+    for fr in friends or []:
+        name, link = clean(fr.get("name", "")), (fr.get("link") or "").strip()
+        if not name or not link.lower().startswith(("http://", "https://")):
+            continue
+        friends_li += (
+            f'<li style="margin:4px 0;">'
+            f'<a href="{esc(link)}" class="dm-g" style="color:{RALLY_GREEN};text-decoration:underline;">{esc(name)}</a>'
+            f'</li>'
+        )
+    friends_block = ""
+    if friends_li:
+        friends_block = (
+            f'<tr><td class="dm-t" style="padding:0 0 8px;font:bold 18px/1.3 {SERIF};color:{TEXT};">Friends of The Bright Spots</td></tr>'
+            f'<tr><td class="dm-t" style="padding:0 0 4px;font:16px/1.6 {FONT};color:{TEXT};">'
+            f'Here are some other awesome positive newsletters we think you might love:</td></tr>'
+            f'<tr><td style="padding:0 0 28px;">'
+            f'<ul class="dm-t" style="margin:4px 0 0;padding-left:20px;font:16px/1.6 {FONT};color:{TEXT};">{friends_li}</ul>'
+            f'</td></tr>'
         )
 
     return f"""\
@@ -500,8 +517,8 @@ def build_html(featured, more, labels, intro, cry, balance, url_to_article, used
   <!-- Rallying Cry (only coloured box) -->
   {cry_block}
 
-  <!-- On Balance -->
-  {balance_block}
+  <!-- Friends of The Bright Spots -->
+  {friends_block}
 
   <!-- App promo -->
   <tr><td class="dm-r" style="padding:8px 0 0;border-top:1px solid {RULE};"></td></tr>
@@ -528,6 +545,20 @@ def build_html(featured, more, labels, intro, cry, balance, url_to_article, used
 
 </table></td></tr></table>
 </body></html>"""
+
+
+def pick_friends(friends, k=FRIENDS_PER_ISSUE):
+    """Up to k different newsletters, at random, from the Swaps list. Rows with
+    no name or no web link are skipped; the same link never appears twice."""
+    seen, usable = set(), []
+    for fr in friends:
+        name = clean((fr or {}).get("name", ""))
+        link = ((fr or {}).get("link") or "").strip()
+        if not name or not link.lower().startswith(("http://", "https://")) or link.lower() in seen:
+            continue
+        seen.add(link.lower())
+        usable.append({"name": name, "link": link})
+    return random.sample(usable, min(k, len(usable)))
 
 
 def build_subject(featured):
@@ -581,9 +612,9 @@ def main():
     except Exception as e:
         print(f"[warn] rallying cry fetch failed: {e}", file=sys.stderr); cry = None
     try:
-        balance = parse_api_entry((get_json(BALANCE_URL, limit=1) or [None])[0])
+        friends = pick_friends((get_json(FRIENDS_URL, action="list") or {}).get("friends") or [])
     except Exception as e:
-        print(f"[warn] balance fetch failed: {e}", file=sys.stderr); balance = None
+        print(f"[warn] friends fetch failed: {e}", file=sys.stderr); friends = []
 
     intro = make_intro([featured] + more)
     labels = make_labels(more)
@@ -595,7 +626,7 @@ def main():
     used_urls = {featured.get("url")} if featured.get("url") else set()
 
     subject = build_subject(featured)
-    html_out = build_html(featured, more, labels, intro, cry, balance, url_to_article, used_urls)
+    html_out = build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls)
 
     if DRY_RUN:
         with open("newsletter_preview.html", "w", encoding="utf-8") as f:
