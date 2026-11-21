@@ -5,7 +5,9 @@ Bright Spots — daily newsletter compiler & sender for Rally News.
 Philosophy: AI-compiled, NOT AI-generated. Real, human-written journalism that
 the scraper surfaced is poured into a fixed template. An LLM writes only two
 small pieces of copy: the one-paragraph intro and the three category lead-in
-labels. Everything else is real article titles, summaries, the scraper's
+labels. It also picks (but never writes) the stories for the three randomly
+chosen themed sections (see THEMES) and the one-per-region "Around The World"
+list. Everything else is real article titles, summaries, the scraper's
 Rallying Cry text, and the newsletters listed in Studio ▸ Promotion ▸ Swaps
 ("Friends of The Bright Spots").
 
@@ -46,6 +48,57 @@ FRIENDS_URL = f"{API_BASE}/friends.php"
 # How many "Friends of The Bright Spots" each issue shows, picked at random from
 # the list so a long list rotates. Mirrors PER_ISSUE in Studio's swaps.js.
 FRIENDS_PER_ISSUE = 3
+
+# Themed sections: each issue picks THEMES_PER_ISSUE of these at random and
+# fills each with the article that fits it best. The keywords/categories are
+# only the fallback used when the AI pick is unavailable.
+THEMES = {
+    "Happy & Human": {
+        "cats": {"world", "entertainment"},
+        "kw": ["kindness", "volunteer", "community", "hero", "donat", "rescue", "helped",
+               "neighbour", "neighbor", "stranger", "charity", "inspir"]},
+    "Thriving Planet": {
+        "cats": {"climate"},
+        "kw": ["climate", "renewable", "solar", "wind power", "forest", "ocean", "reef",
+               "conservation", "species", "emission", "restor", "rewild", "clean energy"]},
+    "Politics Doesn't Have to be Scary": {
+        "cats": {"politics"},
+        "kw": ["bill", "law", "vote", "bipartisan", "council", "government", "senate",
+               "parliament", "mayor", "policy", "election"]},
+    "Stories of Love": {
+        "cats": set(),
+        "kw": ["love", "wedding", "married", "couple", "romance", "proposal", "anniversary",
+               "sweetheart", "reunite"]},
+    "Animals We Can't Get Enough Of": {
+        "cats": set(),
+        "kw": ["dog", "cat", "puppy", "kitten", "animal", "bird", "whale", "dolphin",
+               "elephant", "panda", "otter", "zoo", "wildlife", "pet", "turtle", "bear"]},
+    "The Religious Spirit": {
+        "cats": {"religion"},
+        "kw": ["church", "faith", "pope", "mosque", "temple", "prayer", "spiritual",
+               "religious", "synagogue", "monk", "pilgrim"]},
+    "The Opportunities of Tech": {
+        "cats": {"ai", "transportation"},
+        "kw": ["ai", "robot", "tech", "app", "software", "innovation", "startup", "electric",
+               "battery", "breakthrough", "space", "satellite"]},
+    "World Peace": {
+        "cats": {"world"},
+        "kw": ["peace", "ceasefire", "treaty", "agreement", "reconcil", "diplomac", "truce",
+               "talks", "cooperation", "refugee"]},
+    "Arts and Crafts": {
+        "cats": {"arts"},
+        "kw": ["art", "artist", "craft", "museum", "paint", "sculpt", "gallery", "exhibit",
+               "knit", "pottery", "music", "theatre", "theater", "festival"]},
+    "Family & Friends": {
+        "cats": set(),
+        "kw": ["family", "friend", "mother", "father", "mom", "dad", "grand", "sibling",
+               "brother", "sister", "daughter", "son", "kids", "children", "baby"]},
+}
+THEMES_PER_ISSUE = 3
+
+# "Around The World": one story per region. Same regions, in the same order, as
+# source_directory.RALLY_REGIONS (the values the scraper stores in `region`).
+REGIONS = ("North America", "South America", "Europe", "Africa", "Asia", "Oceania")
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 # OpenRouter app attribution: https://openrouter.ai/docs/app-attribution
@@ -316,6 +369,138 @@ def pick_articles(news):
     return featured, more
 
 
+def _is_original(a):
+    return str(a.get("rally_originals", 0)).strip() in ("1", "true", "True")
+
+
+def _summary(a):
+    return clean(a.get("summary") or a.get("content") or "")
+
+
+def _numbered(articles, with_region=False):
+    lines = []
+    for i, a in enumerate(articles):
+        tag = f"[{a.get('category', '')}]"
+        if with_region and a.get("region") in REGIONS:
+            tag += f" [{a['region']}]"
+        lines.append(f"{i+1}. {tag} {clean(a.get('title', ''))} — {_summary(a)[:160]}")
+    return "\n".join(lines)
+
+
+def _ai_json(prompt, max_tokens=200):
+    raw = ai(prompt, max_tokens=max_tokens, temperature=0.2)
+    raw = re.sub(r"^```(?:json)?|```$", "", raw.strip()).strip()
+    m = re.search(r"\{.*\}", raw, re.S)
+    return json.loads(m.group() if m else raw)
+
+
+def _theme_score(a, spec):
+    """Fallback fit score: keyword hits (short keywords must be whole words),
+    plus a point for a matching category."""
+    text = f"{clean(a.get('title', ''))} {_summary(a)}".lower()
+    words = set(re.findall(r"[a-z']+", text))
+    hits = sum(1 for k in spec["kw"] if (k in words if len(k) <= 3 else k in text))
+    return hits * 2 + (1 if a.get("category") in spec["cats"] else 0)
+
+
+def pick_themed(news, exclude, k=THEMES_PER_ISSUE, rng=random):
+    """Randomly choose k themes and the article that best fits each.
+
+    Returns [(theme, article), ...]. The AI matches stories to themes; a keyword
+    and category score is the fallback. A theme that nothing fits is swapped for
+    another so the issue still gets k sections when the pool allows."""
+    pool = [a for a in news if not _is_original(a) and a.get("url") not in exclude
+            and _summary(a)][:40]
+    if not pool:
+        return []
+    order = rng.sample(list(THEMES), len(THEMES))
+    chosen, spare = order[:k], order[k:]
+
+    picks = {}
+    try:
+        got = _ai_json(
+            "Below are numbered good-news stories, then section themes for a positive-news "
+            "email. For EACH theme pick the ONE story that fits it best. Use a story only "
+            "once. If no story genuinely fits a theme, use null for it.\n\nThemes: "
+            + json.dumps(chosen) + "\n\nStories:\n" + _numbered(pool)
+            + "\n\nReply with ONLY a JSON object mapping each theme to a story number, "
+            'e.g. {"Theme A": 4, "Theme B": null}.',
+            max_tokens=150)
+        for theme in chosen:
+            n = got.get(theme)
+            if isinstance(n, (int, str)) and str(n).strip().isdigit():
+                idx = int(n) - 1
+                if 0 <= idx < len(pool) and pool[idx] not in picks.values():
+                    picks[theme] = pool[idx]
+    except Exception as e:
+        print(f"[warn] themed AI selection failed: {e}", file=sys.stderr)
+
+    # Keyword fallback for any theme the AI left empty; a theme nothing fits is
+    # swapped for a spare one.
+    result, taken = [], set()
+    queue = list(chosen)
+    while queue and len(result) < k:
+        theme = queue.pop(0)
+        art = picks.get(theme)
+        if art is None or id(art) in taken:
+            reserved = {id(x) for t, x in picks.items() if t in queue}
+            scored = [(_theme_score(x, THEMES[theme]), -i, x) for i, x in enumerate(pool)
+                      if id(x) not in taken and id(x) not in reserved]
+            best = max(scored, key=lambda x: x[:2], default=None)
+            art = best[2] if best and best[0] > 0 else None
+        if art is None:
+            if spare:
+                queue.append(spare.pop(0))
+            continue
+        result.append((theme, art))
+        taken.add(id(art))
+    return result
+
+
+def pick_world(news, exclude):
+    """One story per region, as [(region, article), ...] in REGIONS order.
+
+    Uses the article's stored `region` (set by the scraper) where the API serves
+    it; the AI assigns regions to the rest. Regions with no story are left out."""
+    pool = [a for a in news if not _is_original(a) and a.get("url") not in exclude][:80]
+    if not pool:
+        return []
+    picks = {}
+    try:
+        got = _ai_json(
+            "Below are numbered good-news stories. Some are tagged with the world region "
+            "they cover. For EACH of these regions pick the ONE most uplifting, interesting "
+            "story that takes place in or mainly affects that region: "
+            + ", ".join(REGIONS) + ". A story tagged with a region may only be used for that "
+            "region. Use each story once. Use null if no story fits a region.\n\nStories:\n"
+            + _numbered(pool, with_region=True)
+            + "\n\nReply with ONLY a JSON object mapping each region to a story number.",
+            max_tokens=150)
+        for region in REGIONS:
+            n = got.get(region)
+            if isinstance(n, (int, str)) and str(n).strip().isdigit():
+                idx = int(n) - 1
+                if not 0 <= idx < len(pool):
+                    continue
+                a = pool[idx]
+                if a.get("region") in REGIONS and a["region"] != region:
+                    continue  # contradicts the scraper's own region
+                if a not in picks.values():
+                    picks[region] = a
+    except Exception as e:
+        print(f"[warn] world AI selection failed: {e}", file=sys.stderr)
+
+    # Fill gaps from the stored region (newest first).
+    for region in REGIONS:
+        if region in picks:
+            continue
+        for a in pool:
+            if a.get("region") == region and a not in picks.values():
+                picks[region] = a
+                break
+    return [(r, picks[r]) for r in REGIONS if r in picks]
+
+
 def cry_story_link(story, url_to_article):
     """Prefer an in-ecosystem Reader View link (needs the article's category,
     recovered by matching the story URL against the news feed); fall back to the
@@ -380,7 +565,8 @@ def make_labels(more):
 #   dm-g  → green accent colour     light: #5A775E  dark: #90C296
 #   dm-b  → Rallying Cry box bg     light: #EDF1ED  dark: #1E3020
 #   dm-r  → horizontal rule border  light: #E5E5E5  dark: #3A3A3A
-def build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls=None):
+def build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls=None,
+               themed=None, world=None):
     today = datetime.date.today().strftime("%A, %B %-d, %Y")
 
     f_title = clean(featured.get("title", ""))
@@ -440,6 +626,41 @@ def build_html(featured, more, labels, intro, cry, friends, url_to_article, used
             f'<p class="dm-t" style="margin:0;font:17px/1.6 {SERIF};color:{TEXT};">{esc(clean(cry["content"]))}</p>'
             f'{stories_ul}'
             f'</td></tr></table></td></tr>'
+        )
+
+    # Themed sections (randomly chosen each issue) — headline, summary, link.
+    themed_block = ""
+    for theme, a in themed or []:
+        t = clean(a.get("title", ""))
+        u = reader_url(a.get("category", ""), a.get("title", ""))
+        themed_block += (
+            f'<tr><td class="dm-g" style="padding:0 0 6px;font:bold 13px/1.3 {FONT};color:{RALLY_GREEN};'
+            f'text-transform:uppercase;letter-spacing:.6px;">{esc(theme)}</td></tr>'
+            f'<tr><td class="dm-t" style="padding:0 0 6px;font:bold 19px/1.3 {SERIF};color:{TEXT};">'
+            f'<a href="{esc(u)}" class="dm-t" style="color:{TEXT};text-decoration:none;">{esc(t)}</a></td></tr>'
+            f'<tr><td class="dm-t" style="padding:0 0 8px;font:16px/1.6 {FONT};color:{TEXT};">{esc(_summary(a))}</td></tr>'
+            f'<tr><td style="padding:0 0 26px;">'
+            f'<a href="{esc(u)}" class="dm-g" style="font:bold 15px/1 {FONT};color:{RALLY_GREEN};text-decoration:none;">Read on Rally &rarr;</a>'
+            f'</td></tr>'
+        )
+
+    # Around The World — one story per region.
+    world_block = ""
+    world_rows = ""
+    for region, a in world or []:
+        t = clean(a.get("title", ""))
+        u = reader_url(a.get("category", ""), a.get("title", ""))
+        world_rows += (
+            f'<tr><td class="dm-t" style="padding:7px 0;font:16px/1.5 {FONT};color:{TEXT};">'
+            f'<strong class="dm-g" style="color:{RALLY_GREEN};">{esc(region)}:</strong> '
+            f'<a href="{esc(u)}" class="dm-t" style="color:{TEXT};text-decoration:underline;">{esc(t)}</a>'
+            f'</td></tr>'
+        )
+    if world_rows:
+        world_block = (
+            f'<tr><td class="dm-r" style="padding:0 0 6px;border-top:1px solid {RULE};"></td></tr>'
+            f'<tr><td class="dm-t" style="padding:14px 0 6px;font:bold 18px/1.3 {SERIF};color:{TEXT};">Around The World</td></tr>'
+            f'<tr><td style="padding:0 0 28px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">{world_rows}</table></td></tr>'
         )
 
     # Friends of The Bright Spots — other positive newsletters (Studio ▸ Promotion ▸ Swaps).
@@ -516,6 +737,12 @@ def build_html(featured, more, labels, intro, cry, friends, url_to_article, used
 
   <!-- Rallying Cry (only coloured box) -->
   {cry_block}
+
+  <!-- Themed sections -->
+  {themed_block}
+
+  <!-- Around The World -->
+  {world_block}
 
   <!-- Friends of The Bright Spots -->
   {friends_block}
@@ -599,7 +826,7 @@ def send_campaign(subject, html_content):
 # Main
 # ─────────────────────────────────────────────────────────────────────────────
 def main():
-    news = get_json(NEWS_URL, limit=60)
+    news = get_json(NEWS_URL, limit=150)
     featured, more = pick_articles(news)
     if not featured:
         print("No articles available — aborting.", file=sys.stderr)
@@ -625,8 +852,17 @@ def main():
     # that a Rallying Cry cross-reference adds context rather than repetition.
     used_urls = {featured.get("url")} if featured.get("url") else set()
 
+    # Themed sections and Around The World never repeat a story shown above them.
+    shown = {a.get("url") for a in [featured] + more if a.get("url")}
+    themed = pick_themed(news, shown)
+    shown |= {a.get("url") for _, a in themed}
+    world = pick_world(news, shown)
+    print("Themes: " + ", ".join(t for t, _ in themed))
+    print("Regions: " + ", ".join(r for r, _ in world))
+
     subject = build_subject(featured)
-    html_out = build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls)
+    html_out = build_html(featured, more, labels, intro, cry, friends, url_to_article, used_urls,
+                          themed=themed, world=world)
 
     if DRY_RUN:
         with open("newsletter_preview.html", "w", encoding="utf-8") as f:
