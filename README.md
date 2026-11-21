@@ -121,7 +121,8 @@ it waits in **Studio ▸ News ▸ Joyskies** for a person. Workflow: **Joyscroll
 
 Secrets: `BLUESKY_HANDLE`, `BLUESKY_APP_PASSWORD`, `JOYSCROLL_CLIPS_API_KEY`
 (plus the existing `NEWS_API_URL`, `OPENROUTER_API_KEY`). Variables:
-`CLIPS_TEXT_MODEL`, `CLIPS_VISION_MODEL` (both default `openai/gpt-4o-mini`),
+`CLIPS_TEXT_MODEL`, `CLIPS_VISION_MODEL` (both default
+`mistralai/mistral-small-3.2-24b-instruct`; leave them unset to use it),
 `CLIPS_CONTACT_EMAIL`. Tests: `python -m unittest tests.test_bluesky_clips`.
 
 **Mark the finder as a bot** (once): Actions ▸ **Joyscroll Joyskies — mark

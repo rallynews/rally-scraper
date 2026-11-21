@@ -74,6 +74,23 @@ class FilterTests(unittest.TestCase):
         self.assertEqual(bc.judge_text({**ok, 'category': 'politics'})[1], 'text: no category')
         self.assertEqual(bc.judge_text('nonsense'), (None, None))
 
+    def test_small_thumbnail_is_a_small_jpeg_data_url(self):
+        import base64, io
+        from unittest import mock
+        from PIL import Image
+        big = io.BytesIO()
+        Image.new('RGB', (1080, 1920), 'orange').save(big, 'JPEG')
+        resp = mock.Mock(status_code=200, raw=io.BytesIO(big.getvalue()))
+        resp.raw.read = lambda n, decode_content=True, b=big.getvalue(): b[:n]
+        with mock.patch.object(bc.requests, 'get', return_value=resp):
+            url = bc.small_thumbnail('https://video.bsky.app/watch/x/y/thumbnail.jpg')
+        self.assertTrue(url.startswith('data:image/jpeg;base64,'))
+        img = Image.open(io.BytesIO(base64.b64decode(url.split(',', 1)[1])))
+        self.assertEqual(max(img.size), bc.THUMB_MAX_PX)
+        self.assertEqual(img.size, (288, 512))
+        with mock.patch.object(bc.requests, 'get', return_value=mock.Mock(status_code=404)):
+            self.assertIsNone(bc.small_thumbnail('https://video.bsky.app/gone.jpg'))
+
     def test_thumbnail_verdict(self):
         clean = {f: False for f in bc.THUMB_FLAGS}
         self.assertIsNone(bc.judge_thumbnail(clean))
@@ -121,7 +138,8 @@ class FakeBluesky:
 class RunTests(unittest.TestCase):
     def setUp(self):
         self.sent = []
-        self._api, self._model = bc.api, bc.call_model
+        self._api, self._model, self._thumb = bc.api, bc.call_model, bc.small_thumbnail
+        bc.small_thumbnail = lambda url: 'data:image/jpeg;base64,' + url  # stands in for the download
 
         def fake_api(method, params=None, payload=None, dry_run=False):
             if method == 'GET' and params['action'] == 'known':
@@ -146,7 +164,7 @@ class RunTests(unittest.TestCase):
         bc.api, bc.call_model = fake_api, fake_model
 
     def tearDown(self):
-        bc.api, bc.call_model = self._api, self._model
+        bc.api, bc.call_model, bc.small_thumbnail = self._api, self._model, self._thumb
 
     def test_a_find_run_posts_identifiers_and_verdicts_only(self):
         pages = {
