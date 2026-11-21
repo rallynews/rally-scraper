@@ -39,7 +39,7 @@ jobs:
         with:
           python-version: '3.11'
       # atproto is pinned: until its 1.0 the SDK may change between versions.
-      - run: pip install requests atproto==0.0.73
+      - run: pip install requests pillow atproto==0.0.73
       - name: Tests
         run: python -m unittest tests.test_bluesky_clips
       - name: Run

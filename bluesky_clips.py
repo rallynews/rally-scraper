@@ -24,6 +24,8 @@ The rules this follows (JOYSCROLL_BLUESKY_CLIPS_BRIEF.md §0):
   429 and stopping after three in a row or any 401/403; hard caps per run.
 """
 
+import base64
+import io
 import json
 import os
 import sys
@@ -31,6 +33,7 @@ import time
 from datetime import datetime, timedelta, timezone
 
 import requests
+from PIL import Image
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIGURATION
@@ -334,6 +337,34 @@ def call_model(model, content, budget, max_tokens=400):
         return None
 
 
+# The thumbnail check sees a small copy made here, never Bluesky's full-size
+# image or its address. 512 px on the longest side is the size OpenAI's own
+# low-detail mode reads at: enough for a logo, an overlay or a broadcast look.
+THUMB_MAX_PX = 512
+THUMB_MAX_BYTES = 5_000_000
+
+
+def small_thumbnail(url):
+    """The thumbnail as a small JPEG data URL, or None if it can't be fetched or read."""
+    try:
+        r = requests.get(url, headers={'User-Agent': USER_AGENT}, timeout=20, stream=True)
+        if r.status_code != 200:
+            return None
+        raw = r.raw.read(THUMB_MAX_BYTES + 1, decode_content=True)
+        if len(raw) > THUMB_MAX_BYTES:
+            return None
+        img = Image.open(io.BytesIO(raw))
+        img.draft('RGB', (THUMB_MAX_PX, THUMB_MAX_PX))  # JPEGs decode straight to a smaller size
+        img = img.convert('RGB')
+        img.thumbnail((THUMB_MAX_PX, THUMB_MAX_PX))
+        out = io.BytesIO()
+        img.save(out, 'JPEG', quality=80)
+        return 'data:image/jpeg;base64,' + base64.b64encode(out.getvalue()).decode()
+    except Exception as e:
+        print(f"      ✗ thumbnail: {type(e).__name__}")
+        return None
+
+
 def text_prompt(text, alt):
     return f"""You screen short videos for Joyscroll, a good-news app, from a public social post. Read the post's words and the video's description (you can't see the video) and judge it.
 
@@ -462,9 +493,12 @@ def find(dry_run=False, bsky=None, now=None):
             if fields is None:
                 continue  # no verdict: try again next run
             if not reason and video.get('thumbnail'):
+                image = small_thumbnail(video['thumbnail'])
+                if image is None:
+                    continue  # no verdict: try again next run
                 thumb = judge_thumbnail(call_model(VISION_MODEL, [
                     {'type': 'text', 'text': THUMB_PROMPT},
-                    {'type': 'image_url', 'image_url': {'url': video['thumbnail']}},
+                    {'type': 'image_url', 'image_url': {'url': image, 'detail': 'low'}},
                 ], budget, 200))
                 if thumb == '':
                     continue
