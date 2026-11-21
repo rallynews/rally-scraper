@@ -42,8 +42,11 @@ CLIPS_API_KEY = os.environ.get('JOYSCROLL_CLIPS_API_KEY')
 NEWS_API_URL = os.environ.get('NEWS_API_URL')
 CLIPS_API_URL = f"{NEWS_API_URL.rsplit('/', 1)[0]}/bluesky-clips.php" if NEWS_API_URL else None
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
-TEXT_MODEL = os.environ.get('CLIPS_TEXT_MODEL') or 'openai/gpt-4o-mini'
-VISION_MODEL = os.environ.get('CLIPS_VISION_MODEL') or 'openai/gpt-4o-mini'
+# Mistral Small 3.2 reads images as well as text, at about half gpt-4o-mini's
+# token price, and without the several thousand tokens gpt-4o-mini bills for
+# every image. The Actions variables of the same names override these.
+TEXT_MODEL = os.environ.get('CLIPS_TEXT_MODEL') or 'mistralai/mistral-small-3.2-24b-instruct'
+VISION_MODEL = os.environ.get('CLIPS_VISION_MODEL') or 'mistralai/mistral-small-3.2-24b-instruct'
 CONTACT = os.environ.get('CLIPS_CONTACT_EMAIL') or 'joyscroll@rally.news'
 
 # The same attribution scraper.py sends: https://openrouter.ai/docs/app-attribution
