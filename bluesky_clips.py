@@ -5,8 +5,8 @@ on Bluesky, for a person to review in Studio ▸ News ▸ Joyskies.
     python bluesky_clips.py --dry-run     # the same, printing instead of posting
     python bluesky_clips.py --recheck     # look again at every approved/live clip
 
-Dispatched by cron-job.org: finding every 6 hours, re-checking daily
-(.github/workflows/bluesky-clips.yml). This only proposes clips: whether one
+Finding runs once after every scrape; re-checking is dispatched daily by
+cron-job.org (.github/workflows/bluesky-clips.yml). This only proposes clips: whether one
 goes live at once or waits for a person is Studio's review setting, decided
 by api/bluesky-clips.php, and creators can opt out at rally.news/joyscroll/creators.
 
