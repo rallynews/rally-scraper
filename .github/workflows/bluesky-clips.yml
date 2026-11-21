@@ -6,14 +6,10 @@ name: Joyscroll Joyskies
 # again at every approved or live clip to take down anything deleted, edited
 # or newly labelled. See bluesky_clips.py.
 #
-# Mode "find" runs once after every scrape (workflow_run below), so it searches
-# as often as the scraper does. Mode "recheck" is still dispatched once a day
-# by cron-job.org, with failure emails on. Either mode can be run by hand.
+# No schedule here: cron-job.org dispatches it — mode "find" every 6 hours,
+# mode "recheck" once a day — with failure emails on.
 
 on:
-  workflow_run:
-    workflows: ['Run Rally News Scraper']
-    types: [completed]
   workflow_dispatch:
     inputs:
       mode:

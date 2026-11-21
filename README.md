@@ -97,8 +97,7 @@ Bluesky for Joyscroll. While Studio's review setting is *automatic*, what
 passes its checks goes live at once (creators can opt out at
 rally.news/joyscroll/creators, and readers can report clips); set to *manual*,
 it waits in **Studio ▸ News ▸ Joyskies** for a person. Workflow: **Joyscroll Joyskies** (`bluesky-clips.yml`), mode
-`find` runs once after every scrape (started by the scraper's workflow
-finishing), and `recheck` daily, dispatched by cron-job.org.
+`find` every 6 hours and `recheck` daily, both dispatched by cron-job.org.
 
 - **Read only**, from its own account, signed in once per run with an app
   password. It never posts, likes, follows, replies or messages anyone.
